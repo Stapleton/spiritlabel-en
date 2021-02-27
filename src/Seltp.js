@@ -24,16 +24,19 @@ const columns = [
 function Tpinfo(props) {
   const {tpinfo}=props
   return (
-  <Grid.Row>
-	<Grid.Col width="40%" >
-	      <img  class="tp-img-big" src={`/utils/thumb?id=${tpinfo.id}`}/>
-	</Grid.Col>
-	<Grid.Col width="50%" >
-	     <p><span>名称:</span>{tpinfo.name} </p>
-	     <p><span>说明:</span>{tpinfo.memo} </p>
-	     <p><span>尺寸:</span>{tpinfo.width/10}厘米 X {tpinfo.height/10}厘米 </p>
-	</Grid.Col>
-  </Grid.Row>)
+	<Grid.Row>
+		<Grid.Col width="40%" >
+			<img  class="tp-img-big" src={`/utils/thumb?id=${tpinfo.id}`}/>
+		</Grid.Col>
+		<Grid.Col width="50%" >
+			<p><span>名称:</span>{tpinfo.name} </p>
+			<p><span>说明:</span>{tpinfo.memo} </p>
+			<p><span>尺寸:</span>{tpinfo.width/10}厘米 X {tpinfo.height/10}厘米 </p>
+			<br/>
+			<p>模板变量</p>
+			{props.tp_vars.map((o,i)=><p key={i}>{o}</p>)}
+		</Grid.Col>
+	</Grid.Row>)
 }
 
 class Seltp extends React.Component {
@@ -51,13 +54,11 @@ class Seltp extends React.Component {
     loadtp=async(tpid)=>{
     	let rc=await net.get(`/api/load-template?id=${tpid}`);
     	let tp_vars=tp_utils.get_vars(rc.data);
-    	let columns = tp_vars.map(o=>{ return {title:o, key:o} });
-    	this.props.onChangeTp(tpid, columns);
-    	//this.setState({tpid, tp_vars, tpinfo:rc.tpinfo, tp_data: rc.data});
+    	this.props.onChangeTp({tpid, tpinfo:rc.tpinfo, tp_vars});
     }
     
     nextStep=()=>{
-	const {tpdata}=this.props;
+			const {tpdata}=this.props;
     	const {tpinfo, tp_vars}=tpdata;
     	if (!tpinfo) {
     		W.alert("请先选择打印模版");
@@ -75,9 +76,7 @@ class Seltp extends React.Component {
     	this.setState({tpid, tpinfo:record});
     	let rc=await net.get(`/api/load-template?id=${tpid}`);
     	let tp_vars=tp_utils.get_vars(rc.data);
-    	let columns = tp_vars.map(o=>{ return {title:o, key:o} });
-    	this.props.onChangeTp({tpid, tpinfo:rc.tpinfo, tp_vars}, columns);
-    	//this.setState({tp_vars, tp_data: rc.data});
+    	this.props.onChangeTp({tpid, tpinfo:rc.tpinfo, tp_vars});
     }
     
     dosearch=(search_key)=>{
@@ -93,13 +92,12 @@ class Seltp extends React.Component {
     }
     
     render() { 
-    	console.log(this.props);
     	const {search_key}=this.state;
     	const {tpdata}=this.props;
     	const {tpinfo, tp_vars}=tpdata;
     	return (
     	   <>
-	    	<Grid.Row>
+					<Grid.Row>
     	   		<Grid.Col style={{margin:"0 auto", paddingBottom:20}}>
     	   		      <InputButton no_empty={false} onClick={this.dosearch} >搜索</InputButton>
     	   		</Grid.Col>
@@ -107,7 +105,8 @@ class Seltp extends React.Component {
     	   	<Grid.Row>
     	   		<Grid.Col width='50%' class="tp-list">
     	   			<H3>可用标签模版列表</H3>
-    	   			<Table dataUrl={`/api/get-tp-list?key=${search_key}`} columns={columns} actions={this.actions} pg_size={10}/>
+    	   			<Table dataUrl={`/api/get-tp-list?key=${search_key}`} 
+    	   					columns={columns} actions={this.actions} pg_size={4} />
     	   		</Grid.Col>
     	   		<Grid.Col width='50%' class="tp-info" >
     	   			<div >

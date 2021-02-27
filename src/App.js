@@ -13,62 +13,68 @@ const steps= [{seltp:"选择模版"}, {loaddata:"导入数据"}, {doprint:"执�
 
 export default class App extends React.Component {
 
-    state ={
-    	step:"seltp", 
-    	tpdata : {},
-    	data:[],
-    	columns:[]
-    }
+	state ={
+		step:"seltp", 
+		tpdata : {},
+		data:[],
+		columns:[]
+	}
 
-    setStep=(step)=>{
-    	this.setState({step});
-    }
-    
-    onSetData=(data, columns)=>{
-	if (!columns) this.setState({data})
-	this.setState({data, columns})
-    }
-    
-    onChangeTp=(tpdata, columns)=>{
-    	let data=[]
-    	for(let i=0; i<10; i++) data.push({});
-    	this.setState({tpdata,  columns, data});
-    }
-    	
-    render() {
-    	    const {tpdata, step, data, columns}=this.state;
-	    return (
-		<Router>
-			<div class="App-header">
-				批量打印小工具
-			</div>
-			<Page>
-				<Stepper steps={steps} current={step}  width="80%"/>
-				<div style={{height:50}} />
-				<Route path="/print-tools" exact  render={props =><Seltp {...props} 
-					setStep={this.setStep} 
-					onChangeTp={this.onChangeTp}
-					tpdata={tpdata}
-					/>}  />
-				<Route path="/print-tools/seltp"  render={props =><Seltp {...props} 
-					 setStep={this.setStep} 
-					 onChangeTp={this.onChangeTp}
-					 tpdata={tpdata}
-					/>} />
-				<Route path="/print-tools/loaddata" render={props =><DataInput {...props} 
-					data={data} 
-					columns={columns}
-					setStep={this.setStep} 
-					onDataChange={this.onSetData}
-					/>}/>
-				<Route path="/print-tools/doprint"  render={props =><DoPrint {...props} setStep={this.setStep} />} />
-				<Route path="/print-tools/finish"  render={props =><Finish {...props} 
-					setStep={this.setStep} 
-					onDataChange={this.onSetData}
-					/>} />
-			</Page>
-		</Router>
-	    )
-    }	    
+	setStep=(step)=>{
+		this.setState({step});
+	}
+
+	onSetData=(data)=>{
+		this.setState({data})
+	}
+
+	onChangeTp=(tpdata)=>{
+		let data=[]
+		for(let i=0; i<10; i++) data.push({});
+		this.setState({tpdata, data});
+	}
+		
+	render() {
+		const {tpdata, step, data}=this.state;
+		return (
+			<Router>
+				<div class="App-header">
+					批量打印小工具
+				</div>
+				<Page>
+					
+					<Stepper steps={steps} current={step}  width="80%"/>
+					
+					<div style={{height:50}} />
+					
+					<Route path="/print-tools" exact  render={props =><Seltp {...props} 
+							setStep={this.setStep} 
+							onChangeTp={this.onChangeTp}
+							tpdata={tpdata}
+						/>}  />
+					<Route path="/print-tools/seltp"  render={props =><Seltp {...props} 
+							setStep={this.setStep} 
+							onChangeTp={this.onChangeTp}
+							tpdata={tpdata}
+						/>} />
+					<Route path="/print-tools/loaddata" render={props =><DataInput {...props} 
+							data={data} 
+							tpdata={tpdata}
+							setStep={this.setStep} 
+							onDataChange={this.onSetData}
+						/>}/>
+					<Route path="/print-tools/doprint" render={props =><DoPrint {...props} 
+							setStep={this.setStep} 
+							tpdata={tpdata}
+							data={data} 
+						/>} />
+					<Route path="/print-tools/finish"  render={props =><Finish {...props} 
+							setStep={this.setStep} 
+							onDataChange={this.onSetData}
+						/>} />
+				</Page>
+			</Router>
+	  )
+	}	    
 }
 
