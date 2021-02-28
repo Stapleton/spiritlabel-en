@@ -1,9 +1,6 @@
 import React from 'react';
-import Table from 'ecp/table';
-import {Page, H1, H2, H3} from 'ecp/page';
+import {H1} from 'ecp/page';
 import Button from 'ecp/button'
-import ConfirmButton from 'ecp/confirm_button'
-import W from 'ecp/divwin';
 
 
 class Finish extends React.Component {
@@ -23,7 +20,7 @@ class Finish extends React.Component {
     
     render() { 
     	return (
-    	   <div class="upload-area">
+    	   <div class="center">
 	      	<H1>打印结束</H1>
 	      	<br/>
 	      	<Button type="green" onClick={this.printAnother}>继续打印</Button>

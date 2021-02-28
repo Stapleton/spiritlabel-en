@@ -1,9 +1,12 @@
 import React from 'react';
 import Table from 'ecp/table';
 import Button from 'ecp/button'
+import Grid from 'ecp/grid'
 import ConfirmButton from 'ecp/confirm_button'
 import W from 'ecp/divwin';
 import XLSX from 'xlsx'
+import Toolbar from 'ecp/toolbar';
+import {saveAs} from 'file-saver';
 
 /* list of supported file types */
 const SheetJSFT = [
@@ -15,7 +18,7 @@ const SheetJSFT = [
   usage: <DragDropFile handleFile={handleFile}>...</DragDropFile>
     handleFile(file:File):void;
 */
-class DragDropFile extends React.Component {
+/*class DragDropFile extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onDrop = this.onDrop.bind(this);
@@ -30,14 +33,14 @@ class DragDropFile extends React.Component {
 			{this.props.children}
 		</div>
 	); };
-};
+};*/
 
 /*
   Simple HTML5 file input wrapper
   usage: <DataInput handleFile={callback} />
     handleFile(file:File):void;
 */
-class FileInput extends React.Component {
+class FileBtn extends React.Component {
 	handleChange=(e)=> {
 		const files = e.target.files;
 		if(files && files[0]) this.props.handleFile(files[0]);
@@ -51,9 +54,15 @@ class FileInput extends React.Component {
 		this.fileSelector.click();
 	}
 	
-	render() { return (
-		<input type="file" style={{display:"none"}} accept={SheetJSFT} onChange={this.handleChange} ref={this.onRef}/>
-	); };
+	render() {
+		const {children, type} = this.props;
+		return (
+			<Button type={type} onClick={this.select} >
+				<input type="file" style={{display:"none"}} accept={SheetJSFT} onChange={this.handleChange} ref={this.onRef}/>
+				{children}
+			</Button>
+		);
+	}
 }
 
 function ExcelHeader(props) {
@@ -72,17 +81,21 @@ function ExcelHeader(props) {
 	
 	var select_var=function() {
 		W.show(
-			<W.Form title='选择变量' onSubmit={do_bind}>
-				<select onChange={sel_var} defaultValue={cur_var}>
-					{tp_vars.map((o,i)=><option key={i} >{o}</option>)}
-				</select>
+			<W.Form title='选择变量' onSubmit={do_bind} height={200}>
+				<Grid.Row>
+					<Grid.Col className="bind-var">
+						将当前列绑定到：<select onChange={sel_var} defaultValue={cur_var}>
+							{tp_vars.map((o,i)=><option key={i} >{o}</option>)}
+						</select>
+					</Grid.Col>
+				</Grid.Row>
 			</W.Form>
 		)		
 	}
 		
 	return (col in bind_vars ? 
-		<span class="execl-header">{bind_vars[col]} <a href="#" onClick={select_var}>修改</a></span> :
-		<span class="execl-header"><a href='#' onClick={select_var}>点击绑定变量</a></span>
+		<span class="execel-header">{bind_vars[col]} <a href="#" onClick={select_var}>修改</a></span> :
+		<span class="execel-header err">未用<a href='#' onClick={select_var}>点击绑定变量</a></span>
 	)
 }
 
@@ -97,15 +110,17 @@ class DataInput extends React.Component {
 
 	constructor(props) {
 		super(props);
+		let {tpid, tp_vars}=props.tpdata;
+		if (!tpid || tp_vars.length===0 ) this.props.history.push("/print-tools/seltp")
 		this.props.setStep("loaddata")
 	}
 
 	actions=(tabObj, record)=>{
 		return(
-			<span>
+			<>
 				<Button type='inline' onClick={()=>tabObj.insert(record)}>插入</Button>
 				<ConfirmButton type='danger' onClick={()=>tabObj.del(record)}>删除</ConfirmButton>
-			</span>
+			</>
 		)
 	}
 
@@ -114,7 +129,7 @@ class DataInput extends React.Component {
 	}
 
 	nextStep=()=>{
-		let {xls, cols, bind_vars}=this.state;
+		let {xls, bind_vars}=this.state;
 		let {tpdata}=this.props;
 		let data=this.table.getData()
 		
@@ -124,7 +139,7 @@ class DataInput extends React.Component {
 			for(let i=0; i<tpdata.tp_vars.length; i++) {
 				let v=tpdata.tp_vars[i];
 				if (vars.indexOf(v)<0) {
-					W.alert(`变量${v}未绑定`);
+					W.alert(`变量${v}未绑定,\n请点击表头绑定变量！\n \n\n数据列不够可添加。`);
 					return;
 				}
 			}
@@ -136,7 +151,7 @@ class DataInput extends React.Component {
 				var d1={};
 				for( let col in bind_vars ) {
 					let varname=bind_vars[col];
-					d1[varname]=d[col];
+					d1[varname]=String(d[col] ||"");
 				}
 				
 				data1.push(d1);				
@@ -152,9 +167,8 @@ class DataInput extends React.Component {
 		
 		if (data1.length===0) {
 			W.alert("数据不能为空");
+			return;
 		}
-		
-		console.log(data1);
 		
 		this.props.onDataChange(data1);
 		this.props.history.push("/print-tools/doprint")
@@ -173,8 +187,9 @@ class DataInput extends React.Component {
 	
 	/* for execel header */
 	make_excel_cols = refstr => {
-		let o = [], C = XLSX.utils.decode_range(refstr).e.c + 1;
-		for(var i = 0; i < C; ++i) o[i] = XLSX.utils.encode_col(i);
+		let o = [], range = XLSX.utils.decode_range(refstr);
+		let S=range.s.c , E=range.e.c + 1;
+		for(var i = 0; i < E - S; ++i) o[i] = XLSX.utils.encode_col(i);
 		return o;
 	};
 
@@ -191,17 +206,95 @@ class DataInput extends React.Component {
 			const wsname = wb.SheetNames[0];
 			const ws = wb.Sheets[wsname];
 			/* Convert array of arrays */
-			const data = XLSX.utils.sheet_to_json(ws, {header:1});
+			let data = XLSX.utils.sheet_to_json(ws, {header:1});
+			
+			if (data.length===0) {
+				W.alert("没有数据");
+				return;		
+			}
+			
+			const {tp_vars}=this.props.tpdata;
+			let header=data[0];
+			let bind_vars={};
+			for(let i=0; i<header.length; i++) {
+				if (tp_vars.indexOf(header[i])>=0) {
+					bind_vars[i]=header[i];
+				}
+			}
+			if (Object.keys(bind_vars).length===tp_vars.length || Object.keys(bind_vars).length>3) {
+				/* 认为第一行为表头，而不是数据*/
+				delete data[0]
+			}else{
+				bind_vars={}
+			}
+			
 			/* Update state */
-			this.setState({xls:true, bind_vars:{}, data, cols: this.make_excel_cols(ws['!ref'])});
+			this.setState({xls:true, bind_vars, data, cols: this.make_excel_cols(ws['!ref'])});
 		};
 		if(rABS) reader.readAsBinaryString(file); 
 		else reader.readAsArrayBuffer(file);
-
 	};
-
-	selfile=()=>{
-		this.fileSelector.select();
+	
+	export=()=>{
+		let {tpdata}=this.props;
+		let {tp_vars, tpinfo}=tpdata;
+		let content=tp_vars.join(",");
+		//let uriContent = "data:application/octet-stream," + encodeURIComponent(content);
+		//window.open(uriContent, `${tpinfo.name}-data.csv`);
+		var blob = new Blob([content], {type: "application/octet-stream;charset=utf-8"});
+		saveAs(blob, `${tpinfo.name}-data.csv`);
+	}
+	
+	addRow=()=>{
+	  this.table.append();
+	}
+	
+	addCol=()=>{
+		
+		let {xls, cols, bind_vars}=this.state;
+		if (!xls) return;
+		
+		let {tp_vars}=this.props.tpdata;
+		let used_vars=Object.values(bind_vars);
+		let left_vars=tp_vars.filter(x=>used_vars.indexOf(x)<0)
+		
+		if (left_vars.length===0) {
+			W.alert("没有需要绑定的变量");
+			return;
+		}
+		
+		let cur_var = left_vars[0]
+		
+		var sel_var=function(e) {
+			cur_var=e.target.value;
+		}
+		
+		var do_bind=(form)=>{	
+			form.close();
+			let col=cols.length;
+			cols.push(col);
+			bind_vars[col]=cur_var;
+			this.setState({cols});
+		}
+	
+		W.show(
+			<W.Form title='增加数据列' onSubmit={do_bind} height={200}>
+				<Grid.Row>
+					<Grid.Col className="bind-var">
+						数据列绑定变量：<select onChange={sel_var} defaultValue={cur_var}>
+							{left_vars.map((o,i)=><option key={i} >{o}</option>)}
+						</select>
+					</Grid.Col>
+				</Grid.Row>
+			</W.Form>
+		)		
+	}
+	
+	clearData=()=>{
+		this.setState({xls:false});
+		let data=[]
+		for(let i=0; i<10; i++) data.push({});
+		this.props.onDataChange(data);
 	}
 
 	render() {
@@ -220,22 +313,36 @@ class DataInput extends React.Component {
 			})
 			data=this.state.data;
 		}else {
-			columns=tpdata.tp_vars.map(o=>{ return {title:o, key:o} })
-			data = this.props.data;
+			columns=tpdata.tp_vars?tpdata.tp_vars.map(o=>{ return {title:o, key:o} }):[]
+			data = this.props.data||[];
 		}
 		
 		return (
 			<>
-			 	<div class="upload-area">
-			   	<FileInput ref={e=>this.fileSelector=e} handleFile={this.handleFile}/>
-			 		<Button large type="green" onClick={this.selfile}>选择数据文件</Button>
-			 		<p>支持：excel, cvs 等格式</p>
-			 	</div>
-			 	<Table edit data={data} columns={columns} actions={this.actions} pg_size={10} ref={t=>this.table=t}/>
-				<div style={{float:"right"}}>
+			 	<Toolbar style={{borderBottom:'1px solid #ccc'}}>
+            <Toolbar.Group>
+		            <FileBtn type="green" handleFile={this.handleFile}>导入数据文件</FileBtn>
+                <Button onClick={this.export} >导出数据模板</Button>
+            </Toolbar.Group>
+            
+            <Toolbar.Group>
+                <Button onClick={this.addRow}>增加行</Button>
+                {xls && <Button onClick={this.addCol}>增加列</Button>}
+            </Toolbar.Group>
+        
+            <Toolbar.Ext>
+                <Toolbar.Group>
+	                <Button onClick={this.clearData}>清除数据</Button>
+                </Toolbar.Group>
+            </Toolbar.Ext>
+        </Toolbar>
+			 	
+			 	<Table className="data-input" edit 
+			 		data={data} columns={columns} actions={this.actions} pg_size={10} ref={t=>this.table=t}/>
+				{<div style={{float:"right"}}>
 					<Button onClick={this.prevStep}>上一步</Button>
 					<Button onClick={this.nextStep}>下一步</Button>
-				</div>
+				</div>}
 			</>
 		);
 	}

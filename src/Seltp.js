@@ -1,8 +1,7 @@
 import React from 'react';
 import Table from 'ecp/table';
-import {Page, H1, H2, H3} from 'ecp/page';
+import {H3} from 'ecp/page';
 import Button from 'ecp/button'
-import InputButton from 'ecp/input_btn'
 import W from 'ecp/divwin';
 import net from 'ecp/net';
 import Grid from 'ecp/grid';
@@ -18,7 +17,7 @@ const columns = [
 }, {
 	title: '图片',
 	key: 'id',
-	tp: (v,r)=><img class="tp-img" src={`/utils/thumb?id=${v}`}/>
+	tp: (v,r)=><img class="tp-img" alt="tp-img" src={`/utils/thumb?id=${v}`}/>
 }];
 
 function Tpinfo(props) {
@@ -26,7 +25,7 @@ function Tpinfo(props) {
   return (
 	<Grid.Row>
 		<Grid.Col width="40%" >
-			<img  class="tp-img-big" src={`/utils/thumb?id=${tpinfo.id}`}/>
+			<img  class="tp-img-big" alt="tp-img-big" src={`/utils/thumb?id=${tpinfo.id}`}/>
 		</Grid.Col>
 		<Grid.Col width="50%" >
 			<p><span>名称:</span>{tpinfo.name} </p>
@@ -65,10 +64,12 @@ class Seltp extends React.Component {
     		return;
     	}
     	if (!tp_vars || tp_vars.length===0) {
-    		W.alert("模版没有需要绑定的变量!");
-    		return;
-    	}
-    	this.props.history.push("/print-tools/loaddata");
+    		W.confirm("模版没有需要绑定的变量!\n仍然要打印吗？", 
+    			()=>this.props.history.push("/print-tools/doprint")
+    		)
+    	}else{
+	    	this.props.history.push("/print-tools/loaddata");
+	    }
     }
     
     seltp=async (record)=>{
@@ -98,11 +99,6 @@ class Seltp extends React.Component {
     	return (
     	   <>
 					<Grid.Row>
-    	   		<Grid.Col style={{margin:"0 auto", paddingBottom:20}}>
-    	   		      <InputButton no_empty={false} onClick={this.dosearch} >搜索</InputButton>
-    	   		</Grid.Col>
-    	   	</Grid.Row>	
-    	   	<Grid.Row>
     	   		<Grid.Col width='50%' class="tp-list">
     	   			<H3>可用标签模版列表</H3>
     	   			<Table dataUrl={`/api/get-tp-list?key=${search_key}`} 

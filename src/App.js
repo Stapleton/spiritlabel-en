@@ -9,7 +9,7 @@ import Seltp from './Seltp.js'
 import DoPrint from './DoPrint.js'
 import Finish from './Finish.js'
 
-const steps= [{seltp:"选择模版"}, {loaddata:"导入数据"}, {doprint:"执行打印"}, {finish:"完成"}];
+const steps= [{seltp:"选择模版"}, {loaddata:"录入数据"}, {doprint:"执行打印"}, {finish:"完成"}];
 
 export default class App extends React.Component {
 

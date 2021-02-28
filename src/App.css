@@ -1,29 +1,46 @@
 .App-header {
-  background-color: #282c34;
-  min-height: 80px;
+  background-color: #1c2a48;
+  min-height: 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 20px 0px rgb(0 0 0 / 40%)
 }
 
-.upload-area {
+.center-layout {
+  margin: 0 auto;
+}
+
+.center {
   text-align : center;
 }
 
-.upload-area p {
-  margin: 5px;
+.execel-header.err {
+	color:red;
 }
 
-.table td {
+.execel-header a {
+	margin-left:5px
+}
+
+.bind-var {
+	margin: 0 auto;
+	margin-top: 20px;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.table.data-input td {
   max-width: 300px;
+  width: 100px;
 }
 
-.table .ca  {
- width: 100px;
+.table.data-input .ca  {
+ width: 100px !important;
  padding-left: 5px !important;
 }
 
