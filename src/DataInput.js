@@ -50,6 +50,7 @@ class FileBtn extends React.Component {
 	}
 	
 	select=()=>{
+		import("xlsx"); /* 等待用户选文件时完成预先加载*/
 		this.fileSelector.click();
 	}
 	
