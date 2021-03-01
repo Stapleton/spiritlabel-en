@@ -15,14 +15,6 @@ const fields=[
 	{name:'每页标签行数',  id:'row',   type:'select', options:{'auto':'自动', '1':1, 2:2, 3:3, 4:4, 5:5, 6:6}, def:'auto'},
 ];
 
-function timewait() {
-	return new Promise((resolved, reject)=>{
-		setTimeout(()=>{
-     resolved();
-    },1000)	
-	})
-}
-
 // 将独立的ns1.ns2...key1变量按ns组合起来：
 // 如：{ns1.key1:v1, ns1.key2:v2} => {ns1:{key1:v1, key2:v2}}
 function merge_var(row) {

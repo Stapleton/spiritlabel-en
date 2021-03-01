@@ -4,50 +4,104 @@ import {H3} from 'ecp/page';
 import Button from 'ecp/button'
 import W from 'ecp/divwin';
 import net from 'ecp/net';
-import Grid from 'ecp/grid';
+import G from 'ecp/grid';
+import InputButton from 'ecp/input_btn'
+import Tabs  from 'ecp/tabs'
+import Form  from 'ecp/form'
 import tp_utils from './tp_utils.js'
 
-const columns = [
-{
-	title: '名称',
-	key: 'name',
-}, {
-	title: '说明',
-	key: 'memo',
-}, {
-	title: '图片',
-	key: 'id',
-	tp: (v,r)=><img class="tp-img" alt="tp-img" src={`/utils/thumb?id=${v}`}/>
-}];
+
+const login_fields=[
+	{name:'用户名', id:'userid'},
+	{name:'密码',   id:'passwd',  type:'password'},
+];
+
+class Login extends React.Component{
+
+	state={
+		formvalue : {}
+	}
+		
+	onChange=(formvalue)=>{
+		this.setState({formvalue});
+	}
+	
+	doLogin=(e)=>{
+		const {formvalue}=this.state
+		net.post('/api/login', formvalue)
+			.then((rc)=>{
+				this.props.onLogin(rc.userinfo);
+			}).catch((e)=>W.alert(e));
+	}
+	
+	doReg=(e)=>{
+		window.location.href='/views/usercenter/register.html';
+	}
+	
+	render() {
+		let {formvalue}=this.state;
+		
+		return <div class="center">
+			<div style={{width:"50%", margin:"80px auto", }}>
+				<Form fields={login_fields} nCol={1} 
+					values={formvalue} onChange={this.onChange}/>
+				<Button type="submit" onClick={this.doLogin}>登录</Button>
+				<Button type="blue" onClick={this.doReg}>注册</Button>
+			</div>
+		</div>
+	}
+}
 
 function Tpinfo(props) {
   const {tpinfo}=props
   return (
-	<Grid.Row>
-		<Grid.Col width="40%" >
+	<G.Row>
+		<G.Col width="40%" >
 			<img  class="tp-img-big" alt="tp-img-big" src={`/utils/thumb?id=${tpinfo.id}`}/>
-		</Grid.Col>
-		<Grid.Col width="50%" >
+		</G.Col>
+		<G.Col width="50%" >
 			<p><span>名称:</span>{tpinfo.name} </p>
 			<p><span>说明:</span>{tpinfo.memo} </p>
 			<p><span>尺寸:</span>{tpinfo.width/10}厘米 X {tpinfo.height/10}厘米 </p>
 			<br/>
 			<p>模板变量</p>
 			{props.tp_vars.map((o,i)=><p key={i}>{o}</p>)}
-		</Grid.Col>
-	</Grid.Row>)
+		</G.Col>
+	</G.Row>)
 }
 
 class Seltp extends React.Component {
-
-    /* 状态 */
-    state={
-    	search_key : ""
+   
+    constructor(props) {
+	super(props);
+	this.columns = [ 
+		{title: '名称', key: 'name'}, 
+		{title: '说明', key: 'memo'}, 
+		{title: '图片', key: 'id', tp: (v,r)=><img class="tp-img" alt="tp-img" data-id={v} onClick={this.seltp2} src={`/utils/thumb?id=${v}`}/>
+	}];
+	this.state={
+	    	search_key : "",
+    		owner : "all",
+    		logged : false,
+	}
     }
     
     componentDidMount=()=>{
     	this.props.setStep("seltp")
+    	this.loadUserinfo();
     	if (this.props.tpid) this.loadtp(this.props.tpid);
+    }
+    
+    loadUserinfo=()=>{
+    	net.get('/api/userinfo')
+		.then((rc)=>{
+			this.setState({logged:true, owner:'mine', userinfo:rc.userinfo});
+		})
+		.catch((e)=>{})
+    };
+    
+    onLogin=(userinfo)=>{
+    	this.setState({logged:true, owner:'mine', userinfo});
     }
     
     loadtp=async(tpid)=>{
@@ -72,12 +126,23 @@ class Seltp extends React.Component {
 	    }
     }
     
-    seltp=async (record)=>{
-    	let tpid=record.id;
-    	this.setState({tpid, tpinfo:record});
+    seltp1=(record)=>{
+    	this.do_seltp(record.id)
+    }
+    
+    seltp2=(e)=>{
+    	this.do_seltp(e.target.getAttribute('data-id'));
+    }
+    
+    do_seltp=async (tpid)=>{
+    	this.setState({tpid});
     	let rc=await net.get(`/api/load-template?id=${tpid}`);
     	let tp_vars=tp_utils.get_vars(rc.data);
     	this.props.onChangeTp({tpid, tpinfo:rc.tpinfo, tp_vars});
+    }
+    
+    edit=(record)=>{
+    	window.location.href=`/designer/${record.id}`;
     }
     
     dosearch=(search_key)=>{
@@ -87,30 +152,51 @@ class Seltp extends React.Component {
     actions=(tabObj, record)=>{
         return(
             <span>
-                <Button type='inline' onClick={()=>this.seltp(record)}>选择</Button>
+                <Button type='inline' onClick={()=>this.seltp1(record)}>选择</Button>
+                <Button type='inline' onClick={()=>this.edit(record)}>编辑</Button>
             </span>
         )
     }
     
+    onChgOwner=(owner)=>{
+    	this.setState({owner});
+    }
+    
     render() { 
-    	const {search_key}=this.state;
+    	const {search_key, owner, logged}=this.state;
     	const {tpdata}=this.props;
     	const {tpinfo, tp_vars}=tpdata;
     	return (
     	   <>
-					<Grid.Row>
-    	   		<Grid.Col width='50%' class="tp-list">
+		<G.Row>
+			<G.Col style={{margin:"0 auto", paddingBottom:20}}>
+				<InputButton no_empty={false} onClick={this.dosearch} >搜索</InputButton>
+			</G.Col>
+		</G.Row>     
+		<G.Row>
+    	   		<G.Col width='50%' class="tp-list">
     	   			<H3>可用标签模版列表</H3>
-    	   			<Table dataUrl={`/api/get-tp-list?key=${search_key}`} 
-    	   					columns={columns} actions={this.actions} pg_size={4} />
-    	   		</Grid.Col>
-    	   		<Grid.Col width='50%' class="tp-info" >
+    	   			<Tabs onChange={this.onChgOwner} activeKey={owner} >
+    	   				<Tabs.Page key={'all'} title={"共享模板"}>
+	    	   				<Table dataUrl={`/api/get-tp-list?all=1&key=${search_key}`} 
+  	  	   					columns={this.columns} actions={this.actions} pg_size={4} />
+    	   				</Tabs.Page>
+    	   				<Tabs.Page key={'mine'} title={"我的模板"}>
+    	   					{ logged ?
+		    	   				<Table dataUrl={`/api/get-tp-list?key=${search_key}`} 
+  		  	   					columns={this.columns} actions={this.actions} pg_size={4} /> :
+  		  	   				<Login onLogin={this.onLogin} />
+  		  	   			}
+    	   				</Tabs.Page>
+    	   			</Tabs>
+    	   		</G.Col>
+    	   		<G.Col width='50%' class="tp-info" >
     	   			<div >
  	   	   			<H3>已选模版</H3>
     	   				{tpinfo ? <Tpinfo tpinfo={tpinfo} tp_vars={tp_vars} /> : "请选择标签模版" }
     	   			</div>
-    	   		</Grid.Col>	
-    	   	</Grid.Row>
+    	   		</G.Col>	
+    	   	</G.Row>
     	   	<hr/>
     	   	<div style={{float:"right"}}>
     	   		<Button onClick={this.nextStep}>下一步</Button>

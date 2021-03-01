@@ -4,7 +4,6 @@ import Button from 'ecp/button'
 import Grid from 'ecp/grid'
 import ConfirmButton from 'ecp/confirm_button'
 import W from 'ecp/divwin';
-import XLSX from 'xlsx'
 import Toolbar from 'ecp/toolbar';
 import {saveAs} from 'file-saver';
 
@@ -102,10 +101,10 @@ function ExcelHeader(props) {
 class DataInput extends React.Component {
 	/* 状态 */
 	state={
-		  xls       : false,       /* is load from xls       */
-		  data      : [],          /* xls data               */
-		  cols      : [],          /* xls col                */
-			bind_vars : {}           /* xls key map to tp_vars */
+		xls       : false,       /* is load from xls       */
+		data      : [],          /* xls data               */
+		cols      : [],          /* xls col                */
+		bind_vars : {}           /* xls key map to tp_vars */
 	}
 
 	constructor(props) {
@@ -117,10 +116,10 @@ class DataInput extends React.Component {
 
 	actions=(tabObj, record)=>{
 		return(
-			<>
+			<div style={{width:100}}>
 				<Button type='inline' onClick={()=>tabObj.insert(record)}>插入</Button>
 				<ConfirmButton type='danger' onClick={()=>tabObj.del(record)}>删除</ConfirmButton>
-			</>
+			</div>
 		)
 	}
 
@@ -185,51 +184,56 @@ class DataInput extends React.Component {
 		this.setState({bind_vars});
 	}
 	
-	/* for execel header */
-	make_excel_cols = refstr => {
-		let o = [], range = XLSX.utils.decode_range(refstr);
-		let S=range.s.c , E=range.e.c + 1;
-		for(var i = 0; i < E - S; ++i) o[i] = XLSX.utils.encode_col(i);
-		return o;
-	};
-
 	handleFile=(file/*:File*/)=>{
-	/* Boilerplate to set up FileReader */
+		/* Boilerplate to set up FileReader */
 		const reader = new FileReader();
 		const rABS = !!reader.readAsBinaryString;
 
 		reader.onload = (e) => {
-			/* Parse data */
-			const bstr = e.target.result;
-			const wb = XLSX.read(bstr, {type:rABS ? 'binary' : 'array'});
-			/* Get first worksheet */
-			const wsname = wb.SheetNames[0];
-			const ws = wb.Sheets[wsname];
-			/* Convert array of arrays */
-			let data = XLSX.utils.sheet_to_json(ws, {header:1});
-			
-			if (data.length===0) {
-				W.alert("没有数据");
-				return;		
-			}
-			
-			const {tp_vars}=this.props.tpdata;
-			let header=data[0];
-			let bind_vars={};
-			for(let i=0; i<header.length; i++) {
-				if (tp_vars.indexOf(header[i])>=0) {
-					bind_vars[i]=header[i];
+		
+			import('xlsx').then(module => {
+				var XLSX = module;
+				
+				/* for execel header */
+				const make_excel_cols = refstr => {
+					let o = [], range = XLSX.utils.decode_range(refstr);
+					let S=range.s.c , E=range.e.c + 1;
+					for(var i = 0; i < E - S; ++i) o[i] = XLSX.utils.encode_col(i);
+					return o;
+				};
+				
+				/* Parse data */
+				const bstr = e.target.result;
+				const wb = XLSX.read(bstr, {type:rABS ? 'binary' : 'array'});
+				/* Get first worksheet */
+				const wsname = wb.SheetNames[0];
+				const ws = wb.Sheets[wsname];
+				/* Convert array of arrays */
+				let data = XLSX.utils.sheet_to_json(ws, {header:1});
+				
+				if (data.length===0) {
+					W.alert("没有数据");
+					return;		
 				}
-			}
-			if (Object.keys(bind_vars).length===tp_vars.length || Object.keys(bind_vars).length>3) {
-				/* 认为第一行为表头，而不是数据*/
-				delete data[0]
-			}else{
-				bind_vars={}
-			}
-			
-			/* Update state */
-			this.setState({xls:true, bind_vars, data, cols: this.make_excel_cols(ws['!ref'])});
+				
+				const {tp_vars}=this.props.tpdata;
+				let header=data[0];
+				let bind_vars={};
+				for(let i=0; i<header.length; i++) {
+					if (tp_vars.indexOf(header[i])>=0) {
+						bind_vars[i]=header[i];
+					}
+				}
+				if (Object.keys(bind_vars).length===tp_vars.length || Object.keys(bind_vars).length>3) {
+					/* 认为第一行为表头，而不是数据*/
+					delete data[0]
+				}else{
+					bind_vars={}
+				}
+				
+				/* Update state */
+				this.setState({xls:true, bind_vars, data, cols: make_excel_cols(ws['!ref'])});
+			})
 		};
 		if(rABS) reader.readAsBinaryString(file); 
 		else reader.readAsArrayBuffer(file);
