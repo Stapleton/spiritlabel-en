@@ -1,8 +1,6 @@
 import React from 'react';
 import {BrowserRouter as Router, Route  } from 'react-router-dom'; 
-import {Page} from 'ecp/page';
-import Stepper from 'ecp/stepper'
-import 'ecp/gaf/comm.scss'
+import {Page, Stepper} from 'ecp';
 import './App.css'
 import DataInput from './DataInput.js'
 import Seltp from './Seltp.js'

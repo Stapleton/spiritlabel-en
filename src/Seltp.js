@@ -1,15 +1,6 @@
 import React from 'react';
-import Table from 'ecp/table';
-import {H3} from 'ecp/page';
-import Button from 'ecp/button'
-import W from 'ecp/divwin';
-import net from 'ecp/net';
-import G from 'ecp/grid';
-import InputButton from 'ecp/input_btn'
-import Tabs  from 'ecp/tabs'
-import Form  from 'ecp/form'
+import {Table, Form, Button, H3, DivWin as W, Grid as G, InputButton, Tabs, net } from 'ecp';
 import tp_utils from './tp_utils.js'
-
 
 const login_fields=[
 	{name:'用户名', id:'userid'},
@@ -43,7 +34,7 @@ class Login extends React.Component{
 		
 		return <div class="center">
 			<div style={{width:"50%", margin:"80px auto", }}>
-				<Form fields={login_fields} nCol={1} 
+				<Form fields={login_fields} nCol={1} border={false} 
 					values={formvalue} onChange={this.onChange}/>
 				<Button type="submit" onClick={this.doLogin}>登录</Button>
 				<Button type="blue" onClick={this.doReg}>注册</Button>
@@ -168,15 +159,15 @@ class Seltp extends React.Component {
     	const {tpinfo, tp_vars}=tpdata;
     	return (
     	   <>
-		<G.Row>
-			<G.Col style={{margin:"0 auto", paddingBottom:20}}>
-				<InputButton no_empty={false} onClick={this.dosearch} >搜索</InputButton>
-			</G.Col>
-		</G.Row>     
-		<G.Row>
+					<G.Row>
+						<G.Col style={{margin:"0 auto", paddingBottom:20}}>
+							<InputButton no_empty={false} onClick={this.dosearch} >搜索</InputButton>
+						</G.Col>
+					</G.Row>     
+					<G.Row>
     	   		<G.Col width='50%' class="tp-list">
     	   			<H3>可用标签模版列表</H3>
-    	   			<Tabs onChange={this.onChgOwner} activeKey={owner} >
+    	   			<Tabs highlight onChange={this.onChgOwner} activeKey={owner} >
     	   				<Tabs.Page key={'all'} title={"共享模板"}>
 	    	   				<Table dataUrl={`/api/get-tp-list?all=1&key=${search_key}`} 
   	  	   					columns={this.columns} actions={this.actions} pg_size={4} />
@@ -204,7 +195,6 @@ class Seltp extends React.Component {
 	   </>
     	);
     }
-    
 }
 
 export default Seltp

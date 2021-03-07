@@ -1,7 +1,5 @@
 import React from 'react';
-import {H1} from 'ecp/page';
-import Button from 'ecp/button'
-
+import {H1, Button} from 'ecp';
 
 class Finish extends React.Component {
 

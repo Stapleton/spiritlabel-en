@@ -8095,7 +8095,7 @@ raw-body@2.4.0:
 
 react-app-polyfill@^2.0.0:
   version "2.0.0"
-  resolved "https://registry.yarnpkg.com/react-app-polyfill/-/react-app-polyfill-2.0.0.tgz#a0bea50f078b8a082970a9d853dc34b6dcc6a3cf"
+  resolved "https://registry.npm.taobao.org/react-app-polyfill/download/react-app-polyfill-2.0.0.tgz?cache=0&sync_timestamp=1603462762578&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-app-polyfill%2Fdownload%2Freact-app-polyfill-2.0.0.tgz#a0bea50f078b8a082970a9d853dc34b6dcc6a3cf"
   dependencies:
     core-js "^3.6.5"
     object-assign "^4.1.1"

@@ -1,10 +1,5 @@
 import React from 'react';
-import Table from 'ecp/table';
-import Button from 'ecp/button'
-import Grid from 'ecp/grid'
-import ConfirmButton from 'ecp/confirm_button'
-import W from 'ecp/divwin';
-import Toolbar from 'ecp/toolbar';
+import {Table, Button, ConfirmButton, DivWin as W, Toolbar} from 'ecp';
 import {saveAs} from 'file-saver';
 
 /* list of supported file types */
@@ -69,27 +64,16 @@ function ExcelHeader(props) {
 
 	let {col, bind_vars, tp_vars}=props;
 	let cur_var= col in bind_vars ? bind_vars[col] : tp_vars[0]
-		
-	var sel_var=function(e) {
-			cur_var=e.target.value;
-	}
 	
-	var do_bind=(form)=>{	
+	var do_bind=(form, {cur_var})=>{	
 		props.onBindVar(col, cur_var);
 		form.close();
 	}
 	
 	var select_var=function() {
+		let f=[{name:"将当前列绑定到：", id:"cur_var", type:"select", options:tp_vars}]
 		W.show(
-			<W.Form title='选择变量' onSubmit={do_bind} height={200}>
-				<Grid.Row>
-					<Grid.Col className="bind-var">
-						将当前列绑定到：<select onChange={sel_var} defaultValue={cur_var}>
-							{tp_vars.map((o,i)=><option key={i} >{o}</option>)}
-						</select>
-					</Grid.Col>
-				</Grid.Row>
-			</W.Form>
+			<W.Form title='选择变量' className="XXXX" onSubmit={do_bind} height={200} fields={f} defaultValues={{cur_var}}/>
 		)		
 	}
 		
@@ -267,32 +251,20 @@ class DataInput extends React.Component {
 			W.alert("没有需要绑定的变量");
 			return;
 		}
-		
 		let cur_var = left_vars[0]
 		
-		var sel_var=function(e) {
-			cur_var=e.target.value;
-		}
-		
-		var do_bind=(form)=>{	
+		var do_bind=(form, {cur_var})=>{	
 			form.close();
 			let col=cols.length;
 			cols.push(col);
 			bind_vars[col]=cur_var;
 			this.setState({cols});
 		}
-	
+			
+		let f=[{name:"数据列绑定变量：", id:"cur_var", type:"select", options:left_vars}]
 		W.show(
-			<W.Form title='增加数据列' onSubmit={do_bind} height={200}>
-				<Grid.Row>
-					<Grid.Col className="bind-var">
-						数据列绑定变量：<select onChange={sel_var} defaultValue={cur_var}>
-							{left_vars.map((o,i)=><option key={i} >{o}</option>)}
-						</select>
-					</Grid.Col>
-				</Grid.Row>
-			</W.Form>
-		)		
+			<W.Form title='增加数据列' onSubmit={do_bind} height={200} defaultValues={{cur_var}} fields={f} />
+		);
 	}
 	
 	clearData=()=>{
