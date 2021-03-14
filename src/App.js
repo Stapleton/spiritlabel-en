@@ -6,8 +6,10 @@ import DataInput from './DataInput.js'
 import Seltp from './Seltp.js'
 import DoPrint from './DoPrint.js'
 import Finish from './Finish.js'
+import spirit_power from './spirit.svg';
+import {setLanguage, _} from "./locale.js";
 
-const steps= [{seltp:"选择模版"}, {loaddata:"录入数据"}, {doprint:"执行打印"}, {finish:"完成"}];
+const steps= [{seltp:_("选择模版")}, {loaddata:_("录入数据")}, {doprint:_("执行打印")}, {finish:_("完成")}];
 
 export default class App extends React.Component {
 
@@ -36,8 +38,14 @@ export default class App extends React.Component {
 		const {tpdata, step, data}=this.state;
 		return (
 			<Router>
-				<div class="App-header">
-					批量打印小工具
+				<div className="App-header">
+					<span>
+						<a href="/" target="_main">
+							<img src={spirit_power} alt="logo" />
+						</a>
+					</span>
+					<div className="App-Title">{_("批量打印小工具")}</div>
+					
 				</div>
 				<Page>
 					

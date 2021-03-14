@@ -1,16 +1,7 @@
 import React from 'react';
 import {H1, Grid as G, Button, DivWin as W, Form, Warning, Error, Info } from 'ecp';
 import {loadjs} from 'ecp/util'
-
-const fields=[
-	{name:'打印机类型',    id:'type',  type:'select', options:{'WIN':'Windows打印机', 'ZPL':'ZPL专用标签打印机'}, def:'WIN'},
-	{name:'打印机',       id:'name',   type:'select', options:[] },
-	{name:'纸张大小',     id:'size',   type:'select', options:{} , def:0 },
-	{name:'纸张方向',     id:'dir',    type:'select', options:{'1':'纵向', '2':'横向'}, def:'auto'},
-	{name:'每行标签列数',  id:'col',    type:'select', options:{'auto':'自动', '1':1, 2:2, 3:3, 4:4, 5:5, 6:6}, def:'auto'},
-	{name:'每页标签行数',  id:'row',    type:'select', options:{'auto':'自动', '1':1, 2:2, 3:3, 4:4, 5:5, 6:6}, def:'auto'},
-	{name:'打印份数',     id:'copys',  type:'int', def:1}
-];
+import {_} from "./locale.js";
 
 // 将独立的ns1.ns2...key1变量按ns组合起来：
 // 如：{ns1.key1:v1, ns1.key2:v2} => {ns1:{key1:v1, key2:v2}}
@@ -59,13 +50,13 @@ class DoPrint extends React.Component {
 		let {print_opts}=this.state;
 		
 		if (!window.SPIRIT) {
-			W.alert("打印机未准备就绪!\n请检查是否未安装\"打印精灵\"");
+			W.alert(_("打印机未准备就绪!\n请检查是否未安装\"打印精灵\""));
 			return;
 		}
 		
 		let {type, name, size, col, row}=print_opts;
 		if (!name) {
-			W.alert("没有该类型的打印机！");
+			W.alert(_("没有该类型的打印机！"));
 			return;
 		}
 		
@@ -88,13 +79,13 @@ class DoPrint extends React.Component {
 		if (data.length===0) return;
 		
 		if (!window.SPIRIT) {
-			W.alert("打印机未准备就绪!\n请检查是否未安装\"打印精灵\"");
+			W.alert(_("打印机未准备就绪!\n请检查是否未安装\"打印精灵\""));
 			return;
 		}
 				
 		let {type, name, size, col, row, copys}=print_opts;
 		if (!name) {
-			W.alert("没有该类型的打印机！");
+			W.alert(_("没有该类型的打印机！"));
 			return;
 		}
 		
@@ -122,12 +113,12 @@ class DoPrint extends React.Component {
 		var cancel_print=false;
 	
 		let w=W.show(
-			<W.Dialog title="打印中" height="400">
+			<W.Dialog title={_("打印中")} height="400">
 				<G.Row>
 					<G.Col style={{margin:"0 auto"}}>
-						<H1 >正在打印第<span ref={e=>page=e} ></span>张标签</H1>
+						<H1 >{_("正在打印第")}<span ref={e=>page=e} ></span>{_("张标签")}</H1>
 						<img src="printing.jpg" alt="printing" height="260px"/>
-						<p className="center"><Button type="blue" onClick={e=>cancel_print=true}>取消</Button></p>
+						<p className="center"><Button type="blue" onClick={e=>cancel_print=true}>{_("取消")}</Button></p>
 					</G.Col>
 				</G.Row>
 			</W.Dialog>
@@ -214,6 +205,17 @@ class DoPrint extends React.Component {
 	}
 	
 	render() { 
+	
+		const fields=[
+		{name:_('打印机类型'),    id:'type',  type:'select', options:{'WIN':_('Windows打印机'), 'ZPL':_('ZPL专用标签打印机')}, def:'WIN'},
+		{name:_('打印机'),       id:'name',   type:'select', options:[] },
+		{name:_('纸张大小'),     id:'size',   type:'select', options:{} , def:0 },
+		{name:_('纸张方向'),     id:'dir',    type:'select', options:{'1':_('纵向'), '2':_('横向')}, def:'auto'},
+		{name:_('每行标签列数'),  id:'col',    type:'select', options:{'auto':_('自动'), '1':1, 2:2, 3:3, 4:4, 5:5, 6:6}, def:'auto'},
+		{name:_('每页标签行数'),  id:'row',    type:'select', options:{'auto':_('自动'), '1':1, 2:2, 3:3, 4:4, 5:5, 6:6}, def:'auto'},
+		{name:_('打印份数'),     id:'copys',  type:'int', def:1}
+	];
+	
 		const {tpdata}=this.props;
 		const {spirit_ok, prnlst, cur_prnlst, print_opts, info}=this.state;
 		
@@ -227,7 +229,7 @@ class DoPrint extends React.Component {
 		
 		cols[1].options=cur_prnlst;
 		if (info) cols[2].options=Object.keys(info.paper).reduce((a,p)=>{ a[p]=info.paper[p].name; return a}, {})
-		else cols[2].options={0:"自动"}
+		else cols[2].options={0:_("自动")}
 				
 		if (tpdata.tp_vars && tpdata.tp_vars.length>0) {
 			/* 有变量模板，不能打印多张 */
@@ -238,7 +240,7 @@ class DoPrint extends React.Component {
 			<>
 				<G.Row>
 					<G.Col class="center-layout" width={'60%'}>
-						{spirit_ok===false && <Error small>为检测到打印控件! <Button type="blue" href="http://www.printspirit.cn/download/spirit-web-setup.exe">立即安装</Button></Error>}
+						{spirit_ok===false && <Error small>{_("未检测到打印控件！打印精灵未安装？")} <Button type="blue" href="http://www.printspirit.cn/download/spirit-web-setup.exe">{_("立即安装")}</Button></Error>}
 						
 						<Form  fields={cols}  nCol={2} disable_fields={disable}
                values={this.state.print_opts}
@@ -248,9 +250,9 @@ class DoPrint extends React.Component {
         </G.Row>
 			
 				<div class="center">
-					<Button type="green" onClick={this.print}>打印首张</Button>
-					<Button type="green" onClick={this.printAll}>打印全部</Button>
-					<Button onClick={this.prevStep}>上一步</Button>
+					<Button type="green" onClick={this.print}>{_("打印首张")}</Button>
+					<Button type="green" onClick={this.printAll}>{_("打印全部")}</Button>
+					<Button onClick={this.prevStep}>{_("上一步")}</Button>
 				</div>
 			</>
 		);

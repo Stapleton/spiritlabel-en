@@ -1,11 +1,8 @@
 import React from 'react';
 import {Table, Form, Button, H3, DivWin as W, Grid as G, InputButton, Tabs, net } from 'ecp';
 import tp_utils from './tp_utils.js'
+import {_} from "./locale.js";
 
-const login_fields=[
-	{name:'用户名', id:'userid'},
-	{name:'密码',   id:'passwd',  type:'password'},
-];
 
 class Login extends React.Component{
 
@@ -30,10 +27,15 @@ class Login extends React.Component{
 	}
 	
 	render() {
+		const login_fields=[
+			{name:_('用户名'), id:'userid'},
+			{name:_('密码'),   id:'passwd',  type:'password'},
+		];
+	
 		let {formvalue}=this.state;
 		
 		return <div class="center">
-			<div style={{width:"50%", margin:"80px auto", }}>
+			<div className="login">
 				<Form fields={login_fields} nCol={1} border={false} 
 					values={formvalue} onChange={this.onChange}/>
 				<Button type="submit" onClick={this.doLogin}>登录</Button>
@@ -64,17 +66,17 @@ function Tpinfo(props) {
 class Seltp extends React.Component {
    
     constructor(props) {
-	super(props);
-	this.columns = [ 
-		{title: '名称', key: 'name'}, 
-		{title: '说明', key: 'memo'}, 
-		{title: '图片', key: 'id', tp: (v,r)=><img class="tp-img" alt="tp-img" data-id={v} onClick={this.seltp2} src={`/utils/thumb?id=${v}`}/>
-	}];
-	this.state={
-	    	search_key : "",
-    		owner : "all",
-    		logged : false,
-	}
+			super(props);
+			this.columns = [ 
+				{title: _('名称'), key: 'name'}, 
+				{title: _('说明'), key: 'memo'}, 
+				{title: _('图片'), key: 'id', tp: (v,r)=><img class="tp-img" alt="tp-img" data-id={v} onClick={this.seltp2} src={`/utils/thumb?id=${v}`}/>
+			}];
+			this.state={
+						search_key : "",
+						owner : "all",
+						logged : false,
+			}
     }
     
     componentDidMount=()=>{
@@ -105,11 +107,11 @@ class Seltp extends React.Component {
 			const {tpdata}=this.props;
     	const {tpinfo, tp_vars}=tpdata;
     	if (!tpinfo) {
-    		W.alert("请先选择打印模版");
+    		W.alert(_("请先选择打印模版"));
     		return;
     	}
     	if (!tp_vars || tp_vars.length===0) {
-    		W.confirm("模版没有需要绑定的变量!\n仍然要打印吗？", 
+    		W.confirm(_("模版没有需要绑定的变量!\n仍然要打印吗？"), 
     			()=>this.props.history.push("/print-tools/doprint")
     		)
     	}else{
@@ -161,18 +163,18 @@ class Seltp extends React.Component {
     	   <>
 					<G.Row>
 						<G.Col style={{margin:"0 auto", paddingBottom:20}}>
-							<InputButton no_empty={false} onClick={this.dosearch} >搜索</InputButton>
+							<InputButton no_empty={false} onClick={this.dosearch} >{_("搜索")}</InputButton>
 						</G.Col>
 					</G.Row>     
 					<G.Row>
     	   		<G.Col width='50%' class="tp-list">
-    	   			<H3>可用标签模版列表</H3>
+    	   			<H3>{_("可用标签模版列表")}</H3>
     	   			<Tabs highlight onChange={this.onChgOwner} activeKey={owner} >
-    	   				<Tabs.Page key={'all'} title={"共享模板"}>
+    	   				<Tabs.Page key={'all'} title={_("共享模板")}>
 	    	   				<Table dataUrl={`/api/get-tp-list?all=1&key=${search_key}`} 
   	  	   					columns={this.columns} actions={this.actions} pg_size={4} />
     	   				</Tabs.Page>
-    	   				<Tabs.Page key={'mine'} title={"我的模板"}>
+    	   				<Tabs.Page key={'mine'} title={_("我的模板")}>
     	   					{ logged ?
 		    	   				<Table dataUrl={`/api/get-tp-list?key=${search_key}`} 
   		  	   					columns={this.columns} actions={this.actions} pg_size={4} /> :
@@ -183,14 +185,14 @@ class Seltp extends React.Component {
     	   		</G.Col>
     	   		<G.Col width='50%' class="tp-info" >
     	   			<div >
- 	   	   			<H3>已选模版</H3>
-    	   				{tpinfo ? <Tpinfo tpinfo={tpinfo} tp_vars={tp_vars} /> : "请选择标签模版" }
+ 	   	   			<H3>{_("已选模版")}</H3>
+    	   				{tpinfo ? <Tpinfo tpinfo={tpinfo} tp_vars={tp_vars} /> : _("请选择标签模版") }
     	   			</div>
     	   		</G.Col>	
     	   	</G.Row>
     	   	<hr/>
     	   	<div style={{float:"right"}}>
-    	   		<Button onClick={this.nextStep}>下一步</Button>
+    	   		<Button onClick={this.nextStep}>{_("下一步")}</Button>
     	   	</div>
 	   </>
     	);

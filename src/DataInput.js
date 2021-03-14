@@ -1,6 +1,7 @@
 import React from 'react';
 import {Table, Button, ConfirmButton, DivWin as W, Toolbar} from 'ecp';
 import {saveAs} from 'file-saver';
+import {_} from "./locale.js";
 
 /* list of supported file types */
 const SheetJSFT = [
@@ -71,15 +72,15 @@ function ExcelHeader(props) {
 	}
 	
 	var select_var=function() {
-		let f=[{name:"将当前列绑定到：", id:"cur_var", type:"select", options:tp_vars}]
+		let f=[{name:_("将当前列绑定到："), id:"cur_var", type:"select", options:tp_vars}]
 		W.show(
-			<W.Form title='选择变量' className="XXXX" onSubmit={do_bind} height={200} fields={f} defaultValues={{cur_var}}/>
+			<W.Form title={_('选择变量')} onSubmit={do_bind} height={200} fields={f} defaultValues={{cur_var}}/>
 		)		
 	}
 		
 	return (col in bind_vars ? 
-		<span class="execel-header">{bind_vars[col]} <a href="#" onClick={select_var}>修改</a></span> :
-		<span class="execel-header err">未用<a href='#' onClick={select_var}>点击绑定变量</a></span>
+		<span class="execel-header">{bind_vars[col]} <a href="#" onClick={select_var}>{_("修改")}</a></span> :
+		<span class="execel-header err">{_("未用")}<a href='#' onClick={select_var}>{_("点击绑定变量")}</a></span>
 	)
 }
 
@@ -101,9 +102,9 @@ class DataInput extends React.Component {
 
 	actions=(tabObj, record)=>{
 		return(
-			<div style={{width:100}}>
-				<Button type='inline' onClick={()=>tabObj.insert(record)}>插入</Button>
-				<ConfirmButton type='danger' onClick={()=>tabObj.del(record)}>删除</ConfirmButton>
+			<div style={{width:120}}>
+				<Button type='inline' onClick={()=>tabObj.insert(record)}>{_("插入")}</Button>
+				<ConfirmButton type='danger' onClick={()=>tabObj.del(record)}>{_("删除")}</ConfirmButton>
 			</div>
 		)
 	}
@@ -123,7 +124,7 @@ class DataInput extends React.Component {
 			for(let i=0; i<tpdata.tp_vars.length; i++) {
 				let v=tpdata.tp_vars[i];
 				if (vars.indexOf(v)<0) {
-					W.alert(`变量${v}未绑定,\n请点击表头绑定变量！\n \n\n数据列不够可添加。`);
+					W.alert(_(`变量${v}未绑定,\n请点击表头绑定变量！\n \n\n数据列不够可添加。`));
 					return;
 				}
 			}
@@ -150,7 +151,7 @@ class DataInput extends React.Component {
 		}
 		
 		if (data1.length===0) {
-			W.alert("数据不能为空");
+			W.alert(_("数据不能为空"));
 			return;
 		}
 		
@@ -197,7 +198,7 @@ class DataInput extends React.Component {
 				let data = XLSX.utils.sheet_to_json(ws, {header:1});
 				
 				if (data.length===0) {
-					W.alert("没有数据");
+					W.alert(_("没有数据"));
 					return;		
 				}
 				
@@ -248,7 +249,7 @@ class DataInput extends React.Component {
 		let left_vars=tp_vars.filter(x=>used_vars.indexOf(x)<0)
 		
 		if (left_vars.length===0) {
-			W.alert("没有需要绑定的变量");
+			W.alert(_("没有需要绑定的变量"));
 			return;
 		}
 		let cur_var = left_vars[0]
@@ -261,9 +262,9 @@ class DataInput extends React.Component {
 			this.setState({cols});
 		}
 			
-		let f=[{name:"数据列绑定变量：", id:"cur_var", type:"select", options:left_vars}]
+		let f=[{name:_("数据列绑定变量："), id:"cur_var", type:"select", options:left_vars}]
 		W.show(
-			<W.Form title='增加数据列' onSubmit={do_bind} height={200} defaultValues={{cur_var}} fields={f} />
+			<W.Form title={_('增加数据列')} onSubmit={do_bind} height={200} defaultValues={{cur_var}} fields={f} />
 		);
 	}
 	
@@ -298,18 +299,18 @@ class DataInput extends React.Component {
 			<>
 			 	<Toolbar style={{borderBottom:'1px solid #ccc'}}>
             <Toolbar.Group>
-		            <FileBtn type="green" handleFile={this.handleFile}>导入数据文件</FileBtn>
-                <Button onClick={this.export} >导出数据模板</Button>
+		            <FileBtn type="green" handleFile={this.handleFile}>{_("导入数据文件")}</FileBtn>
+                <Button onClick={this.export} >{_("导出数据模板")}</Button>
             </Toolbar.Group>
             
             <Toolbar.Group>
-                <Button onClick={this.addRow}>增加行</Button>
-                {xls && <Button onClick={this.addCol}>增加列</Button>}
+                <Button onClick={this.addRow}>{_("增加行")}</Button>
+                {xls && <Button onClick={this.addCol}>{_("增加列")}</Button>}
             </Toolbar.Group>
         
             <Toolbar.Ext>
                 <Toolbar.Group>
-	                <Button onClick={this.clearData}>清除数据</Button>
+	                <Button onClick={this.clearData}>{_("清除数据")}</Button>
                 </Toolbar.Group>
             </Toolbar.Ext>
         </Toolbar>
@@ -317,8 +318,8 @@ class DataInput extends React.Component {
 			 	<Table className="data-input" edit 
 			 		data={data} columns={columns} actions={this.actions} pg_size={10} ref={t=>this.table=t}/>
 				{<div style={{float:"right"}}>
-					<Button onClick={this.prevStep}>上一步</Button>
-					<Button onClick={this.nextStep}>下一步</Button>
+					<Button onClick={this.prevStep}>{_("上一步")}</Button>
+					<Button onClick={this.nextStep}>{_("下一步")}</Button>
 				</div>}
 			</>
 		);
