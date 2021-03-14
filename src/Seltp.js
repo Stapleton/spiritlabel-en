@@ -38,8 +38,8 @@ class Login extends React.Component{
 			<div className="login">
 				<Form fields={login_fields} nCol={1} border={false} 
 					values={formvalue} onChange={this.onChange}/>
-				<Button type="submit" onClick={this.doLogin}>登录</Button>
-				<Button type="blue" onClick={this.doReg}>注册</Button>
+				<Button type="submit" onClick={this.doLogin}>{_("登录")}</Button>
+				<Button type="blue" onClick={this.doReg}>{_("注册")}</Button>
 			</div>
 		</div>
 	}
@@ -53,12 +53,12 @@ function Tpinfo(props) {
 			<img  class="tp-img-big" alt="tp-img-big" src={`/utils/thumb?id=${tpinfo.id}`}/>
 		</G.Col>
 		<G.Col width="50%" >
-			<p><span>名称:</span>{tpinfo.name} </p>
-			<p><span>说明:</span>{tpinfo.memo} </p>
-			<p><span>尺寸:</span>{tpinfo.width/10}厘米 X {tpinfo.height/10}厘米 </p>
+			<p><span className="tp-head-item">{_("名称:")}</span>{tpinfo.name} </p>
+			<p><span className="tp-head-item">{_("说明:")}</span>{tpinfo.memo} </p>
+			<p><span className="tp-head-item">{_("尺寸:")}</span>{tpinfo.width/10}{_("厘米")} X {tpinfo.height/10}{_("厘米")}</p>
 			<br/>
-			<p>模板变量</p>
-			{props.tp_vars.map((o,i)=><p key={i}>{o}</p>)}
+			<p className="tp-head-variable">{_("模板变量")}</p>
+			{props.tp_vars.map((o,i)=><p key={i} className="tp-variable">{o}</p>)}
 		</G.Col>
 	</G.Row>)
 }
@@ -145,8 +145,8 @@ class Seltp extends React.Component {
     actions=(tabObj, record)=>{
         return(
             <span>
-                <Button type='inline' onClick={()=>this.seltp1(record)}>选择</Button>
-                <Button type='inline' onClick={()=>this.edit(record)}>编辑</Button>
+                <Button type='inline' onClick={()=>this.seltp1(record)}>{_("选择")}</Button>
+                <Button type='inline' onClick={()=>this.edit(record)}>{_("编辑")}</Button>
             </span>
         )
     }

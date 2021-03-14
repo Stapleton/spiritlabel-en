@@ -17,7 +17,7 @@ const strings ={
   },
   "将当前列绑定到：": {
     "zh": "将当前列绑定到：",
-    "en": "Bind data column to:"
+    "en": "Bind data column to: "
   },
   "选择变量": {
     "zh": "选择变量",
@@ -235,6 +235,50 @@ const strings ={
     "zh": "未用",
     "en": "No Use"
   },
+  "变量": {
+    "zh": "变量",
+    "en": "Variable "
+  },
+  "未绑定_alert": {
+    "zh": "未绑定,\n请点击表头绑定变量！\n \n\n数据列不够可添加。",
+    "en": " Not Bind To Any Data Column. \nPlease click table column head to bind."
+  },
+  "登录": {
+    "zh": "登录",
+    "en": "Sign in"
+  },
+  "注册": {
+    "zh": "注册",
+    "en": "Sign up"
+  },
+  "名称:": {
+    "zh": "名称:",
+    "en": "Name: "
+  },
+  "说明:": {
+    "zh": "说明:",
+    "en": "Description: "
+  },
+  "尺寸:": {
+    "zh": "尺寸:",
+    "en": "Size: "
+  },
+  "厘米": {
+    "zh": "厘米",
+    "en": "cm"
+  },
+  "模板变量": {
+    "zh": "模板变量",
+    "en": "Tp Variables:"
+  },
+  "选择": {
+    "zh": "选择",
+    "en": "Select"
+  },
+  "编辑": {
+    "zh": "编辑",
+    "en": "Modify"
+  }
 }
 
 module.exports = strings

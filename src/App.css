@@ -89,3 +89,16 @@
    border : 1px solid #888;
 }
 
+.tp-head-item {
+	font-weight: bold;
+}
+
+.tp-head-variable {
+	font-size:14px;
+	font-weight:bold;
+}
+
+.tp-variable {
+	padding-left: 5px;
+}
+

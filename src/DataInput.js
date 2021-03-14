@@ -124,7 +124,7 @@ class DataInput extends React.Component {
 			for(let i=0; i<tpdata.tp_vars.length; i++) {
 				let v=tpdata.tp_vars[i];
 				if (vars.indexOf(v)<0) {
-					W.alert(_(`变量${v}未绑定,\n请点击表头绑定变量！\n \n\n数据列不够可添加。`));
+					W.alert(_("变量")+v+_("未绑定_alert"));
 					return;
 				}
 			}
