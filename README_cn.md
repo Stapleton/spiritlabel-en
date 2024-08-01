@@ -1,16 +1,16 @@
-[englisth](README.md)
+[english](README.md)
 
 LPTSpirit是开源的标签批量打印工具，面向普通用户。底层利用了[打印精灵](https://www.printspirit.cn)提供的标签设计、打印能力。
 
 ## 主要特点
 
-- 利用SpiritDesigner设计打印模版，利用SpiritWeb完成打印，支持文字，图像，一维条码，二维码的打印。
+- 利用[SpiritDesigner](https://www.printspirit.cn/designer)设计标签，利用[SpiritWeb](https://www.printspirit.cn/views/tp_file_print.html)打印。支持文字，图像，一维条码，二维码。
 - 自动提取模版变量，创建打印数据录入表格，打印时自动合并数据和模版。
 - 支持在线编辑数据。
 - 支持批量导入EXCEL数据。
 - 支持自动提取模版变量导出EXCEL格式文件，用于本地编辑。
 - 支持标签拼版。节约纸张，加快打印速度。
-- 支持Windows打印机，专用标签打印机等各类打印机
+- 支持Windows打印机，专用ZPL标签打印机。
 
 ## 开发
 
