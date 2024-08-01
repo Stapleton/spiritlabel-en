@@ -240,14 +240,14 @@ class DoPrint extends React.Component {
 			<>
 				<G.Row>
 					<G.Col class="center-layout" width={'60%'}>
-						{spirit_ok===false && <Error small>{_("未检测到打印控件！打印精灵未安装？")} <Button type="blue" href="http://www.printspirit.cn/download/spirit-web-setup.exe">{_("立即安装")}</Button></Error>}
+						{spirit_ok===false && <Error small>{_("未检测到打印控件！打印精灵未安装？")} <Button type="blue" href="https://www.printspirit.cn/download/spirit-web-setup.exe">{_("立即安装")}</Button></Error>}
 						
-						<Form  fields={cols}  nCol={2} disable_fields={disable}
-               values={this.state.print_opts}
-               onChange={this.onDataChange}
-               ref={ref=>this.form=ref} />
-          </G.Col>
-        </G.Row>
+                    <Form  fields={cols}  nCol={2} disable_fields={disable}
+                                values={this.state.print_opts}
+						        onChange={this.onDataChange}
+						        ref={ref=>this.form=ref} />
+                    </G.Col>
+                </G.Row>
 			
 				<div class="center">
 					<Button type="green" onClick={this.print}>{_("打印首张")}</Button>

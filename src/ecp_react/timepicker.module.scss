@@ -1,0 +1,39 @@
+@import "gaf/sass/variables";
+@import "gaf/sass/gaf_vars";
+@import "gaf/sass/mixins";
+
+@import "gaf/sass/input";
+
+.timepicker {
+	@include input;
+	display : inline-block;
+	position : relative;
+}
+
+.timepicker>select {
+	border:none;
+	box-shadow: none;
+	background-color:#fff;
+	font-size:12px;
+	padding:0 10px;
+	outline: 0;
+	
+	/*很关键：将默认的select选择框样式清除*/
+  appearance:none;
+  -moz-appearance:none;
+  -webkit-appearance:none;
+  
+  /*在选择框的最右侧中间显示小箭头图片*/
+  /*background: url("http://ourjs.github.io/static/2015/arrow.png") no-repeat scroll right center transparent;*/
+  /*为下拉小箭头留出一点位置，避免被文字覆盖*/
+  /*padding-right: 14px;*/
+}
+
+.timepicker>select::active {
+	outline:0;
+}	
+
+/*IE 10 select下拉按钮，去掉边框*/
+.timepicker>select::-ms-expand{
+	display: none;
+}

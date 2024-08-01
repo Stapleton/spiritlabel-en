@@ -1,0 +1,56 @@
+.obj-share {
+	border-collapse:collapse;
+	border-spacing:0;
+	border:1px #A3BDCA solid;
+	background:#F2F9FB;
+	*border-top:3px #397999 solid;
+}
+
+.obj-share th {
+	border-top:3px #397999 solid;
+	border-bottom:1px #A3BDCA dotted;
+	border-right:1px  #A3BDCA solid;
+	height:27px;
+	line-height:27px;
+	width:200px;
+}
+
+.obj-share th span.title,.fileinfo .obj-share th span.title{
+	display:inline-block;
+	float:left;
+	height:27px;
+	background:url(/pub/img/main/icon_main.png) no-repeat -195px -195px;
+	padding-left:30px;
+}
+
+.obj-share th a.btn_setting{
+	float:right;
+	display:inline-block;
+	background:url(/pub/img/main/icon_main.png) no-repeat -795px -195px;
+	height:27px;
+	width:27px;
+}
+
+.obj-share td{
+	line-height:25px;
+	padding:0 5px;
+	border-right:1px  #A3BDCA solid;
+}
+
+.obj-share th.OSmiddle,.obj-share td.OSmiddle{
+	background:#EEF5FD;
+	color:#1554BC;
+}
+
+.obj-share th.OSmiddle{
+	border-top-color:#1554BC;
+}
+
+.obj-share th.OSmiddle span.title{
+	background-position:-395px -195px;
+}
+
+.obj-share th.OSright span.title{
+	background-position:-595px -195px;
+}
+

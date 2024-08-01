@@ -1,0 +1,29 @@
+.groupbtn{
+  input {
+    font-size : $font-size-base;
+    border-radius: 0;
+    border-top-left-radius :          $input-border-radius;
+    border-bottom-left-radius :       $input-border-radius;
+    -moz-border-radius-bottomleft :   $input-border-radius;
+    -moz-border-radius-topleft :      $input-border-radius;
+    -webkit-border-bottom-left-radius:$input-border-radius;
+    -webkit-border-top-left-radius:   $input-border-radius;
+		vertical-align: bottom;
+  }
+  
+  input + button, input + .button{
+    font-size : $font-size-base;
+    margin:0;
+    margin-left:-5px;
+		padding: 0;
+    padding-left: 3px;
+    border-radius: 0;
+    border-top-right-radius :          $input-border-radius;
+    border-bottom-right-radius :       $input-border-radius;
+    -moz-border-radius-bottomright :   $input-border-radius;
+    -moz-border-radius-topright :      $input-border-radius;
+    -webkit-border-bottom-right-radius:$input-border-radius;
+    -webkit-border-top-right-radius:   $input-border-radius;
+		vertical-align: bottom;
+  }
+}

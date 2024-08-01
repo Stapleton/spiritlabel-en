@@ -1,0 +1,65 @@
+﻿//
+// Tables
+// --------------------------------------------------
+
+table.table, table.inline {
+	background-color: $table-bg;
+	border: 1px solid $table-border-color;
+	border-spacing: 0px;
+	border-collapse: collapse;
+	width:100%;
+	margin-bottom: $line-height-computed;
+	
+	>thead, >tbody {
+		>tr {
+			>th {
+				background-color: $table-border-color;
+				color:#000;
+				&.ck {width: 50px;} /*check box*/
+			}
+			
+			>th+th {
+				border-left: 1px solid #fff;
+			}
+			
+			>th, >td {
+				padding: $table-cell-padding;
+				//border: 1px solid $table-border-color;
+				border-top: 1px solid $table-border-color;
+				font-size: $font-size-base;
+				text-align: left;
+			}
+					
+			td > span.split { padding:2px;}
+			
+			td.ca a{
+				color:blue; 
+				&:hover { color:blue; text-decoration: underline;}
+			}
+			&:hover { background-color: lighten($table-border-color, 5%);}  
+		}	
+	}	
+}
+
+table.border {
+	@extend table.table;
+	>tbody>tr> {
+		>th, >td {
+			border: 1px solid $table-border-color !important;
+		}	
+	}	
+}
+
+table.striped {
+	tr.Rodd { background-color: $table-bg-accent !important;}
+}	
+
+td.tab_center, td.tab-center { text-align: center !important; } /*中心对对齐*/
+td.tab_right, td.tab-right { text-align: right !important; }   /*右对齐*/
+td.tab_left, td.tab-left { text-align: left !important; }   /*左对齐*/
+
+.tablediv .pager { line-height: 28px; padding-left:5px;}
+.tablediv .pg { border: 1px solid #8cacbb; margin:2px; padding-left:2px; padding-right:2px; }
+.tablediv .cur { background-color: #dee7ec;}
+.tablediv.no-data {margin:10px; font-size:14px; color:#888;}
+

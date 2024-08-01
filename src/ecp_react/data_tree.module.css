@@ -1,0 +1,48 @@
+.data-tree {
+	display : inline-block;
+	position : relative;
+	vertical-align : middle;
+}
+
+.data-tree:before{
+  content: "\e032";
+  font-family: 'Glyphicons Halflings';
+  color: #888;
+  text-align: right;
+  position: absolute;
+  left: 180px;
+  top: 5px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.data-tree>input {
+	background: transparent;
+	float: left;
+}
+
+.data-tree li {
+    list-style-type:none;
+    padding-left: 18px;
+    line-height: 20px;
+}
+
+.leaf, .fold{
+    border: 0px;
+    vertical-align: middle;
+    padding: 0px 0px 0px 20px;
+}
+
+.leaf {
+    background: url(./img/join.gif) no-repeat left center
+}
+
+.fold.open {
+    background: url(./img/plusbottom.gif) no-repeat left center
+}
+
+.fold.close {
+    background: url(./img/minusbottom.gif) no-repeat left center
+}
+

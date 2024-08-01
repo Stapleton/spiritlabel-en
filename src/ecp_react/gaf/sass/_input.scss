@@ -1,0 +1,39 @@
+@mixin button-bg($color_from, $color_to) {
+	FILTER: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='$color_from', endColorstr='$color_from');//*ie*/           
+  background:-webkit-gradient(linear, 0 0, 0 bottom, from($color_from), to($color_to));//*Safari */           
+  background:-moz-linear-gradient(top, $color_from, $color_to);//*Firefox*/
+  background:-ms-linear-gradient(top, $color_from, $color_to);
+  background: linear-gradient(to top, $color_from, $color_to);
+}
+
+@mixin input() {
+  box-sizing: border-box;
+  border:1px solid $input-border;
+  height: $gaf_input_height;  
+	line-height: $gaf_input_height;  
+  //@include box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+  @include form-control-focus;
+  @include placeholder;
+  padding: $padding-base-vertical $padding-base-horizontal;
+  border-radius: $input-border-radius;
+  width: $gaf_input_width;
+  line-height: $font-size-base + $padding-base-vertical;
+  font-size: $font-size-base;
+  position:relative;
+  background-color: $input-bg;
+}
+
+@mixin select() {
+  border:1px solid $input-border;
+  @include box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+  @include form-control-focus;
+  @include placeholder;
+  border-radius: $input-border-radius;
+  line-height:16px;
+  height:auto;
+  width:auto;
+  padding: ceil($padding-base-vertical/2)  $padding-base-horizontal;
+  font-size: $font-size-base;
+}
+
+

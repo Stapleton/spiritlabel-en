@@ -1,0 +1,23 @@
+﻿// for com_toolbar
+$gaf_toolbar_height:                   30px !default;
+
+// for layout 
+$gaf_layout_pan_color:                 $gray-lighter !default;      
+
+$gaf_layout_lr_left_width:             250px  !default;   //左右分栏，左栏缺省宽度
+$gaf_layout_lr_spliter_width:          6    !default;
+$gaf_layout_lr_spliter_color:          lighten($gray-base, 70%) !default;
+
+$gaf_layout_ud_upper_height:           60%  !default;   //左右分栏，左栏缺省宽度
+$gaf_layout_ud_spliter_width:          6    !default;
+$gaf_layout_ud_spliter_color:          $gray-light !default;   
+
+// for fieldset
+$gaf_fieldset_border_color:            #ddd  !default;
+
+// for input 
+$gaf_input_height:                     25px  !default;
+$gaf_input_width:                      200px !default; 
+
+// for button 
+$gaf_button_height:                    25px  !default;

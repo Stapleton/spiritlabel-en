@@ -1,0 +1,85 @@
+.data_selector {
+	display : inline-block;
+	position : relative;
+	vertical-align : middle;
+}
+
+.data_selector:before{
+	content: "\e114";
+	font-family: 'Glyphicons Halflings';
+	color: #888;
+	text-align: right;
+	position: absolute;
+	left: 180px;
+	top: 5px;
+	margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.data_selector>input {
+	background: transparent;
+	float: left;
+}
+
+.ds_pd input {
+	width: 182px;
+}
+
+
+.ds_pd {
+	height:100%;
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+}
+
+.ds_pd_left {
+	margin: 2px;
+	border-right: 1px solid #ccc;
+}
+
+.ds_pd_left .ds_btn {
+	font-size: 18px;
+	margin: 2px 10px;
+	padding: 2px;
+	cursor: pointer;
+}
+
+.ds_pd_left .ds_btn:hover {
+	background-color: #ddd;
+}
+
+.ds_pd_left>ul{
+	border-top: 1px solid #ddd;
+	height: calc( 100% - 50px );
+	cursor: point;
+	overflow: auto;
+}
+
+.ds_pd_left>ul>li{
+	font-size:14px;
+	line-height: 20px;
+	padding-left: 5px;
+}
+
+.ds_pd_left>ul>li:hover{
+	background-color: #ccc;
+}
+
+.ds_pd_right {
+	margin: 2px;
+	flex-grow: 1;
+	overflow:auto;
+	height:100%;
+}
+
+.ds_pd_search {
+    text-align: center;
+    padding: 1px;
+}
+
+.ds_pd input {
+    width : 178px;
+}
+

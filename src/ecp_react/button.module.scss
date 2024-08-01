@@ -1,0 +1,86 @@
+@import "gaf/sass/variables";
+@import "gaf/sass/gaf_vars";
+@import "gaf/sass/mixins";
+
+@import "gaf/sass/input";
+
+.button {
+	box-sizing: border-box;
+	@include input();
+	margin:0 5px;
+	border-radius: $input-border-radius;
+	color: #fff;
+	font-size: 12px;
+	height: $gaf_button_height;
+	line-height: $gaf_button_height;
+	outline: 0 none;
+	position: relative;
+	
+	@include button_bg(#FEFEFE, #E4E2E2);
+	border-color: #adadad;
+	color: #333;
+	
+	cursor: pointer;
+	padding: 0px 12px;
+	text-align: center;
+	
+	display:inline-block;
+	  
+	width:auto;
+		
+	-moz-user-select: none;
+	
+	&:hover,&:focus{
+		@include button_bg(#E4E2E2, #adadad);
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+  
+  >span {
+		padding-right:5px;
+	}	
+  
+  &.blue {
+  	@include button_bg( #4a99d2, #428bca);
+		border-color:#357ebd;
+		color:#fff;
+		&:hover {
+			@include button_bg(#428bca, #357ebd);
+			border-color:#285e8e;
+			color:#fff;
+		}
+  }
+  
+  &.danger, &.red {
+		@include button_bg( #ec4e2a, #ef7c63);
+		border-color:#e64521;
+		color:#fff !important;
+		&:hover {
+			@include button_bg(red, #e64521);
+			border-color:red;
+			color:#fff !important;
+		}
+	}	
+	
+	&.button.green,  &.button.submit {
+		@include button_bg(#7CC76B, #41A32A);
+		border-color: #459830;
+		color:#fff !important;
+		&:hover{
+			@include button_bg(#41A32A, #459830);
+			border-color: green;
+			color:#fff !important;
+		}	
+	}
+	
+	&.large {
+		height: 30px;
+		line-height:30px;
+	}
+}
+
+/* button in table, FIXME: 没有完全符合css_module作用域的原则*/
+table a.button {
+	height:20px;
+	line-height:18px;
+	vertical-align: top;
+}

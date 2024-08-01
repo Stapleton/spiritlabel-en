@@ -1,0 +1,19 @@
+.panel-body  {
+	padding:5px;
+}
+
+.panel>.tablediv>.table  {
+	margin-bottom:0;
+}
+	
+.panel .table.form {
+	border: 0px;
+	margin-bottom:0;
+}
+	
+.panel .table.form tr:first-child td, 
+.panel .table.form tr:first-child th{
+	border-top: 0px;
+}
+
+

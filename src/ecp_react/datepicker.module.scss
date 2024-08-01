@@ -1,0 +1,56 @@
+@import "gaf/sass/variables";
+@import "gaf/sass/gaf_vars";
+@import "gaf/sass/mixins";
+
+@import "gaf/sass/input";
+
+.datepicker {
+	display : inline-block;
+	position : relative;
+	vertical-align : middle;
+}
+
+.datepicker:before {
+	content: "\e109";
+	font-family: 'Glyphicons Halflings';
+	color: #888;
+	text-align: right;
+	position: absolute;
+	left: 180px;
+	top: 5px;
+	margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.datepicker>input {
+	@include input();
+	background: transparent;
+	float: left;
+}
+
+.datepicker-time {
+	border-top: 1px solid #ddd;
+	background: #f5f5f5;
+	line-height:30px;
+	height:32px;
+	vertical-align: middle;
+}
+
+.datepicker-time  span{
+	vertical-align: middle;
+  display: inline-block;
+  padding: 0 5px;
+}
+
+.datepicker-time  span:hover {
+	color: red;
+}	
+
+.datepicker-time  .timepicker{
+	display:inline-block;
+	vertical-align: middle;
+}
+
+.datepicker .ecp-cal-min {line-height:14px;}
+

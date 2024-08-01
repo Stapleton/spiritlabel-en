@@ -1,0 +1,28 @@
+.org-picker {
+	display:inline-block;
+	position:relative;
+	vertical-align: middle;
+	padding: 0 3px;
+}
+
+.org-picker:before {
+	content: "\e021";
+	font-family: 'Glyphicons Halflings';
+	color: #888;
+	text-align: right;
+	position: absolute;
+	left: 180px;
+	top: 5px;
+	margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.org-picker.person:before {
+	content: "\e008";
+}
+
+.org-picker>input {
+	background: transparent;
+	float: left;
+}

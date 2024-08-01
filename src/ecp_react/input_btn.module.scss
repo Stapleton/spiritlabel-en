@@ -1,0 +1,11 @@
+@import "gaf/sass/variables";
+@import "gaf/sass/gaf_vars";
+@import "gaf/sass/mixins";
+
+@import "gaf/sass/input";
+@import "gaf/sass/group_button";
+
+.groupbtn >input {
+  @include input;
+}
+

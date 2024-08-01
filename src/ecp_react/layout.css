@@ -1,0 +1,97 @@
+ul.links { margin:5px; font-weight:700}
+ul.links>li { font-size:14px; line-height:30px;padding:0px}
+ul.links>li:hover { background-color: #ccc;}
+ul.links>li>a { display: inline-block; width:100%; color:#222; padding-left:5px} 
+ul.links>li>a.active { background-color: #ddd;}
+
+.er-layout-left {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 250px;
+  border-right: 1px solid #b3b3b3;
+  overflow: auto; }
+
+.er-layout-left.single-border {
+  border-right-color: transparent; }
+
+.er-layout-left.doubler-border {
+  border-right-color: #b3b3b3; }
+
+.er-layout-right {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 250px;
+  margin-left: 4px;
+  right: 0;
+  bottom: 0;
+  border-left: 1px solid #b3b3b3;
+  overflow: auto; }
+
+.er-layout-lr-spliter {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 6px;
+  border-right: 1px solid #b3b3b3;
+  border-left: 1px solid #b3b3b3;
+  cursor: e-resize; }
+
+.er-layout-lr-spliter.single-border {
+  border-left-color: transparent; }
+
+.er-layout-lr-spliter.double-border {
+  border-left-color: #b3b3b3; }
+
+.er-layout-pan-top {
+  border-bottom: 1px solid #b3b3b3;
+  background-color: #eeeeee; }
+
+.er-layout-upper {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  border-bottom: 1px solid #777777;
+  overflow: auto; }
+
+.er-layout-upper.single-border {
+  border-bottom-color: transparent; }
+
+.er-layout-upper.double-border {
+  border-bottom-color: #777777; }
+
+.er-layout-down {
+  box-sizing: border-box;
+  position: absolute;
+  top: 60%;
+  margin-top: 4px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: 1px solid #777777;
+  overflow: auto; }
+
+.er-layout-ud-spliter {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  border-top: 1px solid #777777;
+  border-bottom: 1px solid #777777;
+  cursor: n-resize; }
+
+.er-layout-ud-spliter.single-border {
+  border-top-color: transparent; }
+
+.er-layout-ud-spliter.double-border {
+  border-top-color: #777777; }

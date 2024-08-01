@@ -1,0 +1,138 @@
+$head_title_fontsize:                  ceil($font-size-base * 1.1) !default;
+$list_group_fontsize:                  ceil($font-size-base * 1.2) !default;
+.com-header-title {
+  background-color:#fff ;
+  background-image: none;
+  height:$head_title_fontsize + 12;
+  line-height: $head_title_fontsize + 12;
+  color:#025F8D;
+  font-size: $head_title_fontsize;
+  border-bottom: 1px solid #025F8D;
+  padding :0 0 0 ceil($head_title_fontsize * 1.1);
+  vertical-align: middle;
+}
+h1.com-header-title{
+  @extend .com-header-title;
+  font-size:$font-size-h1;
+  height:$font-size-h1 + 12;
+  line-height:$font-size-h1 + 12;
+  padding: 0 0 0 ceil($font-size-h1 * 1.1);
+  span{
+  	background:none;
+  	color: inherit;
+  }
+}
+h2.com-header-title{
+  @extend .com-header-title;
+  font-size:$font-size-h2;
+  height:$font-size-h2 + 12;
+  line-height:$font-size-h2 + 12;
+}
+h3.com-header-title{
+  @extend .com-header-title;
+  font-size:$font-size-h3;
+  height:$font-size-h3 + 12;
+  line-height:$font-size-h3 + 12;
+}
+.com-header-title + .com-layout-left,.com-header-title + .com-layout-left + .com-layout-right{
+  top : $head_title_fontsize + 12 +1;
+}
+h1.com-header-title + .com-layout-left,h1.com-header-title + .com-layout-left + .com-layout-right{
+  top : $font-size-h1 + 12 +1;
+}
+h2.com-header-title + .com-layout-left,h2.com-header-title + .com-layout-left + .com-layout-right{
+  top : $font-size-h2 + 12 +1;
+}
+h3.com-header-title + .com-layout-left,h3.com-header-title + .com-layout-left + .com-layout-right{
+  top : $font-size-h3 + 12 +1;
+}
+.com-header-title + .columns{
+  margin-top: 5px;
+  
+}
+.list-group{
+  margin-bottom: 20px;
+  padding-left: 0;
+}
+.list-group > li {
+  display:block;
+  position: relative;
+  display: block;
+  padding: ceil($list_group_fontsize * 0.65) ceil($list_group_fontsize * 0.75);
+  // Place the border on the list items and negative margin up for better styling
+  margin-bottom: -1px;
+  background-color: $list-group-bg;
+  border: 1px solid $list-group-border;
+  cursor: pointer;
+  color: $list-group-link-color;
+  font-size: $list_group_fontsize;
+  // Round the first and last items
+  &:first-child {
+    @include border-top-radius($list-group-border-radius);
+  }
+  &:last-child {
+    margin-bottom: 0;
+    @include border-bottom-radius($list-group-border-radius);
+  }
+  &:hover,
+  &:focus{
+    text-decoration: none;
+    color: $list-group-link-hover-color;
+    background-color: $list-group-hover-bg;
+  }
+  &.active{
+  	color: $list-group-active-color;
+    background-color: $list-group-active-bg;
+    border-color: $list-group-active-border;
+  }
+  & > img{
+  	vertical-align: middle;
+  	width: $list_group_fontsize *1.8;
+  	height: $list_group_fontsize *1.8;
+  	margin-top: -2px;
+  	margin-right: $list_group_fontsize *0.5;
+  }
+}
+/*通用附件*/
+$general_attachment_bg:     #f9f9f9 !default;
+.general-attachment{
+  border:1px solid $gray-lighter;
+  border-radius: 3px;
+  padding:3px;
+  position: relative;
+  background-color: $general_attachment_bg;
+  display: block;
+  position: relative;
+  legend{
+    font-size: ceil($font-size-base * 1.2);
+    padding : ceil($font-size-base * 1.1);
+    font-weight: 600;
+  }
+  .upload_btn{
+    @extent .button;
+    /*background: url("/img/todo/upload-btn.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+      cursor: pointer;
+      height: 19px;
+      width: 30px;
+      position: absolute;
+      top:3px;
+      right: 30px;*/
+  }
+  ul li {
+      clear: both;
+      line-height: 20px;
+      padding: 5px 0 0;
+      position: relative;
+  }
+  ul li .thi-row {
+      float: right;
+      width: ceil($font-size-base * 5.5);
+  }
+  ul li .sec-row {
+      float: right;
+      width: ceil($font-size-base * 8.5);
+  }
+  ul li .fir-row {
+      clear: left;
+  }
+}

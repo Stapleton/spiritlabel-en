@@ -1,0 +1,52 @@
+@import "gaf/sass/variables";
+@import "gaf/sass/gaf_vars";
+@import "gaf/sass/mixins";
+
+@import "gaf/sass/input";
+
+//table in form
+table.form:not(.no_border) {
+	>tbody >tr{
+		&:hover { background-color: $table-bg;}
+		>th {
+			background-color: #f5f5f5 !important;
+			text-align: right !important;
+		}
+		textarea {width:90%}
+	}		
+	&.impact >tbody >tr >td{
+		padding: 2px $table-cell-padding;
+	}
+}
+
+table.no_border.form {
+	background-color: $table-bg;
+	border-spacing: 0px;
+	border-collapse: collapse;
+	width:100%;
+	margin-bottom: $line-height-computed;
+	
+	>thead, >tbody {
+		>tr {
+			
+			>th, >td {
+				padding: $table-cell-padding;
+				font-size: $font-size-base;
+				text-align: left;
+			}
+					
+			td > span.split { padding:2px;}
+		}	
+	}	
+}
+
+input.inp, input.inp-error, select.inp, select.inp-error{
+	@include input;
+}
+
+select.inp, select.inp-error{
+}
+
+.inp-error, .inp-error>input, .inp-error>select {
+	color:red !important;
+}

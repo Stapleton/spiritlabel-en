@@ -1,0 +1,87 @@
+table.min-bar {
+	width:100%; height:100%; padding:0px; margin:0; border-spacing:0; box-sizing:border-box;
+	color: #888;
+}
+table.min-bar th {
+	margin  : 0px; 
+	padding : 0px 5px;
+}
+table.min-bar th.large {
+	width:98%;
+}
+
+table.min-bar select {
+	fontSize:12;
+	margin: 0;
+  padding: 0;
+	border: none;
+  box-shadow: none;
+  width: 65px;
+	background-color: #f5f5f5;
+}
+
+/***/
+
+table.min-bar span {
+	cursor:pointer;
+}	
+
+table.min-bar span:hover {
+	color:red;
+}	
+
+.min { 
+	width:100%; height:100%; padding:2px; margin:0; border-spacing:0; box-sizing:border-box; font-size: 12px; 
+	border-collapse: separate;
+}
+
+table.min>tbody>tr>th, table.min>tbody>tr>td {
+	padding: 4px;
+	border-top: 1px solid #f5f5f5;
+	font-size: 12px;
+}
+
+.min th.header {
+	background-color:#ddd;
+	text-align: center;
+}
+
+.min td {
+	border:1px solid transparent;
+	width:14%;
+	color: #444;
+}	
+
+.min td.last-month, .min td.next-month {
+	color: #ddd !important;
+}
+
+/*.ecp-cal-min td.week_end0.last-month,
+.ecp-cal-min td.week_end0.next-month
+{
+	color:#c38888;
+}
+
+.ecp-cal-min td.week_end6.last-month,
+.ecp-cal-min td.week_end6.next-month  
+{
+	color:#6b6aad;
+}*/
+
+.min th.header.week_end0,
+.min td.week_end0 {
+	color:red;
+}
+
+.min th.header.week_end6,
+.min td.week_end6 {
+	color:blue;
+}
+
+.min td.today {
+	background-color: #fdd;
+}
+
+.min td.sel {
+	border:1px solid green;
+}

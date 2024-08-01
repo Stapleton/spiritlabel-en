@@ -1,0 +1,42 @@
+.ecp_console {
+	height:100%;
+}
+
+.ecp_console .com-tb-item >span {
+	line-height:20px;
+}
+
+.ecp_console .com-tb-item >a.button {
+	line-height:20px;
+}
+
+.ecp_console .ERROR {
+	color: red;
+}
+
+.ecp_console .WARNING {
+	color: blue;
+}
+
+.ecp_console .ERROR {
+	color: red;
+}
+
+.ecp_console .odd {
+	background-color: #eee;
+}
+
+.ecp_console>.ecp_console_msg {
+	height: calc( 100% - 30px );
+	width:100%;
+ 	overflow: auto;
+}
+
+.console-level, .console-level:focus {
+	border: none;
+	box-shadow: none;
+	padding:0;
+	margin:0;
+	margin-left:5px;
+	background-color: #fbf7f7;
+}

@@ -1,0 +1,35 @@
+
+.icon {
+	padding:0px 5px;
+	vertical-align: text-top;
+}
+
+.info, .warning, .error {
+	position: relative;
+	padding: 1rem 1rem;
+	margin-bottom: 1rem;
+	border: 1px solid transparent;
+	border-radius: .25rem;
+}
+
+.info {
+	color: #004085;
+	background-color: #cce5ff;
+	border-color: #b8daff;
+}
+
+.warning {
+	color: #664d03;
+  background-color: #fff3cd;
+  border-color: #ffecb5;
+}
+
+.error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.small {
+	padding: 0.5rem 0.5rem !important;
+}

@@ -1,0 +1,24 @@
+﻿html,body {
+	height:100%;
+	font-size:12px; 
+	line-height:14px;
+	font-family: "Microsoft Yahei", '宋体', arial,'lucida grande','lucida sans unicode',verdana,sans-serif;
+	overflow:auto;
+}
+
+:focus {outline: 0;}
+
+body,ul,ol,li,p,h1,h2,h3,h4,h5,h6,form,fieldset,table,td,img,div,textarea {margin:0; padding:0;}
+
+
+body,p,form,fieldset,table,td,img{padding:0px;}
+
+img{
+	border:0;
+}
+
+a{
+	color:#405d6f;
+	outline:none;
+	text-decoration:none;
+}

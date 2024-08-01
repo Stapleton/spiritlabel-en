@@ -1,0 +1,9 @@
+.modal { 
+    position:fixed; 
+    width:100px; 
+    height:300px; 
+    border:1px solid #ccc; 
+    overflow:auto; 
+    z-index:100;
+    background-color:#fff;
+}
