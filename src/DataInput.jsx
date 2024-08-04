@@ -97,7 +97,7 @@ class DataInput extends React.Component {
 		super(props);
 		let {tpid, tp_vars}=props.tpdata;
 		if (!tpid || tp_vars.length===0 ) this.props.history.push("/print-tools/seltp")
-		this.props.setStep("loaddata")
+		else this.props.setStep("loaddata")
 	}
 
 	actions=(tabObj, record)=>{
@@ -298,28 +298,28 @@ class DataInput extends React.Component {
 		return (
 			<>
 			 	<Toolbar style={{borderBottom:'1px solid #ccc'}}>
-            <Toolbar.Group>
-		            <FileBtn type="green" handleFile={this.handleFile}>{_("导入数据文件")}</FileBtn>
-                <Button onClick={this.export} >{_("导出数据模板")}</Button>
-            </Toolbar.Group>
-            
-            <Toolbar.Group>
-                <Button onClick={this.addRow}>{_("增加行")}</Button>
-                {xls && <Button onClick={this.addCol}>{_("增加列")}</Button>}
-            </Toolbar.Group>
-        
-            <Toolbar.Ext>
-                <Toolbar.Group>
-	                <Button onClick={this.clearData}>{_("清除数据")}</Button>
-                </Toolbar.Group>
-            </Toolbar.Ext>
-        </Toolbar>
+					<Toolbar.Group>
+						<FileBtn type="green" handleFile={this.handleFile}>{_("导入数据文件")}</FileBtn>
+					<Button onClick={this.export} >{_("导出数据模板")}</Button>
+					</Toolbar.Group>
+				
+					<Toolbar.Group>
+						<Button onClick={this.addRow}>{_("增加行")}</Button>
+						{xls && <Button onClick={this.addCol}>{_("增加列")}</Button>}
+					</Toolbar.Group>
+				
+					<Toolbar.Ext>
+						<Toolbar.Group>
+							<Button onClick={this.clearData}>{_("清除数据")}</Button>
+						</Toolbar.Group>
+					</Toolbar.Ext>
+				</Toolbar>
 			 	
 			 	<Table className="data-input" edit 
 			 		data={data} columns={columns} actions={this.actions} pg_size={10} ref={t=>this.table=t}/>
 				{<div style={{float:"right"}}>
 					<Button onClick={this.prevStep}>{_("上一步")}</Button>
-					<Button onClick={this.nextStep}>{_("下一步")}</Button>
+					<Button type="green" onClick={this.nextStep}>{_("下一步")}</Button>
 				</div>}
 			</>
 		);

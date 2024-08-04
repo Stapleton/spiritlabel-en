@@ -75,12 +75,17 @@
 }
 
 .tp-info p {
-	font-size: 12px;
+	font-size: 14px;
 	line-height: 1.4em;
 }
 
+.tp-img-div{
+    text-align: center;
+}
+
 .tp-img-big{
-   width : 90%;
+   max-width : 90%;
+   max-height: 60vh;
    border : 1px solid #888;
 }
 
@@ -90,7 +95,10 @@
 }
 
 .tp-head-item {
+	font-size: 14px;
 	font-weight: bold;
+	line-height: 1.4em;
+	margin-right: 5px;
 }
 
 .tp-head-variable {
@@ -100,5 +108,51 @@
 
 .tp-variable {
 	padding-left: 5px;
+}
+
+.sel-tp-win {
+    border: 1px solid #888;
+    height: 60vh;
+}
+
+.sel-tp-index {
+    display: flex;
+    width: 60%;
+    margin: 0 auto;
+    justify-content: space-evenly;
+    height: 50vh;
+    align-items: center;
+}
+
+.sel-tp-index .sel-tp {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    margin-top: 20px;
+    transition-duration: 0.2s ease;
+    border-radius: 10px;
+}
+
+.sel-tp-index .sel-tp:hover {
+    background-color: #d4d2e5;
+}
+
+.sel-tp-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px;
+    text-align: center;
+}
+
+.sel-tp-yun {
+    background: url(yun.svg) no-repeat;
+}
+
+.sel-tp-mine {
+    background: url(mine.svg) no-repeat;
+}
+
+.sel-tp-local {
+    background: url(local.svg) no-repeat;
 }
 

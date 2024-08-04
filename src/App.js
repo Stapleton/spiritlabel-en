@@ -2,14 +2,14 @@ import React from 'react';
 import {BrowserRouter as Router, Route  } from 'react-router-dom'; 
 import {Page, Stepper} from 'ecp';
 import './App.css'
-import DataInput from './DataInput.js'
-import Seltp from './Seltp.js'
-import DoPrint from './DoPrint.js'
-import Finish from './Finish.js'
+import DataInput from './DataInput.jsx'
+import Seltp from './Seltp.jsx'
+import DoPrint from './DoPrint.jsx'
+import Finish from './Finish.jsx'
 import spirit_power from './spirit.svg';
 import {setLanguage, _} from "./locale.js";
 
-const steps= [{seltp:_("选择模版")}, {loaddata:_("录入数据")}, {doprint:_("执行打印")}, {finish:_("完成")}];
+const steps= [{seltp:_("选择标签")}, {loaddata:_("录入数据")}, {doprint:_("执行打印")}, {finish:_("完成")}];
 
 export default class App extends React.Component {
 
@@ -57,8 +57,16 @@ export default class App extends React.Component {
 							setStep={this.setStep} 
 							onChangeTp={this.onChangeTp}
 							tpdata={tpdata}
+							
 						/>}  />
-					<Route path="/print-tools/seltp"  render={props =><Seltp {...props} 
+						
+					<Route path="/print-tools/seltp"  exact render={props =><Seltp {...props} 
+							setStep={this.setStep} 
+							onChangeTp={this.onChangeTp}
+							tpdata={tpdata}
+						/>} />	
+						
+					<Route path="/print-tools/seltp/:id"  render={props =><Seltp {...props} 
 							setStep={this.setStep} 
 							onChangeTp={this.onChangeTp}
 							tpdata={tpdata}

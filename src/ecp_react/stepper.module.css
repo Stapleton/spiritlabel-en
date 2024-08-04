@@ -3,10 +3,14 @@
   width: 250px;
   text-align: center;
 }
- 
+
 .done .body  .num,
 .done .line {
   background-color: #EE494D;
+}
+
+.active .body  .num {
+  background-color: blue;
 }
  
 .title {

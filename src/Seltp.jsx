@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Form, Button, H3, DivWin as W, Grid as G, InputButton, Tabs, net } from 'ecp';
+import {Table, Form, Button, DivWin as W, Grid as G, InputButton, Toolbar, net } from 'ecp';
 import tp_utils from './tp_utils.js'
 import {_} from "./locale.js";
 
@@ -34,7 +34,7 @@ class Login extends React.Component{
 	
 		let {formvalue}=this.state;
 		
-		return <div class="center">
+		return <div className="center">
 			<div className="login">
 				<Form fields={login_fields} nCol={1} border={false} 
 					values={formvalue} onChange={this.onChange}/>
@@ -46,13 +46,18 @@ class Login extends React.Component{
 }
 
 function Tpinfo(props) {
-  const {tpinfo}=props
+  const {tpinfo, onNext, onResel}=props
   return (
 	<G.Row>
-		<G.Col width="40%" >
-			<img  class="tp-img-big" alt="tp-img-big" src={`/utils/thumb?id=${tpinfo.id}`}/>
+		<G.Col width="40%" className="tp-img-div">
+			<img  className="tp-img-big" alt="tp-img-big" src={`/utils/thumb?id=${tpinfo.id}`}/>
 		</G.Col>
-		<G.Col width="50%" >
+		<G.Col width="50%" className="tp-info">
+		    <Toolbar>
+    		    <Button type="green" onClick={onNext}>下一步</Button>
+    		    <Button onClick={onResel}>重选</Button>
+    		</Toolbar>
+    		<hr/>
 			<p><span className="tp-head-item">{_("名称:")}</span>{tpinfo.name} </p>
 			<p><span className="tp-head-item">{_("说明:")}</span>{tpinfo.memo} </p>
 			<p><span className="tp-head-item">{_("尺寸:")}</span>{tpinfo.width/10}{_("厘米")} X {tpinfo.height/10}{_("厘米")}</p>
@@ -76,13 +81,22 @@ class Seltp extends React.Component {
 						search_key : "",
 						owner : "all",
 						logged : false,
+						sel_win : false, 
+						sel_type: ''
 			}
     }
     
     componentDidMount=()=>{
     	this.props.setStep("seltp")
-    	this.loadUserinfo();
-    	if (this.props.tpid) this.loadtp(this.props.tpid);
+		this.loadUserinfo();
+		let {id}=this.props.match.params;
+		console.log(this.props.tpdata)
+		if (id) {
+			this.do_seltp(id);
+		}else{
+		    let {tpid}=this.props.tpdata;
+			if (tpid) this.do_seltp(tpid);
+		}
     }
     
     loadUserinfo=()=>{
@@ -104,7 +118,7 @@ class Seltp extends React.Component {
     }
     
     nextStep=()=>{
-			const {tpdata}=this.props;
+		const {tpdata}=this.props;
     	const {tpinfo, tp_vars}=tpdata;
     	if (!tpinfo) {
     		W.alert(_("请先选择打印模版"));
@@ -128,10 +142,8 @@ class Seltp extends React.Component {
     }
     
     do_seltp=async (tpid)=>{
-    	this.setState({tpid});
-    	let rc=await net.get(`/api/load-template?id=${tpid}`);
-    	let tp_vars=tp_utils.get_vars(rc.data);
-    	this.props.onChangeTp({tpid, tpinfo:rc.tpinfo, tp_vars});
+    	this.setState({tpid, selected:true});
+    	this.loadtp(tpid);
     }
     
     edit=(record)=>{
@@ -155,46 +167,67 @@ class Seltp extends React.Component {
     	this.setState({owner});
     }
     
+    useShares = ()=>{
+        this.setState({sel_win:true, sel_type:'shares'});
+    }
+    
+    useMine = ()=>{
+        this.setState({sel_win:true, sel_type:'mine'});
+    }
+    
+    useLocal = () =>{
+       W.alert(_("该功能暂未实现"))
+    }
+    
+    returnIndex=()=>{
+        this.setState({sel_win:false, selected:false});   
+    }
+    
     render() { 
-    	const {search_key, owner, logged}=this.state;
+    	const {search_key, owner, logged, selected, sel_win, sel_type}=this.state;
     	const {tpdata}=this.props;
     	const {tpinfo, tp_vars}=tpdata;
+		const {id}=this.props.match.params;
     	return (
-    	   <>
-					<G.Row>
-						<G.Col style={{margin:"0 auto", paddingBottom:20}}>
-							<InputButton no_empty={false} onClick={this.dosearch} >{_("搜索")}</InputButton>
-						</G.Col>
-					</G.Row>     
-					<G.Row>
-    	   		<G.Col width='50%' class="tp-list">
-    	   			<H3>{_("可用标签模版列表")}</H3>
-    	   			<Tabs highlight onChange={this.onChgOwner} activeKey={owner} >
-    	   				<Tabs.Page key={'all'} title={_("共享模板")}>
-	    	   				<Table dataUrl={`/api/get-tp-list?all=1&key=${search_key}`} 
-  	  	   					columns={this.columns} actions={this.actions} pg_size={4} />
-    	   				</Tabs.Page>
-    	   				<Tabs.Page key={'mine'} title={_("我的模板")}>
-    	   					{ logged ?
-		    	   				<Table dataUrl={`/api/get-tp-list?key=${search_key}`} 
-  		  	   					columns={this.columns} actions={this.actions} pg_size={4} /> :
-  		  	   				<Login onLogin={this.onLogin} />
-  		  	   			}
-    	   				</Tabs.Page>
-    	   			</Tabs>
-    	   		</G.Col>
-    	   		<G.Col width='50%' class="tp-info" >
-    	   			<div >
- 	   	   			<H3>{_("已选模版")}</H3>
-    	   				{tpinfo ? <Tpinfo tpinfo={tpinfo} tp_vars={tp_vars} /> : _("请选择标签模版") }
-    	   			</div>
-    	   		</G.Col>	
-    	   	</G.Row>
-    	   	<hr/>
-    	   	<div style={{float:"right"}}>
-    	   		<Button onClick={this.nextStep}>{_("下一步")}</Button>
-    	   	</div>
-	   </>
+		<>
+		{ selected ? (tpinfo && <Tpinfo tpinfo={tpinfo} tp_vars={tp_vars} onNext={this.nextStep} onResel={this.returnIndex}/>):
+		    (
+		        sel_win?
+		        <div className="sel-tp-win">
+    		        <G.Row>
+	        			<G.Col style={{margin:"0 auto", padding:10, paddingBottom:20}}>
+	        				<InputButton no_empty={false} onClick={this.dosearch} style={{display:'inline'}}>{_("搜索")}</InputButton>
+	        				<Button onClick={this.returnIndex}>返回</Button>
+	        			</G.Col>
+	        		</G.Row> 
+	        		<div>
+		                {sel_type=='shares' && <Table dataUrl={`/api/get-tp-list?all=1&key=${search_key}`} 
+						        columns={this.columns} actions={this.actions} pg_size={5} /> }
+				        {sel_type=='mine' && (
+				            logged ?
+						        <Table dataUrl={`/api/get-tp-list?key=${search_key}`} 
+						        columns={this.columns} actions={this.actions} pg_size={5} /> :
+            					<Login onLogin={this.onLogin} />)}
+            		</div>
+                </div>
+                :
+		        <div className="sel-tp-index">
+		            <div onClick={this.useShares}>
+		                <div className="sel-tp sel-tp-yun"/>
+		                <div className="sel-tp-title">{_("云标签")}</div>
+		            </div>
+		            <div onClick={this.useMine}>
+		                <div className="sel-tp sel-tp-mine"/>
+		                <div className="sel-tp-title">{_("我云标签")}</div>
+		            </div>
+		            <div onClick={this.useLocal}>
+        		        <div className="sel-tp sel-tp-local"/>
+		                <div className="sel-tp-title">{_("本机标签")}</div>
+		            </div>
+		        </div>
+		    )
+		}
+		</>
     	);
     }
 }
