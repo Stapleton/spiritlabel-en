@@ -6,12 +6,12 @@ import {_} from "./locale.js";
 // 将独立的ns1.ns2...key1变量按ns组合起来：
 // 如：{ns1.key1:v1, ns1.key2:v2} => {ns1:{key1:v1, key2:v2}}
 function merge_var(row) {
-	let r={}
+    let r={}
 	let keys=Object.keys(row);
 	keys.forEach((varname)=>{
 		let ns = varname.split('.');
 		let vp = r;
-		for (let i=1;i< ns.length - 1; i++) {
+		for (let i=0;i< ns.length - 1; i++) {
 			if (!(ns[i] in vp)) vp[ns[i]]={};
 				vp=vp[ns[i]];
 			}	
@@ -26,7 +26,6 @@ class DoPrint extends React.Component {
 	state={
 		prnlst : [],     /* 全部可用打印机 */ 
 		cur_prnlst : [], /* 当前类型可用打印机*/
-		print_opts :  {type:"WIN"},
 		info: null 
 	}
 	
@@ -47,20 +46,12 @@ class DoPrint extends React.Component {
 	print=()=>{
 		let {tpdata, data}=this.props;
 		if (data.length===0) return;
-		let {print_opts}=this.state;
 		
 		if (!window.SPIRIT) {
 			W.alert(_("打印机未准备就绪!\n请检查是否未安装\"打印精灵\""));
 			return;
 		}
 		
-		let {type, name, size, col, row}=print_opts;
-		if (!name) {
-			W.alert(_("没有该类型的打印机！"));
-			return;
-		}
-		
-		let opts={type, name, size, col, row}
 		var getVars=(idx)=>{
 			if (idx>0) return null;
 			if (tpdata.tp_vars.length===0) {
@@ -70,26 +61,28 @@ class DoPrint extends React.Component {
 			}
 		}
 		
-		this.doPrint(opts, tpdata.tpid, getVars);
+		this.doPrint(tpdata.tpid, getVars);
+	}
+	
+	setTemplateUrl=()=>{
+		let {protocol, host}=window.location
+		window.SPIRIT.setUrl(`${protocol}//${host}/api/load-template?id=`)
 	}
 		
 	printAll=()=>{
-		let {tpdata, data}=this.props;
-		let {print_opts}=this.state;
+		let {tpdata, data, sql}=this.props;
 		if (data.length===0) return;
 		
 		if (!window.SPIRIT) {
 			W.alert(_("打印机未准备就绪!\n请检查是否未安装\"打印精灵\""));
 			return;
 		}
-				
-		let {type, name, size, col, row, copys}=print_opts;
-		if (!name) {
-			W.alert(_("没有该类型的打印机！"));
-			return;
+		
+		if (sql) {
+			return this.printBySql(sql, tpdata.tpid, this.nextStep)
 		}
 		
-		let opts={type, name, size, col, row}
+		let {copys}=this.props.print_opts;
 		
 		var getVars=(idx)=>{
 			if (tpdata.tp_vars.length===0) {
@@ -103,11 +96,20 @@ class DoPrint extends React.Component {
 			}
 		}
 		
-		this.doPrint(opts, tpdata.tpid, getVars, this.nextStep);
+		this.doPrint(tpdata.tpid, getVars, this.nextStep);
 	}	
 	
 	/* 执行打印 */
-	doPrint=(opt, tpid, getVars, finish)=>{
+	doPrint=(tpid, getVars, finish)=>{
+		
+		let {print_opts}=this.props;		
+		let {type, name, size, col, row, copys}=print_opts;
+		if (!name) {
+			W.alert(_("没有该类型的打印机！"));
+			return;
+		}
+		let opt={type, name, size, col, row}
+
 		
 		var page;
 		var cancel_print=false;
@@ -124,6 +126,7 @@ class DoPrint extends React.Component {
 			</W.Dialog>
 		);
 						
+		this.setTemplateUrl()
 		window.SPIRIT.open(opt, async (p)=>{
 			try {
 				let i=0;
@@ -139,13 +142,48 @@ class DoPrint extends React.Component {
 					i++;
 				}
 			}catch(e){
-				W.alert(e);
+				W.alert(''+e);
 			}	
 			p.close();
 			w.close();
 			if (finish) finish()
 		});
 		
+	}
+	
+	printBySql=(sql, tpid, finish)=>{
+		var page;
+		var cancel_print=false;
+		
+		let {print_opts}=this.props;		
+		let {type, name, size, col, row, copys}=print_opts;
+		if (!name) {
+			W.alert(_("没有该类型的打印机！"));
+			return;
+		}
+		let opt={type, name, size, col, row}
+		
+	
+		let w=W.show(
+			<W.Dialog title={_("打印中")} height="400">
+				<G.Row>
+					<G.Col style={{margin:"0 auto"}}>
+						<H1 >{_("正在打印第")}<span ref={e=>page=e} ></span>{_("张标签")}</H1>
+						<img src="printing.jpg" alt="printing" height="260px"/>
+						<p className="center"><Button type="blue" onClick={e=>cancel_print=true}>{_("取消")}</Button></p>
+					</G.Col>
+				</G.Row>
+			</W.Dialog>
+		);
+		
+		this.setTemplateUrl()		
+		window.SPIRIT.open(opt, async (p)=>{
+			await p.PrintLabelSql(tpid, sql);
+			p.close();
+			w.close();
+			if (finish) finish()
+		});	
+	
 	}
 	
 	getPrinterInfo=(name)=>{
@@ -174,7 +212,8 @@ class DoPrint extends React.Component {
 				this.setState({info:null});
 			}
 			
-			this.setState({print_opts:values, cur_prnlst});
+			this.setState({cur_prnlst});
+			this.props.onChangePrintOpts(values);
 			return;
 		}
 		
@@ -182,15 +221,15 @@ class DoPrint extends React.Component {
 			this.getPrinterInfo(val);
 		}
 		
-		this.setState({print_opts:values});
+		this.props.onChangePrintOpts(values);
 	}
 	
  	async componentDidMount () {
-	 	let {print_opts}=this.state;
+	 	let {print_opts}=this.props;
 	 	let {type}=print_opts;
 	 	
 		try {
-			await loadjs("http://127.0.0.1:9011/js/spirit.js", true);
+			//await loadjs("http://127.0.0.1:9011/js/spirit.js", true);
 					
 			let rc = await window.SPIRIT.getPrinterList();
 			let prnlst=rc.data
@@ -217,7 +256,8 @@ class DoPrint extends React.Component {
 	];
 	
 		const {tpdata}=this.props;
-		const {spirit_ok, prnlst, cur_prnlst, print_opts, info}=this.state;
+		const {spirit_ok, prnlst, cur_prnlst, info}=this.state;
+		const {print_opts}=this.props;
 		
 		if (cur_prnlst.length>0) {
 			if (!print_opts['name']) print_opts['name']=cur_prnlst[0];
@@ -243,7 +283,7 @@ class DoPrint extends React.Component {
 						{spirit_ok===false && <Error small>{_("未检测到打印控件！打印精灵未安装？")} <Button type="blue" href="https://www.printspirit.cn/download/spirit-web-setup.exe">{_("立即安装")}</Button></Error>}
 						
                     <Form  fields={cols}  nCol={2} disable_fields={disable}
-                                values={this.state.print_opts}
+                                values={this.props.print_opts}
 						        onChange={this.onDataChange}
 						        ref={ref=>this.form=ref} />
                     </G.Col>

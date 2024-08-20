@@ -54,7 +54,7 @@ class DivWin {
 		
 		const w=new DivWin();
 		
-		msg = '' + msg;
+		//msg = '' + msg;
 			
 		if (typeof msgtype=='function') {
 			finish=msgtype;
@@ -174,8 +174,9 @@ class DivWin {
 			let h=w.body.offsetHeight- 40 - w.skin_padding_footer;
 			let cls=dlg.props.className;
 			w.body.innerHTML=`
-<div id="${w.myobj}-formbody" class="${classNames(css.form, cls)}" style="height:${h}px;overflow:auto;position:relative"></div>
-	<div id="${w.myobj}-fbtns" class="${css.footer}">
+<div id="${w.myobj}-formbody" class="${classNames(css.form, cls)}" style="height:${h}px;overflow:auto;position:relative">
+</div>
+<div id="${w.myobj}-fbtns" class="${css.footer}">
 	<div style="float:left" id="${w.myobj}-footerinfo"></div>
 </div>`;
 			let {btn_OK, btn_CANCEL, btns}=props;
@@ -188,7 +189,7 @@ class DivWin {
 				w.$(w.myobj+'-fbtns').appendChild(btnOK);
 				btnOK.onclick=()=>{ 
 					if (this.gform && !this.gform.isValid()) { 
-						/* GFrom类型的表单, 检查输入格式 */
+					    /* GFrom类型的表单, 检查输入格式 */
 						DivWin.alert(<div><div>表单填写错误:</div>{this.gform.getErrorString().map((e,i)=><p key={i}>{e}</p>)}</div>);
 						return;
 					}
@@ -240,10 +241,10 @@ function Dialog(props) {
 	const {children, dialog}=props
 	if (children instanceof Array) { 
 		const child=children.map((c,i)=>(typeof c=='object' && typeof c.type!='string')?React.cloneElement(c, {dialog, key:i}):c);
-		return <div>{child}</div>;
+		return <div style={{windth:'100%', height:'100%'}}>{child}</div>;
 	}else{
 		const child=(typeof children=='object' && typeof children.type!='string')?React.cloneElement(children, {dialog}) : children;
-		return <div>{child}</div>;
+		return <div style={{windth:'100%', height:'100%'}}>{child}</div>;
 	}
 }
 

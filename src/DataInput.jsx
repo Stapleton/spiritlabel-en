@@ -1,6 +1,7 @@
 import React from 'react';
-import {Table, Button, ConfirmButton, DivWin as W, Toolbar} from 'ecp';
+import {Table, Button, ConfirmButton, DivWin as W, Toolbar, Form} from 'ecp';
 import {saveAs} from 'file-saver';
+import {classNames} from 'ecp';
 import {_} from "./locale.js";
 
 /* list of supported file types */
@@ -51,9 +52,9 @@ class FileBtn extends React.Component {
 	}
 	
 	render() {
-		const {children, type} = this.props;
+		const {children, ...others} = this.props;
 		return (
-			<Button type={type} onClick={this.select} >
+			<Button {...others} onClick={this.select} >
 				<input type="file" style={{display:"none"}} accept={SheetJSFT} onChange={this.handleChange} ref={this.onRef}/>
 				{children}
 			</Button>
@@ -84,9 +85,134 @@ function ExcelHeader(props) {
 	)
 }
 
+const db_cfg=[
+    {name:_('连接名'),     id:'name'},
+	{name:_('数据库类型'), id:'type',  type:'select', require:true, def:'mysql',
+	    options:{'sqlite':'SQLite', 'mssql':'MS-SQL', 'mysql':'MYSQL', 'pgsql':'PostgresSQL'}},
+	{name:_('数据库名'),   id:'dbname', def:'default'},
+	{name:_('IP地址'),     id:'ip'},
+	{name:_('用户名'),     id:'user'},
+	{name:_('密码'),       id:'pass', type:'password'},
+	{name:_('SQL'),        id:'sql',  type:'text',  colspan:2, 
+	        style:{height:265, width:490, border:'1px solid #adadad', resize:'none', borderRaduis:'2px'}},
+];
+
+class DBConn extends React.Component {
+    state={
+        sql_list : [],
+        sql_idx  : -1,
+        sql_cfg : this.props.sql_conf || {}
+    }
+	
+	componentDidMount=async ()=>{
+		let {data} = await window.SPIRIT.DBQueryList();
+		console.log(data)
+    	this.setState({sql_list:data})
+    }
+    
+    onDataChange=(values, id, val)=>{
+        this.setState({sql_cfg:values})
+	}
+	
+	setSql=async ()=>{
+	    if (!window.SPIRIT) {
+	        W.alert(_("请先安装打印插件"));
+   		    return;
+	    }
+	    let {sql_cfg}=this.state
+	    let rc = await window.SPIRIT.DBQuery(sql_cfg);
+		if (rc.rc=='MSG') {
+			W.alert(rc.msg);
+			return;
+		}
+				
+		if (this.props.setSqlData(rc.data, sql_cfg)) {
+		    this.props.dialog.close();
+		}
+	}
+	
+	close=()=>{
+	    this.props.dialog.close();
+	}
+	
+	sel=i=>()=>{
+		const sql_cfg=this.state.sql_list[i];
+		this.setState({sql_cfg, sql_idx:i})
+		
+	}
+	
+	newSql=()=>{
+		const sql_cfg={type:"mysql"}
+		this.setState({sql_cfg, sql_idx:-1})
+	}
+	
+	del=()=>{
+        const {sql_cfg, sql_list, sql_idx}=this.state;
+        if (sql_idx!==-1) {
+            sql_list.splice(sql_idx, 1)
+            this.setState({sql_list, sql_idx:-1});
+        }
+	}
+	
+	saveSql=async()=>{
+		let {sql_cfg, sql_list, sql_idx}=this.state;
+		if (sql_idx==-1) {
+		    sql_list=[ ...sql_list, sql_cfg]
+			this.setState({ sql_list , sql_idx: sql_list.length})
+		}else{
+			sql_list[sql_idx]=sql_cfg;
+			this.setState({sql_list});
+		}
+		await window.SPIRIT.DBSaveQuery(sql_list);
+	}
+    
+    render() {
+		const {sql_list, sql_idx}=this.state;
+		const {dialog} = this.props;
+		dialog.form=this;
+        return (
+            <div  className="sql-conn-panel">
+                <div className="left">
+				    { sql_list.length===0 ?
+					    <div>
+						    <div className="center mt10">{_("可以通过数据库连接本地系统，如ERP, WMS等系统")}</div>
+					    </div>:
+					    <div>
+							<ul className="sql-list">
+							{sql_list.map((o,i)=><li key={i} 
+							    onClick={this.sel(i)} 
+							    className={classNames({'active':i===sql_idx})}>{o.name}</li>)}
+							</ul>
+						</div>
+				    }
+				    <div className="center new_sql">
+					    <Button type="green" onClick={this.newSql}>{_("新增")}</Button>
+				    </div>
+                </div>
+                <div className="right">
+                    <Form  fields={db_cfg}  nCol={2} 
+                           values={this.state.sql_cfg}
+					       onChange={this.onDataChange}
+					       ref={ref=>dialog.gform=ref} />
+	                 <Toolbar>
+                        <Button onClick={this.saveSql}>{_("保存")}</Button>
+    					<Button onClick={this.del}>{_("删除")}</Button>
+	                    <Toolbar.Ext>
+                		    <Button type="green" onClick={this.setSql}>{_("确定")}</Button>
+                		    <Button onClick={this.close}>{_("关闭")}</Button>
+            		    </Toolbar.Ext>
+            		 </Toolbar>
+                </div>
+            </div>
+        )
+    }
+}
+
 class DataInput extends React.Component {
 	/* 状态 */
 	state={
+		db        : false,       /* is load from database  */
+		sql_cfg   : false,       /* sql connect cfg & sql  */
 		xls       : false,       /* is load from xls       */
 		data      : [],          /* xls data               */
 		cols      : [],          /* xls col                */
@@ -269,14 +395,43 @@ class DataInput extends React.Component {
 	}
 	
 	clearData=()=>{
-		this.setState({xls:false});
+		this.setState({xls:false, db:false});
 		let data=[]
 		for(let i=0; i<10; i++) data.push({});
 		this.props.onDataChange(data);
 	}
+	
+	do_db_conn=(form, sqlcfg)=>{
+	    form.close();
+    }
+	
+	setSqlData=({columns, data}, sql_cfg)=>{
+		let {tp_vars}=this.props.tpdata;
+		for (let i=0; i<tp_vars.length; i++) {
+		    let item=tp_vars[i]
+		    if (!columns.includes(item)) {
+    		    W.alert(_("数据字段与模板不吻合"))
+	    		return false;
+			}
+		}
+		this.props.onSetSql(sql_cfg, data)
+		return true;
+	}
+	
+	db_conn=()=>{
+	    W.show(
+			<W.Dialog
+			    title={_("连接数据库")} 
+			    width="800" height="500" btn_CANCEL 
+			    onSubmit={this.do_db_conn}
+			>
+			    <DBConn setSqlData={this.setSqlData} sql_conf={this.props.sql} />
+			</W.Dialog>
+		); 
+	}
 
 	render() {
-		let {tpdata}=this.props;
+		let {tpdata, sql}=this.props;
 		let {xls, cols, bind_vars}=this.state;
 		
 		let columns=[];
@@ -290,37 +445,47 @@ class DataInput extends React.Component {
 				key:i}
 			})
 			data=this.state.data;
-		}else {
+		}else{	
 			columns=tpdata.tp_vars?tpdata.tp_vars.map(o=>{ return {title:o, key:o} }):[]
-			data = this.props.data||[];
+			if (sql) {
+    			data = this.props.data;
+		    }else{
+    			data = this.props.data||[];
+            }			
 		}
 		
 		return (
 			<>
 			 	<Toolbar style={{borderBottom:'1px solid #ccc'}}>
+					{ sql ? 
 					<Toolbar.Group>
-						<FileBtn type="green" handleFile={this.handleFile}>{_("导入数据文件")}</FileBtn>
-					<Button onClick={this.export} >{_("导出数据模板")}</Button>
+					    <Button icon='database' icon_group='ecp' color='blue' type="blue" onClick={this.db_conn} >{_("重连")}</Button>
 					</Toolbar.Group>
+					:  
+					<Toolbar.Group>
+					    <FileBtn icon='Excel' icon_group='ecp' type="blue" handleFile={this.handleFile}>{_("导入数据文件")}</FileBtn>
+					    <Button icon='database' icon_group='ecp' color='blue' type="blue" onClick={this.db_conn} >{_("连接数据库")}</Button>
+					</Toolbar.Group>}
 				
 					<Toolbar.Group>
-						<Button onClick={this.addRow}>{_("增加行")}</Button>
+						{!sql && <Button onClick={this.addRow}>{_("增加行")}</Button>}
 						{xls && <Button onClick={this.addCol}>{_("增加列")}</Button>}
 					</Toolbar.Group>
 				
 					<Toolbar.Ext>
 						<Toolbar.Group>
 							<Button onClick={this.clearData}>{_("清除数据")}</Button>
+							<Button onClick={this.export} >{_("导出数据模板")}</Button>
 						</Toolbar.Group>
 					</Toolbar.Ext>
 				</Toolbar>
 			 	
-			 	<Table className="data-input" edit 
+			 	<Table className="data-input" edit
 			 		data={data} columns={columns} actions={this.actions} pg_size={10} ref={t=>this.table=t}/>
-				{<div style={{float:"right"}}>
+				<div style={{float:"right"}}>
 					<Button onClick={this.prevStep}>{_("上一步")}</Button>
 					<Button type="green" onClick={this.nextStep}>{_("下一步")}</Button>
-				</div>}
+				</div>
 			</>
 		);
 	}

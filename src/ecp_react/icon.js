@@ -8,7 +8,7 @@ export default class Icon extends React.Component {
 	componentDidMount() {
 		switch(this.props.group){
 			case 'ecp':
-				Util.loadcss('//at.alicdn.com/t/font_423244_b9sc0cdani6.css');
+				Util.loadcss('//at.alicdn.com/t/c/font_423244_rf1zm1vd7b.css');
 				break;
 			
 		}		

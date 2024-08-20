@@ -47,6 +47,10 @@ class Login extends React.Component{
 
 function Tpinfo(props) {
   const {tpinfo, onNext, onResel}=props
+  const onEdit=()=>{
+    window.location.href=`/designer/${tpinfo.id}`
+  }
+  
   return (
 	<G.Row>
 		<G.Col width="40%" className="tp-img-div">
@@ -55,6 +59,7 @@ function Tpinfo(props) {
 		<G.Col width="50%" className="tp-info">
 		    <Toolbar>
     		    <Button type="green" onClick={onNext}>下一步</Button>
+    		    <Button onClick={onEdit}>编辑</Button>
     		    <Button onClick={onResel}>重选</Button>
     		</Toolbar>
     		<hr/>
@@ -75,7 +80,7 @@ class Seltp extends React.Component {
 			this.columns = [ 
 				{title: _('名称'), key: 'name'}, 
 				{title: _('说明'), key: 'memo'}, 
-				{title: _('图片'), key: 'id', tp: (v,r)=><img class="tp-img" alt="tp-img" data-id={v} onClick={this.seltp2} src={`/utils/thumb?id=${v}`}/>
+				{title: _('图片'), key: 'id', tp: (v,r)=><img className="tp-img" alt="tp-img" data-id={v} onClick={this.seltp2} src={`/utils/thumb?id=${v}`}/>
 			}];
 			this.state={
 						search_key : "",
@@ -120,6 +125,12 @@ class Seltp extends React.Component {
     nextStep=()=>{
 		const {tpdata}=this.props;
     	const {tpinfo, tp_vars}=tpdata;
+    	
+    	if (!window.SPIRIT) {
+        	W.alert(_("请先安装打印插件"));
+    		return;
+    	}
+    	
     	if (!tpinfo) {
     		W.alert(_("请先选择打印模版"));
     		return;
@@ -182,6 +193,10 @@ class Seltp extends React.Component {
     returnIndex=()=>{
         this.setState({sel_win:false, selected:false});   
     }
+	
+	create=()=>{
+		window.open(`/designer`, "_blank")
+	}
     
     render() { 
     	const {search_key, owner, logged, selected, sel_win, sel_type}=this.state;
@@ -211,20 +226,25 @@ class Seltp extends React.Component {
             		</div>
                 </div>
                 :
-		        <div className="sel-tp-index">
-		            <div onClick={this.useShares}>
-		                <div className="sel-tp sel-tp-yun"/>
-		                <div className="sel-tp-title">{_("云标签")}</div>
-		            </div>
-		            <div onClick={this.useMine}>
-		                <div className="sel-tp sel-tp-mine"/>
-		                <div className="sel-tp-title">{_("我云标签")}</div>
-		            </div>
-		            <div onClick={this.useLocal}>
-        		        <div className="sel-tp sel-tp-local"/>
-		                <div className="sel-tp-title">{_("本机标签")}</div>
-		            </div>
-		        </div>
+		        <div>
+					<div className="sel-tp-index">
+						<div onClick={this.useShares}>
+							<div className="sel-tp sel-tp-yun"/>
+							<div className="sel-tp-title">{_("云共享标签")}</div>
+						</div>
+						<div onClick={this.useMine}>
+							<div className="sel-tp sel-tp-mine"/>
+							<div className="sel-tp-title">{_("我的云标签")}</div>
+						</div>
+						<div onClick={this.create}>
+							<div className="sel-tp sel-tp-local"/>
+							<div className="sel-tp-title">{_("新建标签")}</div>
+						</div>
+					</div>
+					<div style={{textAlign:'center'}}>
+						<a href="https://www.github.com/printspirit/lpts">该项目已在GitHub上开源</a>
+					</div>
+				</div>
 		    )
 		}
 		</>

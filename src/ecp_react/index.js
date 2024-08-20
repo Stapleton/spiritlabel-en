@@ -18,9 +18,10 @@ import Calendar  from './calendar.js'
 import Icon  from './icon.js'
 import ImagePicker from './image_picker.js'
 import {Info,Warning,Error} from './warning';
+import {loadjs, loadcss, getAbsolutePos, getPopPos, classNames} from './util.js'
 
 import net from './net.js';
 
 import './comm.css'
 
-export { Page, H1, H2, H3, H4, H5, H6, Select, Input, Toolbar, Table, Form, Stepper, Button, DivWin, Grid, InputButton, Tabs, ConfirmButton, DataSelector, DataTree, DateInput, Calendar, Icon, ImagePicker, Info, Warning, Error, net}
+export { Page, H1, H2, H3, H4, H5, H6, Select, Input, Toolbar, Table, Form, Stepper, Button, DivWin, Grid, InputButton, Tabs, ConfirmButton, DataSelector, DataTree, DateInput, Calendar, Icon, ImagePicker, Info, Warning, Error, net, loadjs, loadcss, getAbsolutePos, getPopPos, classNames}

@@ -1,24 +1,48 @@
 .App-header {
   background-color: #1c2a48;
   min-height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
   margin-bottom: 20px;
   box-shadow: 0 2px 20px 0px rgb(0 0 0 / 40%)
 }
 
 .App-header>.App-Title {
-	flex-grow : 1;
 	text-align :center;
 	font-size: 30px;
+	line-height: 60px;
+}
+
+.App-Logo {
+    position: fixed;
+    top: 15px;
 }
 
 .App-header img {
 	width :80px;
 	margin-left:10px;
+}
+
+.mt2 {
+	margin-top: 2px !important;
+}
+
+.mt3 {
+	margin-top: 3px !important;
+}
+
+.mt5 {
+	margin-top: 5px !important;
+}
+
+.mt10 {
+	margin-top: 10px !important;
+}
+
+	
+
+.center {
+	margin: 0 auto;
+	text-align: center;
 }
 
 .login {
@@ -27,6 +51,10 @@
 	padding:20px 10px;
 	border: 1px solid #ccc;
 	border-radius: 5px 3px;
+}
+
+.data-input {
+    overflow: auto;
 }
 
 .tablediv .pg {
@@ -61,7 +89,7 @@
   width: 100px;
 }
 
-.data-input .ca  {
+.data-input th:last-child  {
  width: 100px !important;
  padding-left: 5px !important;
 }
@@ -111,8 +139,7 @@
 }
 
 .sel-tp-win {
-    border: 1px solid #888;
-    height: 60vh;
+ 
 }
 
 .sel-tp-index {
@@ -140,7 +167,7 @@
 .sel-tp-title {
     font-size: 20px;
     font-weight: bold;
-    margin: 10px;
+    margin: 10px auto;
     text-align: center;
 }
 
@@ -155,4 +182,57 @@
 .sel-tp-local {
     background: url(local.svg) no-repeat;
 }
+
+.iconfont {
+    margin-right: 5px;
+}
+
+.sql-conn-panel {
+    display: flex;
+    height: 100%;
+}
+
+
+.sql-conn-panel .left {
+    width : 200px;
+    height: 100%;
+}
+
+.sql-conn-panel .right {
+    border-left: 1px solid #ddd;
+    padding-left: 0px;
+}
+
+.sql-conn-panel .new_sql {
+    margin-top: 20px;
+}
+
+.sql-list {
+	list-style-type: none;
+    padding: 0px;           
+    margin: 5px 10px;            
+}	
+
+.sql-list>li {
+    padding: 3px;
+}
+
+.sql-list>li.active {
+    background-color: #ddd;
+    color:#000;
+}
+
+.sql-list>li:hover {
+    background-color: #adadad;
+    color:#fff;
+}
+
+.spirit-download {
+    text-align:center;
+    color: red;
+    font-size: 14px;
+    height: 50px;
+    font-weight: bold;
+ }
+
 
