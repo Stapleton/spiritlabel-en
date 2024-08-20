@@ -40,6 +40,7 @@ class FileBtn extends React.Component {
 	handleChange=(e)=> {
 		const files = e.target.files;
 		if(files && files[0]) this.props.handleFile(files[0]);
+		this.fileSelector.value='' /* must set it, or it maynot triger other file select for same file */
 	};
 	
 	onRef=e=>{
@@ -211,8 +212,6 @@ class DBConn extends React.Component {
 class DataInput extends React.Component {
 	/* 状态 */
 	state={
-		db        : false,       /* is load from database  */
-		sql_cfg   : false,       /* sql connect cfg & sql  */
 		xls       : false,       /* is load from xls       */
 		data      : [],          /* xls data               */
 		cols      : [],          /* xls col                */
@@ -317,6 +316,7 @@ class DataInput extends React.Component {
 				/* Parse data */
 				const bstr = e.target.result;
 				const wb = XLSX.read(bstr, {type:rABS ? 'binary' : 'array'});
+				
 				/* Get first worksheet */
 				const wsname = wb.SheetNames[0];
 				const ws = wb.Sheets[wsname];
@@ -395,10 +395,10 @@ class DataInput extends React.Component {
 	}
 	
 	clearData=()=>{
-		this.setState({xls:false, db:false});
+		this.setState({xls:false});
 		let data=[]
 		for(let i=0; i<10; i++) data.push({});
-		this.props.onDataChange(data);
+		this.props.onSetSql(null, data);
 	}
 	
 	do_db_conn=(form, sqlcfg)=>{
