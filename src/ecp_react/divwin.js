@@ -82,6 +82,13 @@ class DivWin {
 	}
 	
 	static confirm=(msg, cont, cancel)=> {
+		
+		if (!cont) {
+			return new Promise((resolve, reject) => {
+				DivWin.confirm(msg, ()=>resolve(true), ()=>resolve(false));
+			})
+		}	
+		
 		const w=new DivWin();
 		const {type, ...others}=getProps(msg, {type:'confirm'});
 		if (typeof msg=='string') msg=msg.split('\n').map(s=><p>{s}</p>);
@@ -101,7 +108,8 @@ class DivWin {
 				</div>
 			</Form>;
 		
-		w.doShow(dlg)
+		
+		w.doShow(dlg)		
 		return w;
 	}
 	
