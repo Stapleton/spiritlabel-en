@@ -81,21 +81,23 @@ function ExcelHeader(props) {
 	}
 		
 	return (col in bind_vars ? 
-		<span class="execel-header">{bind_vars[col]} <a href="#" onClick={select_var}>{_("修改")}</a></span> :
-		<span class="execel-header err">{_("未用")}<a href='#' onClick={select_var}>{_("点击绑定变量")}</a></span>
+		<span className="execel-header">{bind_vars[col]} <a href="#" onClick={select_var}>{_("修改")}</a></span> :
+		<span className="execel-header err">{_("未用")}<a href='#' onClick={select_var}>{_("点击绑定变量")}</a></span>
 	)
 }
 
-const db_cfg=[
+let db_cfg=[
     {name:_('连接名'),     id:'name'},
 	{name:_('数据库类型'), id:'type',  type:'select', require:true, def:'mysql',
 	    options:{'sqlite':'SQLite', 'mssql':'MS-SQL', 'mysql':'MYSQL', 'pgsql':'PostgresSQL'}},
-	{name:_('数据库名'),   id:'dbname', def:'default'},
 	{name:_('IP地址'),     id:'ip'},
+	{name:_('端口'),       id:'port'},
 	{name:_('用户名'),     id:'user'},
 	{name:_('密码'),       id:'pass', type:'password'},
+	{name:_('数据库名'),   id:'dbname', def:'default'},
+	{name:_('附加参数'),   id:'opt'},
 	{name:_('SQL'),        id:'sql',  type:'text',  colspan:2, 
-	        style:{height:265, width:490, border:'1px solid #adadad', resize:'none', borderRaduis:'2px'}},
+	        style:{height:225, width:490, border:'1px solid #adadad', resize:'none', borderRaduis:'2px'}},
 ];
 
 class DBConn extends React.Component {
@@ -107,7 +109,6 @@ class DBConn extends React.Component {
 	
 	componentDidMount=async ()=>{
 		let {data} = await window.SPIRIT.DBQueryList();
-		console.log(data)
     	this.setState({sql_list:data})
     }
     
@@ -120,14 +121,16 @@ class DBConn extends React.Component {
 	        W.alert(_("请先安装打印插件"));
    		    return;
 	    }
-	    let {sql_cfg}=this.state
-	    let rc = await window.SPIRIT.DBQuery(sql_cfg);
+        let {sql_cfg}=this.state
+        let {vars_map, ...sql_cfg1}=sql_cfg
+	    let rc = await window.SPIRIT.DBQuery(sql_cfg1);
 		if (rc.rc=='MSG') {
 			W.alert(rc.msg);
 			return;
 		}
 				
-		if (this.props.setSqlData(rc.data, sql_cfg)) {
+		rc=await this.props.setSqlData(rc.data, sql_cfg)
+		if (rc) {
 		    this.props.dialog.close();
 		}
 	}
@@ -147,30 +150,40 @@ class DBConn extends React.Component {
 		this.setState({sql_cfg, sql_idx:-1})
 	}
 	
-	del=()=>{
+	del=async()=>{
         const {sql_cfg, sql_list, sql_idx}=this.state;
         if (sql_idx!==-1) {
             sql_list.splice(sql_idx, 1)
             this.setState({sql_list, sql_idx:-1});
+			await window.SPIRIT.DBSaveQuery(sql_list);
         }
-	}
+    }
 	
 	saveSql=async()=>{
 		let {sql_cfg, sql_list, sql_idx}=this.state;
+		let { vars_map, ...sql_cfg1} = sql_cfg
 		if (sql_idx==-1) {
-		    sql_list=[ ...sql_list, sql_cfg]
+		    sql_list=[ ...sql_list, sql_cfg1]
 			this.setState({ sql_list , sql_idx: sql_list.length})
 		}else{
-			sql_list[sql_idx]=sql_cfg;
+			sql_list[sql_idx]=sql_cfg1;
 			this.setState({sql_list});
 		}
-		await window.SPIRIT.DBSaveQuery(sql_list);
-	}
+        await window.SPIRIT.DBSaveQuery(sql_list);
+    }
     
     render() {
-		const {sql_list, sql_idx}=this.state;
+		const {sql_list, sql_idx, sql_cfg}=this.state;
 		const {dialog} = this.props;
 		dialog.form=this;
+		
+		let disable_fields=[]
+		if (sql_cfg['type']==='sqlite') {
+            disable_fields=['ip', 'port', 'user', 'pass']
+            db_cfg[8].style={...db_cfg[8].style, height:309};
+        }else{
+            db_cfg[8].style={...db_cfg[8].style, height:225};
+        }        
         return (
             <div  className="sql-conn-panel">
                 <div className="left">
@@ -191,10 +204,12 @@ class DBConn extends React.Component {
 				    </div>
                 </div>
                 <div className="right">
-                    <Form  fields={db_cfg}  nCol={2} 
-                           values={this.state.sql_cfg}
+                    <div style={{height:440}}>
+                        <Form  fields={db_cfg}  nCol={2} disable_fields={disable_fields}
+                           values={sql_cfg}
 					       onChange={this.onDataChange}
 					       ref={ref=>dialog.gform=ref} />
+					</div>
 	                 <Toolbar>
                         <Button onClick={this.saveSql}>{_("保存")}</Button>
     					<Button onClick={this.del}>{_("删除")}</Button>
@@ -240,11 +255,11 @@ class DataInput extends React.Component {
 
 	nextStep=()=>{
 		let {xls, bind_vars}=this.state;
-		let {tpdata}=this.props;
+		let {sql, tpdata}=this.props;
 		let data=this.table.getData()
 		
 		var data1=[]
-		if (xls) {
+		if (xls || sql) {
 			let vars=Object.values(bind_vars);
 			for(let i=0; i<tpdata.tp_vars.length; i++) {
 				let v=tpdata.tp_vars[i];
@@ -253,6 +268,7 @@ class DataInput extends React.Component {
 					return;
 				}
 			}
+			
 			
 			data.forEach(d=>{
 			
@@ -279,8 +295,12 @@ class DataInput extends React.Component {
 			W.alert(_("数据不能为空"));
 			return;
 		}
-		
-		this.props.onDataChange(data1);
+		if (sql) {
+			sql.vars_map=bind_vars
+			this.props.onSetSql(sql, data1)
+		}else{
+			this.props.onDataChange(data1);
+		}
 		this.props.history.push("/print-tools/doprint")
 	}
 	
@@ -315,7 +335,7 @@ class DataInput extends React.Component {
 				
 				/* Parse data */
 				const bstr = e.target.result;
-				const wb = XLSX.read(bstr, {type:rABS ? 'binary' : 'array'});
+				const wb = XLSX.read(bstr, {type:rABS ? 'binary' : 'array', codepage: 65001});
 				
 				/* Get first worksheet */
 				const wsname = wb.SheetNames[0];
@@ -405,20 +425,49 @@ class DataInput extends React.Component {
 	    form.close();
     }
 	
-	setSqlData=({columns, data}, sql_cfg)=>{
+	setSqlData=async ({columns, data}, sql_cfg)=>{
 		let {tp_vars}=this.props.tpdata;
-		for (let i=0; i<tp_vars.length; i++) {
-		    let item=tp_vars[i]
-		    if (!columns.includes(item)) {
-    		    W.alert(_("数据字段与模板不吻合"))
-	    		return false;
+		
+		if (columns.length<tp_vars.length) {
+			W.alert(_("数据查询结果不正确\n数据字段数小于标签变量数"))
+			return;
+		}			
+		
+		let bind_vars={};
+		if (sql_cfg.vars_map) {
+			bind_vars=sql_cfg.vars_map
+		}else{
+				
+			for (let i=0; i<tp_vars.length; i++) {
+				let item=tp_vars[i]
+				if (!columns.includes(item)) {
+					let yn = await W.confirm(_("数据字段与标签不吻合\n是: 继续手工匹配字段\n否: 返回修改sql"))
+					if (yn==false) return false;
+					break;
+				}
+			}
+			
+			for(let c of columns) {
+				if (tp_vars.indexOf(c)>=0) {
+					bind_vars[c]=c;
+				}
 			}
 		}
+		
 		this.props.onSetSql(sql_cfg, data)
+		this.setState({xls:false, bind_vars, cols:columns, data})
 		return true;
 	}
 	
 	db_conn=()=>{
+	    if (typeof window.SPIRIT.DBQueryList !== "function") {
+	        W.alert(
+	            <>
+	                <div>{_("打印插件版本太低,需要升级")}</div>
+	                <div><a href="/download/spirit-web-setup.exe">立即下载安装</a></div>
+	            </>)
+	        return;
+	    }
 	    W.show(
 			<W.Dialog
 			    title={_("连接数据库")} 
@@ -445,13 +494,18 @@ class DataInput extends React.Component {
 				key:i}
 			})
 			data=this.state.data;
+		}else if(sql) {
+			columns=cols.map((o,i)=>{ return {
+				title:<ExcelHeader 
+					col={o} bind_vars={bind_vars} tp_vars={tpdata.tp_vars}
+					onBindVar={this.onBindVar}
+				/>, 
+				key:o}
+			})
+			data=this.state.data;
 		}else{	
 			columns=tpdata.tp_vars?tpdata.tp_vars.map(o=>{ return {title:o, key:o} }):[]
-			if (sql) {
-    			data = this.props.data;
-		    }else{
-    			data = this.props.data||[];
-            }			
+			data = this.props.data||[];			
 		}
 		
 		return (

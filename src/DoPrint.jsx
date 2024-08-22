@@ -227,6 +227,7 @@ class DoPrint extends React.Component {
  	async componentDidMount () {
 	 	let {print_opts}=this.props;
 	 	let {type}=print_opts;
+		console.log(print_opts);
 	 	
 		try {
 			//await loadjs("http://127.0.0.1:9011/js/spirit.js", true);
@@ -246,14 +247,14 @@ class DoPrint extends React.Component {
 	render() { 
 	
 		const fields=[
-		{name:_('打印机类型'),    id:'type',  type:'select', options:{'WIN':_('Windows打印机'), 'ZPL':_('ZPL专用标签打印机')}, def:'WIN'},
-		{name:_('打印机'),       id:'name',   type:'select', options:[] },
-		{name:_('纸张大小'),     id:'size',   type:'select', options:{} , def:0 },
-		{name:_('纸张方向'),     id:'dir',    type:'select', options:{'1':_('纵向'), '2':_('横向')}, def:'auto'},
-		{name:_('每行标签列数'),  id:'col',    type:'select', options:{'auto':_('自动'), '1':1, 2:2, 3:3, 4:4, 5:5, 6:6}, def:'auto'},
-		{name:_('每页标签行数'),  id:'row',    type:'select', options:{'auto':_('自动'), '1':1, 2:2, 3:3, 4:4, 5:5, 6:6}, def:'auto'},
-		{name:_('打印份数'),     id:'copys',  type:'int', def:1}
-	];
+			{name:_('打印机类型'),    id:'type',  type:'select', options:{'WIN':_('Windows打印机'), 'ZPL':_('ZPL专用标签打印机')}, def:'WIN'},
+			{name:_('打印机'),       id:'name',   type:'select', options:[] },
+			{name:_('纸张大小'),     id:'size',   type:'select', options:{} , def:0 },
+			{name:_('纸张方向'),     id:'dir',    type:'select', options:{'1':_('纵向'), '2':_('横向')}, def:'auto'},
+			{name:_('每行标签列数'),  id:'col',    type:'select', options:{'auto':_('自动'), '1':1, 2:2, 3:3, 4:4, 5:5, 6:6}, def:'auto'},
+			{name:_('每页标签行数'),  id:'row',    type:'select', options:{'auto':_('自动'), '1':1, 2:2, 3:3, 4:4, 5:5, 6:6}, def:'auto'},
+			{name:_('打印份数'),     id:'copys',  type:'int', def:1}
+		];
 	
 		const {tpdata}=this.props;
 		const {spirit_ok, prnlst, cur_prnlst, info}=this.state;
@@ -262,7 +263,7 @@ class DoPrint extends React.Component {
 		if (cur_prnlst.length>0) {
 			if (!print_opts['name']) print_opts['name']=cur_prnlst[0];
 		}else{
-			print_opts['name']="";
+			//print_opts['name']="";
 		}
 		
 		let cols=[...fields];
