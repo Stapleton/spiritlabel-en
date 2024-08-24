@@ -227,7 +227,6 @@ class DoPrint extends React.Component {
  	async componentDidMount () {
 	 	let {print_opts}=this.props;
 	 	let {type}=print_opts;
-		console.log(print_opts);
 	 	
 		try {
 			//await loadjs("http://127.0.0.1:9011/js/spirit.js", true);

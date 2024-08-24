@@ -95,7 +95,7 @@ class Seltp extends React.Component {
     	this.props.setStep("seltp")
 		this.loadUserinfo();
 		let {id}=this.props.match.params;
-		console.log(this.props.tpdata)
+		
 		if (id) {
 			this.do_seltp(id);
 		}else{

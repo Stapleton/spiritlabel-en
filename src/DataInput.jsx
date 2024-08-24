@@ -142,7 +142,6 @@ class DBConn extends React.Component {
 	sel=i=>()=>{
 		const sql_cfg=this.state.sql_list[i];
 		this.setState({sql_cfg, sql_idx:i})
-		
 	}
 	
 	newSql=()=>{
@@ -161,6 +160,10 @@ class DBConn extends React.Component {
 	
 	saveSql=async()=>{
 		let {sql_cfg, sql_list, sql_idx}=this.state;
+		if (!sql_cfg.name) {
+		    W.alert(_("请输入数据库连接名称"));
+		    return;
+		}
 		let { vars_map, ...sql_cfg1} = sql_cfg
 		if (sql_idx==-1) {
 		    sql_list=[ ...sql_list, sql_cfg1]
@@ -212,10 +215,11 @@ class DBConn extends React.Component {
 					</div>
 	                 <Toolbar>
                         <Button onClick={this.saveSql}>{_("保存")}</Button>
-    					<Button onClick={this.del}>{_("删除")}</Button>
+    					{sql_idx>=0 && <ConfirmButton msg={_("删除本条记录吗?")} onClick={this.del}>{_("删除")}</ConfirmButton>}
 	                    <Toolbar.Ext>
                 		    <Button type="green" onClick={this.setSql}>{_("确定")}</Button>
                 		    <Button onClick={this.close}>{_("关闭")}</Button>
+                		    <Button href="/doc/label_print.md#use_db" target="_blank">{_("使用说明")}</Button>
             		    </Toolbar.Ext>
             		 </Toolbar>
                 </div>
@@ -230,7 +234,8 @@ class DataInput extends React.Component {
 		xls       : false,       /* is load from xls       */
 		data      : [],          /* xls data               */
 		cols      : [],          /* xls col                */
-		bind_vars : {}           /* xls key map to tp_vars */
+		bind_vars : {},          /* xls key map to tp_vars */
+		total     : 0,           /* total row of db        */
 	}
 
 	constructor(props) {
@@ -269,7 +274,6 @@ class DataInput extends React.Component {
 				}
 			}
 			
-			
 			data.forEach(d=>{
 			
 				if (d.length===1) return; /* only _key : is blank */
@@ -296,7 +300,11 @@ class DataInput extends React.Component {
 			return;
 		}
 		if (sql) {
-			sql.vars_map=bind_vars
+		    sql.vars_map={}
+		    for (let k in bind_vars) {
+		        console.log(k, bind_vars[k])
+		        if (k!==bind_vars[k]) sql.vars_map[k]=bind_vars[k]
+		    }
 			this.props.onSetSql(sql, data1)
 		}else{
 			this.props.onDataChange(data1);
@@ -425,7 +433,7 @@ class DataInput extends React.Component {
 	    form.close();
     }
 	
-	setSqlData=async ({columns, data}, sql_cfg)=>{
+	setSqlData=async ({columns, total, data}, sql_cfg)=>{
 		let {tp_vars}=this.props.tpdata;
 		
 		if (columns.length<tp_vars.length) {
@@ -455,7 +463,7 @@ class DataInput extends React.Component {
 		}
 		
 		this.props.onSetSql(sql_cfg, data)
-		this.setState({xls:false, bind_vars, cols:columns, data})
+		this.setState({xls:false, bind_vars, cols:columns, data, total})
 		return true;
 	}
 	
@@ -481,7 +489,7 @@ class DataInput extends React.Component {
 
 	render() {
 		let {tpdata, sql}=this.props;
-		let {xls, cols, bind_vars}=this.state;
+		let {xls, cols, bind_vars, total}=this.state;
 		
 		let columns=[];
 		let data=[];
@@ -514,6 +522,7 @@ class DataInput extends React.Component {
 					{ sql ? 
 					<Toolbar.Group>
 					    <Button icon='database' icon_group='ecp' color='blue' type="blue" onClick={this.db_conn} >{_("重连")}</Button>
+					    <span>{_("共有")+total+_("条记录")}</span>
 					</Toolbar.Group>
 					:  
 					<Toolbar.Group>
