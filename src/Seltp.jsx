@@ -1,5 +1,6 @@
 import React from 'react';
 import {Table, Form, Button, DivWin as W, Grid as G, InputButton, Toolbar, net } from 'ecp';
+import LabelGallery from './LabelGallery.jsx'
 import tp_utils from './tp_utils.js'
 import {_} from "./locale.js";
 
@@ -76,19 +77,14 @@ function Tpinfo(props) {
 class Seltp extends React.Component {
    
     constructor(props) {
-			super(props);
-			this.columns = [ 
-				{title: _('名称'), key: 'name'}, 
-				{title: _('说明'), key: 'memo'}, 
-				{title: _('图片'), key: 'id', tp: (v,r)=><img className="tp-img" alt="tp-img" data-id={v} onClick={this.seltp2} src={`/utils/thumb?id=${v}`}/>
-			}];
-			this.state={
-						search_key : "",
-						owner : "all",
-						logged : false,
-						sel_win : false, 
-						sel_type: ''
-			}
+		super(props);
+		this.state={
+			search_key : "",
+			owner : "all",
+			logged : false,
+			sel_win : false, 
+			sel_type: ''
+		}
     }
     
     componentDidMount=()=>{
@@ -144,14 +140,6 @@ class Seltp extends React.Component {
 	    }
     }
     
-    seltp1=(record)=>{
-    	this.do_seltp(record.id)
-    }
-    
-    seltp2=(e)=>{
-    	this.do_seltp(e.target.getAttribute('data-id'));
-    }
-    
     do_seltp=async (tpid)=>{
     	this.setState({tpid, selected:true});
     	this.loadtp(tpid);
@@ -163,15 +151,6 @@ class Seltp extends React.Component {
     
     dosearch=(search_key)=>{
     	this.setState({search_key})
-    }
-    
-    actions=(tabObj, record)=>{
-        return(
-            <span>
-                <Button type='inline' onClick={()=>this.seltp1(record)}>{_("选择")}</Button>
-                <Button type='inline' onClick={()=>this.edit(record)}>{_("编辑")}</Button>
-            </span>
-        )
     }
     
     onChgOwner=(owner)=>{
@@ -193,6 +172,10 @@ class Seltp extends React.Component {
     returnIndex=()=>{
         this.setState({sel_win:false, selected:false});   
     }
+    
+    reSel=()=>{
+        this.setState({selected:false});   
+    }
 	
 	create=()=>{
 		window.open(`/designer`, "_blank")
@@ -205,23 +188,22 @@ class Seltp extends React.Component {
 		const {id}=this.props.match.params;
     	return (
 		<>
-		{ selected ? (tpinfo && <Tpinfo tpinfo={tpinfo} tp_vars={tp_vars} onNext={this.nextStep} onResel={this.returnIndex}/>):
+		{ selected ? (tpinfo && <Tpinfo tpinfo={tpinfo} tp_vars={tp_vars} onNext={this.nextStep} onResel={this.reSel}/>):
 		    (
 		        sel_win?
 		        <div className="sel-tp-win">
     		        <G.Row>
 	        			<G.Col style={{margin:"0 auto", padding:10, paddingBottom:20}}>
-	        				<InputButton no_empty={false} onClick={this.dosearch} style={{display:'inline'}}>{_("搜索")}</InputButton>
+	        				<InputButton no_empty={false} defaultValue={search_key} onClick={this.dosearch} style={{display:'inline'}}>{_("搜索")}</InputButton>
 	        				<Button onClick={this.returnIndex}>返回</Button>
 	        			</G.Col>
 	        		</G.Row> 
 	        		<div>
-		                {sel_type=='shares' && <Table dataUrl={`/api/get-tp-list?all=1&key=${search_key}`} 
-						        columns={this.columns} actions={this.actions} pg_size={5} /> }
+		                {sel_type=='shares' && <LabelGallery type="shares" search={search_key} onSelTp={this.do_seltp}/> }
 				        {sel_type=='mine' && (
-				            logged ?
-						        <Table dataUrl={`/api/get-tp-list?key=${search_key}`} 
-						        columns={this.columns} actions={this.actions} pg_size={5} /> :
+				            logged ? 
+				                <LabelGallery type="mine" search={search_key} onSelTp={this.do_seltp}/>
+				                :
             					<Login onLogin={this.onLogin} />)}
             		</div>
                 </div>

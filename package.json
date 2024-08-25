@@ -154,6 +154,6 @@
       "react-app"
     ]
   },
-  "proxy": "http://localhost:8059",
+  "proxy": "https://www.printspirit.cn",
   "homepage": "/print-tools"
 }
