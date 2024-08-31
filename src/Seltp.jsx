@@ -58,9 +58,9 @@ function Tpinfo(props) {
 		</G.Col>
 		<G.Col width="50%" className="tp-info">
 		    <Toolbar>
-    		    <Button type="green" onClick={onNext}>下一步</Button>
-    		    <Button onClick={onEdit}>编辑</Button>
-    		    <Button onClick={onResel}>重选</Button>
+    		    <Button type="green" onClick={onNext}>{_("下一步")}</Button>
+    		    <Button onClick={onEdit}>{_("编辑")}</Button>
+    		    <Button onClick={onResel}>{_("重选")}</Button>
     		</Toolbar>
     		<hr/>
 			<p><span className="tp-head-item">{_("名称:")}</span>{tpinfo.name} </p>
@@ -131,7 +131,7 @@ class Seltp extends React.Component {
     		return;
     	}
     	if (!tp_vars || tp_vars.length===0) {
-    		W.confirm(_("模版没有需要绑定的变量!\n仍然要打印吗？"), 
+    		W.confirm(_("模版没有需要绑定的变量!"), 
     			()=>this.props.history.push("/print-tools/doprint")
     		)
     	}else{
@@ -194,7 +194,7 @@ class Seltp extends React.Component {
     		        <G.Row>
 	        			<G.Col style={{margin:"0 auto", padding:10, paddingBottom:20}}>
 	        				<InputButton no_empty={false} defaultValue={search_key} onClick={this.dosearch} style={{display:'inline'}}>{_("搜索")}</InputButton>
-	        				<Button onClick={this.returnIndex}>返回</Button>
+	        				<Button onClick={this.returnIndex}>{_("返回")}</Button>
 	        			</G.Col>
 	        		</G.Row> 
 	        		<div>
@@ -223,7 +223,7 @@ class Seltp extends React.Component {
 						</div>
 					</div>
 					<div style={{textAlign:'center'}}>
-						<a href="https://www.github.com/printspirit/lpts">该项目已在GitHub上开源</a>
+						<a href="https://www.github.com/printspirit/lpts">{_("该项目已在GitHub上开源")}</a>
 					</div>
 				</div>
 		    )

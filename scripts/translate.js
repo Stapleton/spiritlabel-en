@@ -29,15 +29,20 @@ walk("./src", function(err, file) {
 });
 
 let alread_trans = require("../src/translate.js");
+let trans={};
 
 for(let i=0; i<strings.length; i++) {
 	let str = strings[i];
-	if ( str in alread_trans) continue;
-	alread_trans[str]={zh:str, en:" "}
+	if ( str in trans) continue;
+	if ( str in alread_trans) {
+    	trans[str]=alread_trans[str]
+    }else{
+        trans[str]={zh:str, en:" "}
+    }
 }
 
 str="const strings =";
-str+=JSON.stringify(alread_trans, null, 2);
+str+=JSON.stringify(trans, null, 2);
 str+="\n\nmodule.exports = strings\n";
 
 fs.renameSync("./src/translate.js", "./src/translate.js.bak");

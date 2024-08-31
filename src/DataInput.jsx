@@ -82,20 +82,6 @@ function ExcelHeader(props) {
 	)
 }
 
-let db_cfg=[
-    {name:_('连接名'),     id:'name'},
-	{name:_('数据库类型'), id:'type',  type:'select', require:true, def:'mysql',
-	    options:{'sqlite':'SQLite', 'mssql':'MS-SQL', 'mysql':'MYSQL', 'pgsql':'PostgresSQL'}},
-	{name:_('IP地址'),     id:'ip'},
-	{name:_('端口'),       id:'port'},
-	{name:_('用户名'),     id:'user'},
-	{name:_('密码'),       id:'pass', type:'password'},
-	{name:_('数据库名'),   id:'dbname', def:'default'},
-	{name:_('附加参数'),   id:'opt'},
-	{name:_('SQL'),        id:'sql',  type:'text',  colspan:2, 
-	        style:{height:225, width:490, border:'1px solid #adadad', resize:'none', borderRaduis:'2px'}},
-];
-
 class DBConn extends React.Component {
     state={
         sql_list : [],
@@ -172,6 +158,21 @@ class DBConn extends React.Component {
     }
     
     render() {
+    
+        let db_cfg=[
+            {name:_('连接名'),     id:'name'},
+	        {name:_('数据库类型'), id:'type',  type:'select', require:true, def:'mysql',
+	            options:{'sqlite':'SQLite', 'mssql':'MS-SQL', 'mysql':'MYSQL', 'pgsql':'PostgresSQL'}},
+	        {name:_('IP地址'),     id:'ip'},
+	        {name:_('端口'),       id:'port'},
+	        {name:_('用户名'),     id:'user'},
+	        {name:_('密码'),       id:'pass', type:'password'},
+	        {name:_('数据库名'),   id:'dbname', def:'default'},
+	        {name:_('附加参数'),   id:'opt'},
+	        {name:_('SQL'),        id:'sql',  type:'text',  colspan:2, 
+	                style:{height:225, width:490, border:'1px solid #adadad', resize:'none', borderRaduis:'2px'}},
+        ];
+    
 		const {sql_list, sql_idx, sql_cfg}=this.state;
 		const {dialog} = this.props;
 		dialog.form=this;
@@ -433,7 +434,7 @@ class DataInput extends React.Component {
 		let {tp_vars}=this.props.tpdata;
 		
 		if (columns.length<tp_vars.length) {
-			W.alert(_("数据查询结果不正确\n数据字段数小于标签变量数"))
+			W.alert(_("数据查询结果不正确"))
 			return;
 		}			
 		
@@ -445,7 +446,7 @@ class DataInput extends React.Component {
 			for (let i=0; i<tp_vars.length; i++) {
 				let item=tp_vars[i]
 				if (!columns.includes(item)) {
-					let yn = await W.confirm(_("数据字段与标签不吻合\n是: 继续手工匹配字段\n否: 返回修改sql"))
+					let yn = await W.confirm(_("数据字段与标签不吻合"))
 					if (yn===false) return false;
 					break;
 				}

@@ -10,8 +10,6 @@ import spirit_power from './spirit.svg';
 import {setLanguage, _} from "./locale.js";
 import {load_spirit_js, download} from "./load_spirit.js";
 
-const steps= [{seltp:_("选择标签")}, {loaddata:_("录入数据")}, {doprint:_("执行打印")}, {finish:_("完成")}];
-
 export default class App extends React.Component {
 
 	state ={
@@ -51,8 +49,15 @@ export default class App extends React.Component {
 		
 	render() {
 		const {tpdata, step, data, sql, print_opts}=this.state;
+		let lang=""
+		if (window.location.pathname.startsWith("/en/")) {
+		    setLanguage("en");
+		    lang="en"
+		}
+		console.log(window.location);
+		const steps= [{seltp:_("选择标签")}, {loaddata:_("录入数据")}, {doprint:_("执行打印")}, {finish:_("完成")}];
 		return (
-			<Router>
+			<Router basename={lang}>
 				<div className="App-header">
 					<span className="App-Logo">
 						<a href="/" target="_main">
@@ -67,7 +72,7 @@ export default class App extends React.Component {
 					<div style={{height:50}} />
 					{!window.SPIRIT &&
             		    <div className="spirit-download">
-    	                SpiritWeb打印插件尚未安装! <a href="/download/spirit-web-setup.exe">立刻安装</a> <a href="/doc/install.md">查看说明</a>
+    	                {_("SpiritWeb打印插件尚未安装!")} <a href="/download/spirit-web-setup.exe">{_("立刻安装")}</a> <a href="/doc/install.md">{_("查看说明")}</a>
 	                    </div>}
 					
 					<Route path="/print-tools" exact  render={props =><Seltp {...props} 

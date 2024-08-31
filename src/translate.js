@@ -1,7 +1,7 @@
 const strings ={
-  "选择模版": {
-    "zh": "选择模版",
-    "en": "Select Template"
+  "选择标签": {
+    "zh": "选择标签",
+    "en": "Select Label"
   },
   "录入数据": {
     "zh": "录入数据",
@@ -9,11 +9,27 @@ const strings ={
   },
   "执行打印": {
     "zh": "执行打印",
-    "en": "Do Print"
+    "en": "Print"
   },
   "完成": {
     "zh": "完成",
     "en": "Done"
+  },
+  "标签打印": {
+    "zh": "标签打印",
+    "en": "Label Print "
+  },
+  "SpiritWeb打印插件尚未安装!": {
+    "zh": "SpiritWeb打印插件尚未安装!",
+    "en": "PrintSpirit Not Install!"
+  },
+  "立刻安装": {
+    "zh": "立刻安装",
+    "en": "Install Now!"
+  },
+  "查看说明": {
+    "zh": "查看说明",
+    "en": "Document"
   },
   "将当前列绑定到：": {
     "zh": "将当前列绑定到：",
@@ -22,6 +38,106 @@ const strings ={
   "选择变量": {
     "zh": "选择变量",
     "en": "choose variable"
+  },
+  "修改": {
+    "zh": "修改",
+    "en": "Modify"
+  },
+  "未用": {
+    "zh": "未用",
+    "en": "No Use"
+  },
+  "点击绑定变量": {
+    "zh": "点击绑定变量",
+    "en": "Click to bind variable"
+  },
+  "连接名": {
+    "zh": "连接名",
+    "en": "Connection "
+  },
+  "数据库类型": {
+    "zh": "数据库类型",
+    "en": "Type"
+  },
+  "IP地址": {
+    "zh": "IP地址",
+    "en": "IP"
+  },
+  "端口": {
+    "zh": "端口",
+    "en": "Port"
+  },
+  "用户名": {
+    "zh": "用户名",
+    "en": "User"
+  },
+  "密码": {
+    "zh": "密码",
+    "en": "Password"
+  },
+  "数据库名": {
+    "zh": "数据库名",
+    "en": "DataBase "
+  },
+  "附加参数": {
+    "zh": "附加参数",
+    "en": "Addon"
+  },
+  "SQL": {
+    "zh": "SQL",
+    "en": "SQL"
+  },
+  "请先安装打印插件": {
+    "zh": "请先安装打印插件",
+    "en": "Please Install SpiritWeb First"
+  },
+  "请输入数据库连接名称": {
+    "zh": "请输入数据库连接名称",
+    "en": "Please input DB connection name"
+  },
+  "可以通过数据库连接本地系统，如ERP, WMS等系统": {
+    "zh": "可以通过数据库连接本地系统，如ERP, WMS等系统",
+    "en": "You can connect to ERP, WMS system etc."
+  },
+  "新增": {
+    "zh": "新增",
+    "en": "New"
+  },
+  "保存": {
+    "zh": "保存",
+    "en": "Save"
+  },
+  "删除本条记录吗?": {
+    "zh": "删除本条记录吗?",
+    "en": "Delete?"
+  },
+  "删除": {
+    "zh": "删除",
+    "en": "Delete"
+  },
+  "确定": {
+    "zh": "确定",
+    "en": "Query"
+  },
+  "关闭": {
+    "zh": "关闭",
+    "en": "Close"
+  },
+  "使用说明": {
+    "zh": "使用说明",
+    "en": "Usage"
+  },
+  "插入": {
+    "zh": "插入",
+    "en": "Insert"
+  },
+  "变量": {
+    "zh": "变量",
+    "en": "Variable "
+  },
+  "未绑定_alert": {
+    "zh": "未绑定,\n请点击表头绑定变量！\n \n\n数据列不够可添加。",
+    "en": " Not Bind To Any Data Column. \nPlease click table column head to bind."
   },
   "数据不能为空": {
     "zh": "数据不能为空",
@@ -43,13 +159,65 @@ const strings ={
     "zh": "增加数据列",
     "en": "add column"
   },
+  "数据查询结果不正确": {
+    "zh": "数据查询结果不正确\\n数据字段数小于标签变量数",
+    "en": "Data incorrect\nNumber of data fields is less than the number of label variables"
+  },
+  "数据字段与标签不吻合": {
+    "zh": "数据字段与标签不吻合\\n是: 继续手工匹配字段\\n否: 返回修改sql",
+    "en": "Data fields do not match labels\nYes: Continue manual field matching\nNo: Return to modify SQL"
+  },
+  "打印插件版本太低,需要升级": {
+    "zh": "打印插件版本太低,需要升级",
+    "en": "SpiritWeb Need Upgrade!"
+  },
+  "连接数据库": {
+    "zh": "连接数据库",
+    "en": "Connect DB"
+  },
+  "重连": {
+    "zh": "重连",
+    "en": "Reconnect DB"
+  },
+  "共有": {
+    "zh": "共有",
+    "en": "Total "
+  },
+  "条记录": {
+    "zh": "条记录",
+    "en": " Record(s)"
+  },
   "导入数据文件": {
     "zh": "导入数据文件",
     "en": "Import data"
   },
+  "增加行": {
+    "zh": "增加行",
+    "en": "Add Row"
+  },
+  "增加列": {
+    "zh": "增加列",
+    "en": "Add Column"
+  },
+  "清除数据": {
+    "zh": "清除数据",
+    "en": "Clear data"
+  },
   "导出数据模板": {
     "zh": "导出数据模板",
     "en": "Export data template"
+  },
+  "上一步": {
+    "zh": "上一步",
+    "en": "Prev"
+  },
+  "下一步": {
+    "zh": "下一步",
+    "en": "Next"
+  },
+  "打印机未准备就绪!": {
+    "zh": "打印机未准备就绪!\n请检查是否未安装\\\"打印精灵\\\"",
+    "en": "Printer Not Ready!\nPlease check SpiritWeb is installed."
   },
   "没有该类型的打印机！": {
     "zh": "没有该类型的打印机！",
@@ -65,6 +233,14 @@ const strings ={
   },
   "张标签": {
     "zh": "张标签",
+    "en": "label(s) "
+  },
+  "取消": {
+    "zh": "取消",
+    "en": "Cancel"
+  },
+  "错误:\"+e+\"\\n继续吗?": {
+    "zh": "错误:\"+e+\"\\n继续吗?",
     "en": " "
   },
   "打印机类型": {
@@ -131,117 +307,9 @@ const strings ={
     "zh": "打印全部",
     "en": "Print All"
   },
-  "打印机未准备就绪!\n请检查是否未安装\"打印精灵\"": {
-    "zh": "打印机未准备就绪!\n请检查是否未安装\"打印精灵\"",
-    "en": "Printer not readery!\nPlease check is PrintSpirit installed!"
-  },
-  "用户名": {
-    "zh": "用户名",
-    "en": "User"
-  },
-  "密码": {
-    "zh": "密码",
-    "en": "Password"
-  },
-  "名称": {
-    "zh": "名称",
-    "en": "Template Name"
-  },
-  "说明": {
-    "zh": "说明",
-    "en": "Description"
-  },
-  "图片": {
-    "zh": "图片",
-    "en": "Preview"
-  },
-  "请先选择打印模版": {
-    "zh": "请先选择打印模版",
-    "en": "Please Choose a Template First"
-  },
-  "模版没有需要绑定的变量!\n仍然要打印吗？": {
-    "zh": "模版没有需要绑定的变量!\n仍然要打印吗？",
-    "en": "Template has no variable!\nContinue?"
-  },
-  "共享模板": {
-    "zh": "共享模板",
-    "en": "Publics"
-  },
-  "我的模板": {
-    "zh": "我的模板",
-    "en": "Mine"
-  },
-  "请选择标签模版": {
-    "zh": "请选择标签模版",
-    "en": "Choose a Template"
-  },
-  "下一步": {
-    "zh": "下一步",
-    "en": "Next"
-  },
-  "搜索": {
-    "zh": "搜索",
-    "en": "Search"
-  },
-  "可用标签模版列表": {
-    "zh": "可用标签模版列表",
-    "en": "Avaiable Label Template"
-  },
-  "已选模版": {
-    "zh": "已选模版",
-    "en": "Selected Template"
-  },
-  "批量打印小工具": {
-    "zh": "批量打印小工具",
-    "en": "Batch Print Label"
-  },
-  "增加行": {
-    "zh": "增加行",
-    "en": "Add Row"
-  },
-  "增加列": {
-    "zh": "增加列",
-    "en": "Add Column"
-  },
-  "清除数据": {
-    "zh": "清除数据",
-    "en": "Clear data"
-  },
-  "上一步": {
-    "zh": "上一步",
-    "en": "Prev"
-  },
-  "取消": {
-    "zh": "取消",
-    "en": "Cancel"
-  },
-  "插入": {
-    "zh": "插入",
-    "en": "Insert"
-  },
-  "删除": {
-    "zh": "删除",
-    "en": "Delete"
-  },
-  "修改": {
-    "zh": "修改",
-    "en": "Modify"
-  },
-  "点击绑定变量": {
-    "zh": "点击绑定变量",
-    "en": "Click to bind variable"
-  },
-  "未用": {
-    "zh": "未用",
-    "en": "No Use"
-  },
-  "变量": {
-    "zh": "变量",
-    "en": "Variable "
-  },
-  "未绑定_alert": {
-    "zh": "未绑定,\n请点击表头绑定变量！\n \n\n数据列不够可添加。",
-    "en": " Not Bind To Any Data Column. \nPlease click table column head to bind."
+  "无标签": {
+    "zh": "无标签",
+    "en": "No Labels "
   },
   "登录": {
     "zh": "登录",
@@ -250,6 +318,14 @@ const strings ={
   "注册": {
     "zh": "注册",
     "en": "Sign up"
+  },
+  "编辑": {
+    "zh": "编辑",
+    "en": "Edit"
+  },
+  "重选": {
+    "zh": "重选",
+    "en": "Back"
   },
   "名称:": {
     "zh": "名称:",
@@ -271,13 +347,41 @@ const strings ={
     "zh": "模板变量",
     "en": "Tp Variables:"
   },
-  "选择": {
-    "zh": "选择",
-    "en": "Select"
+  "请先选择打印模版": {
+    "zh": "请先选择打印模版",
+    "en": "Please Choose a Template First"
   },
-  "编辑": {
-    "zh": "编辑",
-    "en": "Modify"
+  "模版没有需要绑定的变量!": {
+    "zh": "模版没有需要绑定的变量!\\n仍然要打印吗？",
+    "en": "No Variables in Label!\n Countiue ?"
+  },
+  "该功能暂未实现": {
+    "zh": "该功能暂未实现",
+    "en": "Not implements"
+  },
+  "搜索": {
+    "zh": "搜索",
+    "en": "Search"
+  },
+  "返回": {
+    "zh": "返回",
+    "en": "Back"
+  },
+  "云共享标签": {
+    "zh": "云共享标签",
+    "en": "Share Labels"
+  },
+  "我的云标签": {
+    "zh": "我的云标签",
+    "en": "My Labels"
+  },
+  "新建标签": {
+    "zh": "新建标签",
+    "en": "Create New"
+  },
+  "该项目已在GitHub上开源": {
+    "zh": "该项目已在GitHub上开源",
+    "en": "This project is open source on GitHub. "
   }
 }
 

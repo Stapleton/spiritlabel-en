@@ -47,7 +47,7 @@ class DoPrint extends React.Component {
 		if (data.length===0) return;
 		
 		if (!window.SPIRIT) {
-			W.alert(_("打印机未准备就绪!\n请检查是否未安装\"打印精灵\""));
+			W.alert(_("打印机未准备就绪!"));
 			return;
 		}
 		
@@ -301,7 +301,7 @@ class DoPrint extends React.Component {
 		
 		cols[1].options=cur_prnlst;
 		if (info) cols[2].options=Object.keys(info.paper).reduce((a,p)=>{ a[p]=info.paper[p].name; return a}, {})
-		else cols[2].options={0:_("自动")}
+		else cols[2].options={0:_('自动')}
 				
 		if (tpdata.tp_vars && tpdata.tp_vars.length>0) {
 			/* 有变量模板，不能打印多张 */
