@@ -42,7 +42,7 @@ export default class App extends React.Component {
 	onChangeTp=(tpdata)=>{
 		let data=[]
 		for(let i=0; i<10; i++) data.push({});
-		this.setState({tpdata, data, sql:null, data:[]});
+		this.setState({tpdata, data, sql:null});
 	}
 	
 	onChangePrintOpts=(print_opts)=>{

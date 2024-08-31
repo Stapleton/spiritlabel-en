@@ -34,6 +34,6 @@ export default function Stepper(props) {
 	let sp_width= parseInt(100/steps.length)+'%';
 	const curIdx=findCurrentIdx(current)
 	return (<div style={{width:width, margin:"0 auto"}} >
-		 { steps.map((s,i)=><Step key={i} num={i+1} title={s} width={sp_width} done={i<curIdx} active={i==curIdx-1} />) }
+		 { steps.map((s,i)=><Step key={i} num={i+1} title={s} width={sp_width} done={i<curIdx} active={i===curIdx-1} />) }
 		</div>)
 }

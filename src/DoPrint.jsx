@@ -1,6 +1,5 @@
 import React from 'react';
-import {H1, Grid as G, Button, DivWin as W, Form, Warning, Error, Info } from 'ecp';
-import {loadjs} from 'ecp/util'
+import {H1, Grid as G, Button, DivWin as W, Form, Error,} from 'ecp';
 import {_} from "./locale.js";
 
 // 将独立的ns1.ns2...key1变量按ns组合起来：
@@ -100,90 +99,123 @@ class DoPrint extends React.Component {
 	}	
 	
 	/* 执行打印 */
-	doPrint=(tpid, getVars, finish)=>{
+	doPrint=async(tpid, getVars, finish)=>{
 		
 		let {print_opts}=this.props;		
-		let {type, name, size, col, row, copys}=print_opts;
-		if (!name) {
-			W.alert(_("没有该类型的打印机！"));
-			return;
-		}
-		let opt={type, name, size, col, row}
-
-		
-		var page;
-		var cancel_print=false;
-	
-		let w=W.show(
-			<W.Dialog title={_("打印中")} height="400">
-				<G.Row>
-					<G.Col style={{margin:"0 auto"}}>
-						<H1 >{_("正在打印第")}<span ref={e=>page=e} ></span>{_("张标签")}</H1>
-						<img src="printing.jpg" alt="printing" height="260px"/>
-						<p className="center"><Button type="blue" onClick={e=>cancel_print=true}>{_("取消")}</Button></p>
-					</G.Col>
-				</G.Row>
-			</W.Dialog>
-		);
-						
-		this.setTemplateUrl()
-		window.SPIRIT.open(opt, async (p)=>{
-			try {
-				let i=0;
-				while(true) {
-					let vars=getVars(i);
-					if (vars===null) break;
-											
-					if (page) page.innerHTML=i+1;
-					await p.PrintLabel(tpid, vars);
-					//await timewait();
-					if (cancel_print===true) break;
-					
-					i++;
-				}
-			}catch(e){
-				W.alert(''+e);
-			}	
-			p.close();
-			w.close();
-			if (finish) finish()
-		});
-		
-	}
-	
-	printBySql=(sql, tpid, finish)=>{
-		var page;
-		var cancel_print=false;
-		
-		let {print_opts}=this.props;		
-		let {type, name, size, col, row, copys}=print_opts;
+		let {type, name, size, col, row}=print_opts;
 		if (!name) {
 			W.alert(_("没有该类型的打印机！"));
 			return;
 		}
 		let opt={type, name, size, col, row}
 		
-	
-		let w=W.show(
-			<W.Dialog title={_("打印中")} height="400">
-				<G.Row>
-					<G.Col style={{margin:"0 auto"}}>
-						<H1 >{_("正在打印第")}<span ref={e=>page=e} ></span>{_("张标签")}</H1>
-						<img src="printing.jpg" alt="printing" height="260px"/>
-						<p className="center"><Button type="blue" onClick={e=>cancel_print=true}>{_("取消")}</Button></p>
-					</G.Col>
-				</G.Row>
-			</W.Dialog>
-		);
+		var page;
+	    var cancel_print=false;
+		var p;
 		
 		this.setTemplateUrl()		
-		window.SPIRIT.open(opt, async (p)=>{
-			await p.PrintLabelSql(tpid, sql);
-			p.close();
-			w.close();
-			if (finish) finish()
-		});	
+		try {
+		    p=await window.SPIRIT.open(opt)
+	    }catch(e){
+	        W.alert(e);
+	        return;
+	    }
 	
+		let w=W.show(
+			<W.Dialog title={_("打印中")} height="400">
+				<G.Row className="print-dlg">
+					<G.Col style={{margin:"0 auto", width:380, textAlign:"center"}}>
+						<H1 >{_("正在打印第")}<span ref={e=>page=e} ></span>{_("张标签")}</H1>
+						<img src="printing.jpg" alt="printing" height="260px"/>
+						<p className="center"><Button type="blue" onClick={e=>cancel_print=true}>{_("取消")}</Button></p>
+					</G.Col>
+				</G.Row>
+			</W.Dialog>
+		);
+		
+		let i=0;				
+		while(true) {
+		    let vars=getVars(i);
+		    if (vars===null) break;
+								    
+		    if (page) page.innerHTML=i+1;
+			try {
+				await p.PrintLabel(tpid, vars);
+			}catch(e){
+				let yn = await W.Confirm(_("错误:"+e+"\n继续吗?"));
+				if (!yn) {
+				    break;
+				}
+			}
+			//await timewait();
+			if (cancel_print===true) break;
+			i++;
+		}
+		
+		p.close();
+		w.close();
+		if (finish) finish()
+	}
+	
+	printBySql=async(sql, tpid, finish)=>{
+		var page;
+		var progress;
+		var jobid;
+		
+		let {print_opts}=this.props;		
+		let {type, name, size, col, row}=print_opts;
+		if (!name) {
+			W.alert(_("没有该类型的打印机！"));
+			return;
+		}
+		let opt={type, name, size, col, row}
+		
+		this.setTemplateUrl()		
+		try {
+		    let p=await window.SPIRIT.open(opt)
+    		let {data}=await p.PrintLabelSql(tpid, sql);
+    		jobid=data.id;
+    		p.close()
+	    }catch(e){
+	        W.alert(e);
+	        return;
+	    }
+	    
+	    var w;
+	    const stop_print=async(e)=>{
+	        let rc= await window.SPIRIT.Stop(jobid)
+	        if (rc.msg!=="") {
+			   W.alert(rc.msg);
+			}
+			w.close()
+    		if (finish) finish()
+	    }
+	    	
+		w=W.show(
+			<W.Dialog title={_("打印中")} height="400">
+				<G.Row className="print-dlg">
+					<G.Col style={{margin:"0 auto", width:380, textAlign:"center"}}>
+						<H1><small>{_("正在打印第")}<span ref={e=>page=e} ></span>{_("张标签")}</small></H1>
+						<div className="progress">
+						    <div ref={e=>progress=e} style={{width:1}}/>
+						</div>
+						<img src="printing.jpg" alt="printing" height="260px"/>
+						<p className="center"><Button type="blue" onClick={stop_print}>{_("取消")}</Button></p>
+					</G.Col>
+				</G.Row>
+			</W.Dialog>
+		);
+		
+		window.SPIRIT.JobEvent(jobid, async(rc)=>{
+		    let {data} = rc;
+		    let {total, cur}=data;
+		    if (total!==0 && total===cur) {
+			    w.close();
+			    if (finish) finish()
+			}    
+			if (page) page.innerHTML=cur;
+			if (progress) progress.style=`width:${cur*100/total}%`;
+		})	
 	}
 	
 	getPrinterInfo=(name)=>{
@@ -256,7 +288,7 @@ class DoPrint extends React.Component {
 		];
 	
 		const {tpdata}=this.props;
-		const {spirit_ok, prnlst, cur_prnlst, info}=this.state;
+		const {spirit_ok, cur_prnlst, info}=this.state;
 		const {print_opts}=this.props;
 		
 		if (cur_prnlst.length>0) {
@@ -279,7 +311,7 @@ class DoPrint extends React.Component {
 		return (
 			<>
 				<G.Row>
-					<G.Col class="center-layout" width={'60%'}>
+					<G.Col className="center-layout" width={'60%'}>
 						{spirit_ok===false && <Error small>{_("未检测到打印控件！打印精灵未安装？")} <Button type="blue" href="https://www.printspirit.cn/download/spirit-web-setup.exe">{_("立即安装")}</Button></Error>}
 						
                     <Form  fields={cols}  nCol={2} disable_fields={disable}
@@ -289,7 +321,7 @@ class DoPrint extends React.Component {
                     </G.Col>
                 </G.Row>
 			
-				<div class="center">
+				<div className="center">
 					<Button type="green" onClick={this.print}>{_("打印首张")}</Button>
 					<Button type="green" onClick={this.printAll}>{_("打印全部")}</Button>
 					<Button onClick={this.prevStep}>{_("上一步")}</Button>

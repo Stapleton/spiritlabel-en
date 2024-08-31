@@ -38,8 +38,6 @@
 	margin-top: 10px !important;
 }
 
-	
-
 .center {
 	margin: 0 auto;
 	text-align: center;
@@ -132,6 +130,11 @@
 .tp-head-variable {
 	font-size:14px;
 	font-weight:bold;
+}
+
+.tp-varialbe-container {
+    height: 300px;
+    overflow : auto;
 }
 
 .tp-variable {
@@ -234,5 +237,15 @@
     height: 50px;
     font-weight: bold;
  }
+ 
+.progress {
+    height:5px;
+    border:1px solid green;
+}
+
+.progress>div {
+    height:5px;
+    background-color: red;
+}
 
 

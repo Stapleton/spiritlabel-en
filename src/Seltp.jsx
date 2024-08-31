@@ -1,9 +1,8 @@
 import React from 'react';
-import {Table, Form, Button, DivWin as W, Grid as G, InputButton, Toolbar, net } from 'ecp';
+import {Form, Button, DivWin as W, Grid as G, InputButton, Toolbar, net } from 'ecp';
 import LabelGallery from './LabelGallery.jsx'
 import tp_utils from './tp_utils.js'
 import {_} from "./locale.js";
-
 
 class Login extends React.Component{
 
@@ -69,7 +68,7 @@ function Tpinfo(props) {
 			<p><span className="tp-head-item">{_("尺寸:")}</span>{tpinfo.width/10}{_("厘米")} X {tpinfo.height/10}{_("厘米")}</p>
 			<br/>
 			<p className="tp-head-variable">{_("模板变量")}</p>
-			{props.tp_vars.map((o,i)=><p key={i} className="tp-variable">{o}</p>)}
+			<div className="tp-varialbe-container">{props.tp_vars.map((o,i)=><p key={i} className="tp-variable">{o}</p>)}</div>
 		</G.Col>
 	</G.Row>)
 }
@@ -182,7 +181,7 @@ class Seltp extends React.Component {
 	}
     
     render() { 
-    	const {search_key, owner, logged, selected, sel_win, sel_type}=this.state;
+    	const {search_key, logged, selected, sel_win, sel_type}=this.state;
     	const {tpdata}=this.props;
     	const {tpinfo, tp_vars}=tpdata;
 		const {id}=this.props.match.params;
@@ -199,8 +198,8 @@ class Seltp extends React.Component {
 	        			</G.Col>
 	        		</G.Row> 
 	        		<div>
-		                {sel_type=='shares' && <LabelGallery type="shares" search={search_key} onSelTp={this.do_seltp}/> }
-				        {sel_type=='mine' && (
+		                {sel_type==='shares' && <LabelGallery type="shares" search={search_key} onSelTp={this.do_seltp}/> }
+				        {sel_type==='mine' && (
 				            logged ? 
 				                <LabelGallery type="mine" search={search_key} onSelTp={this.do_seltp}/>
 				                :

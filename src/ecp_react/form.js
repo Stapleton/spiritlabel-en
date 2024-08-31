@@ -251,9 +251,9 @@ class Form extends React.PureComponent {
 		if (!regex) {
 			if (def.type==='int') { regex='^\\d+$'; this.errmsg='输入应为整数';}
 			else if(def.type==='float') { regex='^\\d+\\.{0,1}\\d*$'; this.errmsg='输入应为有效的数字';}
-			else if(def.type==='date') { regex='^\\d{4}[\/-]\\d{1,2}[\/-]\\d{1,2}$'; this.errmsg='日期格式应为YYYY/MM/DD'; }
+			else if(def.type==='date') { regex='^\\d{4}[/-]\\d{1,2}[/-]\\d{1,2}$'; this.errmsg='日期格式应为YYYY/MM/DD'; }
 			else if(def.type==='datetime') { 
-				regex='^\\d{4}[\/-]\\d{1,2}[\/-]\\d{1,2}\\s+\\d{2}:\\d{2}:\\d{2}$'; 
+				regex='^\\d{4}[/-]\\d{1,2}[/-]\\d{1,2}\\s+\\d{2}:\\d{2}:\\d{2}$'; 
 				this.errmsg='日期时间格式应为YYYY/MM/DD hh:mm:ss'; 
 			}
 		}

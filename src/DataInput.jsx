@@ -14,6 +14,7 @@ const SheetJSFT = [
   usage: <DragDropFile handleFile={handleFile}>...</DragDropFile>
     handleFile(file:File):void;
 */
+
 /*class DragDropFile extends React.Component {
 	constructor(props) {
 		super(props);
@@ -31,15 +32,10 @@ const SheetJSFT = [
 	); };
 };*/
 
-/*
-  Simple HTML5 file input wrapper
-  usage: <DataInput handleFile={callback} />
-    handleFile(file:File):void;
-*/
 class FileBtn extends React.Component {
 	handleChange=(e)=> {
 		const files = e.target.files;
-		if(files && files[0]) this.props.handleFile(files[0]);
+		if(files && files[0]) this.props.handlefile(files[0]);
 		this.fileSelector.value='' /* must set it, or it maynot triger other file select for same file */
 	};
 	
@@ -81,8 +77,8 @@ function ExcelHeader(props) {
 	}
 		
 	return (col in bind_vars ? 
-		<span className="execel-header">{bind_vars[col]} <a href="#" onClick={select_var}>{_("修改")}</a></span> :
-		<span className="execel-header err">{_("未用")}<a href='#' onClick={select_var}>{_("点击绑定变量")}</a></span>
+		<span className="execel-header">{bind_vars[col]} <button onClick={select_var}>{_("修改")}</button></span> :
+		<span className="execel-header err">{_("未用")}<button onClick={select_var}>{_("点击绑定变量")}</button></span>
 	)
 }
 
@@ -124,7 +120,7 @@ class DBConn extends React.Component {
         let {sql_cfg}=this.state
         let {vars_map, ...sql_cfg1}=sql_cfg
 	    let rc = await window.SPIRIT.DBQuery(sql_cfg1);
-		if (rc.rc=='MSG') {
+		if (rc.rc==='MSG') {
 			W.alert(rc.msg);
 			return;
 		}
@@ -165,7 +161,7 @@ class DBConn extends React.Component {
 		    return;
 		}
 		let { vars_map, ...sql_cfg1} = sql_cfg
-		if (sql_idx==-1) {
+		if (sql_idx===-1) {
 		    sql_list=[ ...sql_list, sql_cfg1]
 			this.setState({ sql_list , sql_idx: sql_list.length})
 		}else{
@@ -450,7 +446,7 @@ class DataInput extends React.Component {
 				let item=tp_vars[i]
 				if (!columns.includes(item)) {
 					let yn = await W.confirm(_("数据字段与标签不吻合\n是: 继续手工匹配字段\n否: 返回修改sql"))
-					if (yn==false) return false;
+					if (yn===false) return false;
 					break;
 				}
 			}
@@ -526,7 +522,7 @@ class DataInput extends React.Component {
 					</Toolbar.Group>
 					:  
 					<Toolbar.Group>
-					    <FileBtn icon='Excel' icon_group='ecp' type="blue" handleFile={this.handleFile}>{_("导入数据文件")}</FileBtn>
+					    <FileBtn icon='Excel' icon_group='ecp' type="blue" handlefile={this.handleFile}>{_("导入数据文件")}</FileBtn>
 					    <Button icon='database' icon_group='ecp' color='blue' type="blue" onClick={this.db_conn} >{_("连接数据库")}</Button>
 					</Toolbar.Group>}
 				

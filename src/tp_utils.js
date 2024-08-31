@@ -14,12 +14,13 @@ export function get_vars(tp) {
 			for (var i = 0, len = tokens.length; i < len; i++) {
 				var token = tokens[i].split(eTag);
 				if (token.length === 2) {
-					if (vars.indexOf(token[0])<0) vars.push(token[0].substring(1))
+				    const vn=token[0].trim().substring(1)
+					if (vars.indexOf(vn)<0) vars.push(vn)
 				}
 			}
 		}
 	})
-	return vars;
+	return vars.sort();
 }
 const exp = { get_vars  }
 export default exp

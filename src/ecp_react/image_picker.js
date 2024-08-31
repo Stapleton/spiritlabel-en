@@ -27,14 +27,14 @@ const ImagePicker=(props)=>{
     const showBigImg=(img)=>{
         W.show(
             <W.Dialog width={800} height={600} >
-                <img src={props.pathUrl + props.value.url} />
+                <img src={props.pathUrl + props.value.url} alt=""/>
             </W.Dialog>
         );
     }
     
     return <div className={props.className} style={{width:100}}>
 				{ props.value &&
-						<img src={props.pathUrl + props.value.url} style={props.style} onClick={e=>showBigImg(props.value)}/>
+						<img src={props.pathUrl + props.value.url} alt="" style={props.style} onClick={e=>showBigImg(props.value)}/>
 				}
 					<Uploader onSelect={fileselect} >
 					<Button>选择</Button>

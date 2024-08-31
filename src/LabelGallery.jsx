@@ -42,7 +42,7 @@ class ImageGallery extends Component {
 
   fetchImages = async (pageNum) => {
     const {type, search}=this.props;
-    const dataUrl=`/api/get-tp-list?${type=="shares"?"all=1":""}&key=${search}`
+    const dataUrl=`/api/get-tp-list?${type==="shares"?"all=1":""}&key=${search}`
     const response = await fetch(`${dataUrl}&_start=${pageSize*pageNum}&_count=${pageSize}`);
     return response.json();
   };
@@ -97,7 +97,11 @@ class ImageGallery extends Component {
           display: 'flex',
           flexWrap: 'wrap',
           alignContent: 'flex-start',
-          gap: '10px',
+          justifyContent: 'center',
+          gap: '3px',
+          background: '#fff',
+          //padding:5, 
+          //border:"1px solid #dadada"
         }}
       >
         {labels.length>0? 
@@ -112,13 +116,15 @@ class ImageGallery extends Component {
                       alignItems: 'center',
                       justifyContent: 'center',
                       background: '#f0f0f0',
+                      borderRadius: '3px',
+                      padding: 4,
                     }}
                     onClick={e=>this.props.onSelTp(label.id)}
                   >
                     <img
                       data-src={`/utils/thumb?id=${label.id}`}
                       alt=""
-                      style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', border:"1px solid #888" }}
+                      style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', border:"1px solid #888", background: '#fff', }}
                     />
                   </div>
            ))

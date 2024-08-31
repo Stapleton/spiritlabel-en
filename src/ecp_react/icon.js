@@ -10,7 +10,8 @@ export default class Icon extends React.Component {
 			case 'ecp':
 				Util.loadcss('//at.alicdn.com/t/c/font_423244_rf1zm1vd7b.css');
 				break;
-			
+		    default:
+		        break;
 		}		
 	}
 	
