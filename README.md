@@ -1,16 +1,15 @@
 [简体中文](README_cn.md)
 
-LPTSpirit is an open-source label printing tool designed for ordinary users. It leverages the label design and printing capabilities provided by [PrintSpirit](https://www.printspirit.cn) at its core.
+SpiritLabel is an open-source label printing tool designed for ordinary users. It leverages the label design and printing capabilities provided by [PrintSpirit](https://www.printspirit.cn) at its core.
 
 ## Key Features
-- Utilizes [SpiritDesigner](https://www.printspirit.cn/designer) to design label and [SpiritWeb](https://www.printspirit.cn/views/tp_file_print.html) for printing, supporting text, images, one-dimensional barcodes, and QR codes.
-- Automatically extracts template variables, creates print data entry forms, and merges data with templates during printing.
-- Supports online data editing.
-- Allows batch import of EXCEL data.
-- Automatically extracts template variables to export Excel format files for local editing.
-- Supports label nesting to save paper and speed up printing.
-- Compatible with various printers including Windows printers and ZPL label printers.
-
+- Works with SpiritDesigner for designing labels and SpiritWeb for printing controls to create a powerful label printing tool.
+- Automatically extracts template variables and creates data entry forms for printing, enabling variable data printing.
+- Supports manual data entry for printing online.
+- Supports bulk import of EXCEL data.
+- Supports direct database connections for data retrieval via SQL queries, making it easy to integrate with existing information systems.
+- Supports Windows printers and ZPL-specific label printers.
+- Supports print mulit-labels in one paper to save paper and speed up printing.
 ## Development
 
 ### `yarn start`
