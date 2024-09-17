@@ -54,17 +54,16 @@ export default class App extends React.Component {
 		    setLanguage("en");
 		    lang="en"
 		}
-		console.log(window.location);
 		const steps= [{seltp:_("选择标签")}, {loaddata:_("录入数据")}, {doprint:_("执行打印")}, {finish:_("完成")}];
 		return (
 			<Router basename={lang}>
 				<div className="App-header">
 					<span className="App-Logo">
-						<a href="/" target="_main">
+						<a href={"/"+lang} target="_main">
 							<img src={spirit_power} alt="logo" />
 						</a>
 					</span>
-					<div className="App-Title">{_("标签打印")}</div>
+					<h1 className="App-Title">SpiritLabel {_("标签打印")}</h1>
 				</div>
 				<Page>
 					<Stepper steps={steps} current={step}  width="80%"/>

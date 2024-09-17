@@ -208,10 +208,14 @@ class Seltp extends React.Component {
                 </div>
                 :
 		        <div>
+    		        <div className="lpts-intro">
+					    {_("LPTS介绍")}
+				    </div>
 					<div className="sel-tp-index">
+					    
 						<div onClick={this.useShares}>
 							<div className="sel-tp sel-tp-yun"/>
-							<div className="sel-tp-title">{_("云共享标签")}</div>
+							<div className="sel-tp-title">{_("共享云标签")}</div>
 						</div>
 						<div onClick={this.useMine}>
 							<div className="sel-tp sel-tp-mine"/>

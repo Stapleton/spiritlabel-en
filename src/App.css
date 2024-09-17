@@ -142,7 +142,14 @@
 }
 
 .sel-tp-win {
- 
+}
+
+.lpts-intro {
+    text-align: center;
+    font-size: 16px;
+    width:50%;
+    margin: 0 auto;
+    line-height: 1.5em;
 }
 
 .sel-tp-index {
@@ -150,7 +157,7 @@
     width: 60%;
     margin: 0 auto;
     justify-content: space-evenly;
-    height: 50vh;
+    height: 40vh;
     align-items: center;
 }
 

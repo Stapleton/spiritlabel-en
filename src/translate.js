@@ -367,8 +367,8 @@ const strings ={
     "zh": "返回",
     "en": "Back"
   },
-  "云共享标签": {
-    "zh": "云共享标签",
+  "共享云标签": {
+    "zh": "共享云标签",
     "en": "Share Labels"
   },
   "我的云标签": {
@@ -382,6 +382,11 @@ const strings ={
   "该项目已在GitHub上开源": {
     "zh": "该项目已在GitHub上开源",
     "en": "This project is open source on GitHub. "
+  },
+  
+  "LPTS介绍":{
+    "zh": "SpiritLabel 是一款功能强大的标签打印软件，支持文字、条码、二维码和图片的打印。它提供高速批量打印，兼容 ZPL 专用条码打印机，并支持 Linux 操作系统。SpiritLabel 支持手动录入、Excel 导入、数据库直连等多种数据源，具备套打和拼版功能。是物流、零售、外贸等行业的必备工具。",
+    "en": "SpiritLabel is a robust label printing tool that supports text, barcodes, QR codes, and images. It offers high-speed batch printing, is compatible with ZPL barcode printers, and handles various data sources like manual input, Excel import, and direct database connections. Additionally, it supports variable data printing and layout design, making it essential for logistics, retail, foreign trade, and other industries."
   }
 }
 
