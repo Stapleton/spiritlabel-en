@@ -16,6 +16,7 @@ export default class App extends React.Component {
 		step:"seltp", 
 		tpdata : {},
 		data:[],
+		rowcnt:0,
 		columns:[],
 		print_opts:{type:'WIN'}
 	}
@@ -30,11 +31,11 @@ export default class App extends React.Component {
 	}
 
 	onSetData=(data)=>{
-		this.setState({data})
+		this.setState({data, rowcnt:data.length})
 	}
 	
-	onSetSql=(sql, data)=>{
-		this.setState({sql, data})
+	onSetSql=(sql, data, rowcnt)=>{
+		this.setState({sql, data, rowcnt})
 	}
 
 	onChangeTp=(tpdata)=>{
@@ -48,7 +49,7 @@ export default class App extends React.Component {
 	}
 		
 	render() {
-		const {tpdata, step, data, sql, print_opts}=this.state;
+		const {tpdata, step, data, rowcnt, sql, print_opts}=this.state;
 		let lang=""
 		if (window.location.pathname.startsWith("/en/")) {
 		    setLanguage("en");
@@ -105,6 +106,7 @@ export default class App extends React.Component {
 							tpdata={tpdata}
 							data={data}
 							sql={sql}
+							rowcnt={rowcnt}
 							print_opts={print_opts}
 							onChangePrintOpts={this.onChangePrintOpts}
 						/>} />

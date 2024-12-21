@@ -18,7 +18,7 @@ class Finish extends React.Component {
     
     render() { 
     	return (
-    	   <div class="center">
+    	   <div className="center">
 	      	<H1>打印结束</H1>
 	      	<br/>
 	      	<Button type="green" onClick={this.printAnother}>继续打印</Button>

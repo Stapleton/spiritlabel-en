@@ -114,7 +114,7 @@ class Seltp extends React.Component {
     loadtp=async(tpid)=>{
     	let rc=await net.get(`/api/load-template?id=${tpid}`);
     	let tp_vars=tp_utils.get_vars(rc.data);
-    	this.props.onChangeTp({tpid, tpinfo:rc.tpinfo, tp_vars});
+		this.props.onChangeTp({tpid, tpinfo:rc.tpinfo, tp_vars});
     }
     
     nextStep=()=>{
@@ -131,17 +131,20 @@ class Seltp extends React.Component {
     		return;
     	}
     	if (!tp_vars || tp_vars.length===0) {
+			
     		W.confirm(_("模版没有需要绑定的变量!"), 
     			()=>this.props.history.push("/print-tools/doprint")
     		)
-    	}else{
+    	}else if (tp_utils.get_var_cnt(tp_vars)==0) {
+			this.props.history.push("/print-tools/doprint")
+		}else{
 	    	this.props.history.push("/print-tools/loaddata");
 	    }
     }
     
     do_seltp=async (tpid)=>{
-    	this.setState({tpid, selected:true});
     	this.loadtp(tpid);
+    	this.setState({tpid, selected:true});
     }
     
     edit=(record)=>{

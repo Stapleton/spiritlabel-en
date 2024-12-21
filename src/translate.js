@@ -160,11 +160,11 @@ const strings ={
     "en": "add column"
   },
   "数据查询结果不正确": {
-    "zh": "数据查询结果不正确\\n数据字段数小于标签变量数",
+    "zh": "数据查询结果不正确\n数据字段数小于标签变量数",
     "en": "Data incorrect\nNumber of data fields is less than the number of label variables"
   },
   "数据字段与标签不吻合": {
-    "zh": "数据字段与标签不吻合\\n是: 继续手工匹配字段\\n否: 返回修改sql",
+    "zh": "数据字段与标签不吻合\n是: 继续手工匹配字段\n否: 返回修改sql",
     "en": "Data fields do not match labels\nYes: Continue manual field matching\nNo: Return to modify SQL"
   },
   "打印插件版本太低,需要升级": {
@@ -216,7 +216,7 @@ const strings ={
     "en": "Next"
   },
   "打印机未准备就绪!": {
-    "zh": "打印机未准备就绪!\n请检查是否未安装\\\"打印精灵\\\"",
+    "zh": "打印机未准备就绪!\n请检查是否未安装\"打印精灵\"",
     "en": "Printer Not Ready!\nPlease check SpiritWeb is installed."
   },
   "没有该类型的打印机！": {
@@ -239,9 +239,13 @@ const strings ={
     "zh": "取消",
     "en": "Cancel"
   },
-  "错误:\"+e+\"\\n继续吗?": {
-    "zh": "错误:\"+e+\"\\n继续吗?",
-    "en": " "
+  "错误:": {
+    "zh": "错误:",
+    "en": "error!"
+  },
+  "继续吗?": {
+    "zh": "继续吗?",
+    "en": "continue?"
   },
   "打印机类型": {
     "zh": "打印机类型",
@@ -352,7 +356,7 @@ const strings ={
     "en": "Please Choose a Template First"
   },
   "模版没有需要绑定的变量!": {
-    "zh": "模版没有需要绑定的变量!\\n仍然要打印吗？",
+    "zh": "模版没有需要绑定的变量!\n仍然要打印吗？",
     "en": "No Variables in Label!\n Countiue ?"
   },
   "该功能暂未实现": {

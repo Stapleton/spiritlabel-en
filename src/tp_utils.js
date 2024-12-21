@@ -22,5 +22,17 @@ export function get_vars(tp) {
 	})
 	return vars.sort();
 }
-const exp = { get_vars  }
+
+export function get_var_cnt(vars) {
+	let cnt=0;
+	for (let v of vars) {
+		if (!v.startsWith("spirit.")) {
+			cnt++
+		}
+	}
+	return cnt
+}
+
+
+const exp = { get_vars, get_var_cnt  }
 export default exp

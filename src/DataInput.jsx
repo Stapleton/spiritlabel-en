@@ -256,14 +256,14 @@ class DataInput extends React.Component {
 	}
 
 	nextStep=()=>{
-		let {xls, bind_vars}=this.state;
+		let {xls, bind_vars, total}=this.state;
 		let {sql, tpdata}=this.props;
 		let data=this.table.getData()
 		
 		var data1=[]
 		if (xls || sql) {
 			let vars=Object.values(bind_vars);
-			for(let i=0; i<tpdata.tp_vars.length; i++) {
+			for(let i=0; i<tpdata.tp_vars.filter(o=>!o.startsWith("spirit.")).length; i++) {
 				let v=tpdata.tp_vars[i];
 				if (vars.indexOf(v)<0) {
 					W.alert(_("变量")+v+_("未绑定_alert"));
@@ -299,10 +299,9 @@ class DataInput extends React.Component {
 		if (sql) {
 		    sql.vars_map={}
 		    for (let k in bind_vars) {
-		        console.log(k, bind_vars[k])
 		        if (k!==bind_vars[k]) sql.vars_map[k]=bind_vars[k]
 		    }
-			this.props.onSetSql(sql, data1)
+			this.props.onSetSql(sql, data1, total)
 		}else{
 			this.props.onDataChange(data1);
 		}
@@ -361,7 +360,7 @@ class DataInput extends React.Component {
 						bind_vars[i]=header[i];
 					}
 				}
-				if (Object.keys(bind_vars).length===tp_vars.length || Object.keys(bind_vars).length>3) {
+				if (Object.keys(bind_vars).length===tp_vars.filter(o=>!o.startsWith("spirit.")).length || Object.keys(bind_vars).length>3) {
 					/* 认为第一行为表头，而不是数据*/
 					delete data[0]
 				}else{
@@ -433,7 +432,7 @@ class DataInput extends React.Component {
 	setSqlData=async ({columns, total, data}, sql_cfg)=>{
 		let {tp_vars}=this.props.tpdata;
 		
-		if (columns.length<tp_vars.length) {
+		if (columns.length<tp_vars.filter(o=>!o.startsWith("spirit.")).length) {
 			W.alert(_("数据查询结果不正确"))
 			return;
 		}			
@@ -443,7 +442,7 @@ class DataInput extends React.Component {
 			bind_vars=sql_cfg.vars_map
 		}else{
 				
-			for (let i=0; i<tp_vars.length; i++) {
+			for (let i=0; i<tp_vars.filter(o=>!o.startsWith("spirit.")).length; i++) {
 				let item=tp_vars[i]
 				if (!columns.includes(item)) {
 					let yn = await W.confirm(_("数据字段与标签不吻合"))
@@ -509,7 +508,9 @@ class DataInput extends React.Component {
 			})
 			data=this.state.data;
 		}else{	
-			columns=tpdata.tp_vars?tpdata.tp_vars.map(o=>{ return {title:o, key:o} }):[]
+			columns=tpdata.tp_vars?tpdata
+				.tp_vars.filter(o=>!o.startsWith("spirit."))
+				.map(o=>{ return {title:o, key:o} }):[]
 			data = this.props.data||[];			
 		}
 		
