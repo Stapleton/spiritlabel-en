@@ -18,7 +18,7 @@ export default class App extends React.Component {
 		data:[],
 		rowcnt:0,
 		columns:[],
-		print_opts:{type:'WIN'}
+		print_opts:{type:'auto'}
 	}
 	
 	componentDidMount=async ()=>{

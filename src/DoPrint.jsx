@@ -105,7 +105,7 @@ class DoPrint extends React.Component {
 	doPrint=async(tpid, getVars, finish)=>{
 		
 		let {print_opts}=this.props;		
-		let {type, name, size, fill, col, row, gapX, gapY}=print_opts;
+		let {type, name, size, fill, col, row, gapX, gapY, quality}=print_opts;
 		if (!name) {
 			W.alert(_("没有该类型的打印机！"));
 			return;
@@ -123,7 +123,7 @@ class DoPrint extends React.Component {
 			size = [width*col + 10*gapX*(col-1), height*row + 10*gapY*(row-1)]
 		}
 		
-		let opt={type, name, size, fill, col, row, gapX:Math.floor(gapX*10), gapY:Math.floor(gapY*10)}
+		let opt={type, name, size, fill, col, row, gapX:Math.floor(gapX*10), gapY:Math.floor(gapY*10), quality}
 		
 		var page;
 	    var cancel_print=false;
@@ -179,7 +179,7 @@ class DoPrint extends React.Component {
 		var jobid;
 		
 		let {print_opts}=this.props;		
-		let {type, name, size, fill, col, row, gapX, gapY}=print_opts;
+		let {type, name, size, fill, col, row, gapX, gapY, quality}=print_opts;
 		if (!name) {
 			W.alert(_("没有该类型的打印机！"));
 			return;
@@ -197,7 +197,7 @@ class DoPrint extends React.Component {
 			size = [width*col + 10*gapX*(col-1), height*row + 10*gapY*(row-1)]
 		}
 		
-		let opt={type, name, size, fill, col, row, gapX:Math.floor(gapX*10), gapY:Math.floor(gapY*10)}
+		let opt={type, name, size, fill, col, row, gapX:Math.floor(gapX*10), gapY:Math.floor(gapY*10), quality}
 		
 		this.setTemplateUrl()		
 		try {
@@ -262,6 +262,15 @@ class DoPrint extends React.Component {
 			this.setState({spirit_ok:false})
 		})
 	}
+	
+	getPrinterByType=(type, prnlst)=>{
+	    if (!prnlst) prnlst=this.state.prnlst
+		if (type=='auto') {
+			return prnlst.filter(o=>o.act===true).map(o=>o.name)
+		}else{
+			return prnlst.filter(o=>o.type===type).map(o=>o.name)
+		}
+	}
 
 	onDataChange=(values, id, val)=>{
 	
@@ -275,7 +284,7 @@ class DoPrint extends React.Component {
 				values['col']='auto';
 				values['row']='auto';
 			}
-			let cur_prnlst=prnlst.filter(o=>o.type===val).map(o=>o.name)
+			let cur_prnlst=this.getPrinterByType(val)
 			if (cur_prnlst.length>0) this.getPrinterInfo(cur_prnlst[0]);
 			else {
 				this.setState({info:null});
@@ -303,8 +312,10 @@ class DoPrint extends React.Component {
 					
 			let rc = await window.SPIRIT.getPrinterList();
 			let prnlst=rc.data
-			let cur_prnlst=prnlst.filter(o=>o.type===type).map(o=>o.name)
+			let cur_prnlst=this.getPrinterByType(type, prnlst)
 			if (cur_prnlst.length>0) this.getPrinterInfo(cur_prnlst[0]);
+			
+			console.log(print_opts, cur_prnlst)
 			
 			this.setState({spirit_ok:true, prnlst, cur_prnlst});
 			
@@ -320,16 +331,26 @@ class DoPrint extends React.Component {
 		let copys = var_cnt==0?1:rowcnt
 		
 		const fields=[
-			{name:_('打印机类型'),    id:'type',  type:'select', options:{'WIN':_('Windows打印机'), 'ZPL':_('ZPL专用标签打印机')}, def:'WIN'},
+			{name:_('打印机类型'),    id:'type',  type:'select', options:{
+			        'auto':_('自动选择'),
+			        'WIN':_('Windows打印机'), 
+			        'ZPL':_('斑马兼容ZPL标签打印机'),
+			        'CPCL':_('CPCL便携式标签打印机'),
+			        'TSPL':_('TSC兼容标签打印机'),
+			        'ESCPOS':_('ESC/POS兼容小票打印机'),
+			    }, 
+			    def:'auto'
+			},
 			{name:_('打印机'),       id:'name',   type:'select', options:[] },
 			{name:_('纸张大小'),     id:'size',   type:'select', options:{} , def:"auto" },
 			{name:_('纸张方向'),     id:'dir',    type:'select', options:{'1':_('纵向'), '2':_('横向')}, def:'auto'},
 			{name:_('缩放'),         id:'fill',   type:'select', options:{}, def:'0'},
-			{name:_('标签份数'),     id:'copys',  type:'int', def:copys},
+			{name:_('打印质量'),     id:'quality',type:'select', options:{'0':_('高速'), '1':_('平衡'), '2':_('高质量')}, def:'1'},
 			{name:_('每行标签列数'), id:'col',    type:'select', options:{'auto':_('自动'), '1':1, 2:2, 3:3, 4:4, 5:5, 6:6,7:7,8:8,9:9,10:10}, def:'auto'},
 			{name:_('列间隙'),       id:'gapX',   type:'number', def:2.1},
 			{name:_('每页标签行数'), id:'row',   type:'select', options:{'auto':_('自动'), '1':1, 2:2, 3:3, 4:4, 5:5, 6:6,7:7,8:8,9:9,10:10}, def:'auto'},
 			{name:_('行间隙'),       id:'gapY',   type:'number', def:2.1},
+			{name:_('标签份数'),     id:'copys',  type:'int', def:copys},
 			
 		];
 	
@@ -350,13 +371,13 @@ class DoPrint extends React.Component {
 				.reduce(
 				(a,p)=>{a[p]=info.paper[p].name; return a}, 
 				{"auto":_('标签大小'), 0:_('打印机缺省')})
-		else cols[2].options={"-1":_('自动'), 0:_('打印机缺省')}
+		else cols[2].options={"auto":_('标签大小'), 0:_('打印机缺省')}
 		
 		if (print_opts['size']==='auto') {
 			cols[4].options={'0':_('无缩放')}
 			print_opts['fill']='0';
 		}else{
-			cols[4].options={'0':_('无缩放'), '1':_('适应纸张'), '2':_('自动拼版')}
+			cols[4].options={'0':_('无缩放'), '1':_('适应纸张'), '2':_('适应纸张(等比例)'),'3':_('自动拼版')}
 		}
 				
 		if (tpdata.tp_vars && var_cnt>0) {
