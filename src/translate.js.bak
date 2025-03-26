@@ -53,11 +53,11 @@ const strings ={
   },
   "连接名": {
     "zh": "连接名",
-    "en": "Connection "
+    "en": " "
   },
   "数据库类型": {
     "zh": "数据库类型",
-    "en": "Type"
+    "en": " "
   },
   "IP地址": {
     "zh": "IP地址",
@@ -159,12 +159,12 @@ const strings ={
     "zh": "增加数据列",
     "en": "add column"
   },
-  "数据查询结果不正确": {
+  "数据查询结果不正确\n数据字段数小于标签变量数": {
     "zh": "数据查询结果不正确\n数据字段数小于标签变量数",
     "en": "Data incorrect\nNumber of data fields is less than the number of label variables"
   },
-  "数据字段与标签不吻合": {
-    "zh": "数据字段与标签不吻合\n是: 继续手工匹配字段\n否: 返回修改sql",
+  "数据字段与标签不吻合\n是: 继续手工匹配字段\\n否: 返回修改sql": {
+    "zh": "数据字段与标签不吻合\n是: 继续手工匹配字段\\n否: 返回修改sql",
     "en": "Data fields do not match labels\nYes: Continue manual field matching\nNo: Return to modify SQL"
   },
   "打印插件版本太低,需要升级": {
@@ -215,9 +215,9 @@ const strings ={
     "zh": "下一步",
     "en": "Next"
   },
-  "打印机未准备就绪!": {
-    "zh": "打印机未准备就绪!\n请检查是否未安装\"打印精灵\"",
-    "en": "Printer Not Ready!\nPlease check SpiritWeb is installed."
+  "打印机未准备就绪!\\n请检查是否未安装\\\"打印精灵\\\"": {
+    "zh": "打印机未准备就绪!\\n请检查是否未安装\\\"打印精灵\\\"",
+    "en": " "
   },
   "没有该类型的打印机！": {
     "zh": "没有该类型的打印机！",
@@ -239,13 +239,9 @@ const strings ={
     "zh": "取消",
     "en": "Cancel"
   },
-  "错误:": {
-    "zh": "错误:",
-    "en": "error!"
-  },
-  "继续吗?": {
-    "zh": "继续吗?",
-    "en": "continue?"
+  "错误:\"+e+\"\\n继续吗?": {
+    "zh": "错误:\"+e+\"\\n继续吗?",
+    "en": " "
   },
   "打印机类型": {
     "zh": "打印机类型",
@@ -323,14 +319,6 @@ const strings ={
     "zh": "注册",
     "en": "Sign up"
   },
-  "编辑": {
-    "zh": "编辑",
-    "en": "Edit"
-  },
-  "重选": {
-    "zh": "重选",
-    "en": "Back"
-  },
   "名称:": {
     "zh": "名称:",
     "en": "Name: "
@@ -355,7 +343,7 @@ const strings ={
     "zh": "请先选择打印模版",
     "en": "Please Choose a Template First"
   },
-  "模版没有需要绑定的变量!": {
+  "模版没有需要绑定的变量!\n仍然要打印吗？": {
     "zh": "模版没有需要绑定的变量!\n仍然要打印吗？",
     "en": "No Variables in Label!\n Countiue ?"
   },
@@ -371,12 +359,12 @@ const strings ={
     "zh": "返回",
     "en": "Back"
   },
-  "共享云标签": {
-    "zh": "共享云标签",
+  "云共享标签": {
+    "zh": "云共享标签",
     "en": "Share Labels"
   },
-  "我的标签": {
-    "zh": "我的标签",
+  "我的云标签": {
+    "zh": "我的云标签",
     "en": "My Labels"
   },
   "新建标签": {
@@ -386,11 +374,6 @@ const strings ={
   "该项目已在GitHub上开源": {
     "zh": "该项目已在GitHub上开源",
     "en": "This project is open source on GitHub. "
-  },
-  
-  "LPTS介绍":{
-    "zh": "SpiritLabel 是一款功能强大的标签打印软件，支持文字、条码、二维码和图片的打印。它提供高速批量打印，兼容 ZPL 专用条码打印机，并支持 Linux 操作系统。SpiritLabel 支持手动录入、Excel 导入、数据库直连等多种数据源，具备套打和拼版功能。是物流、零售、外贸等行业的必备工具。",
-    "en": "SpiritLabel is a robust label printing tool that supports text, barcodes, QR codes, and images. It offers high-speed batch printing, is compatible with ZPL barcode printers, and handles various data sources like manual input, Excel import, and direct database connections. Additionally, it supports variable data printing and layout design, making it essential for logistics, retail, foreign trade, and other industries."
   }
 }
 

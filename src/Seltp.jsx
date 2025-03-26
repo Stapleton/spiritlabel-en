@@ -222,7 +222,7 @@ class Seltp extends React.Component {
 						</div>
 						<div onClick={this.useMine}>
 							<div className="sel-tp sel-tp-mine"/>
-							<div className="sel-tp-title">{_("我的云标签")}</div>
+							<div className="sel-tp-title">{_("我的标签")}</div>
 						</div>
 						<div onClick={this.create}>
 							<div className="sel-tp sel-tp-local"/>

@@ -1,21 +1,18 @@
-//import 'react-app-polyfill/ie11';
-//import 'react-app-polyfill/stable';
-import values from  'object.values';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 if (!Object.values) {
-	values.shim();
+  Object.values = require('object.values').shim;
 }
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById('root')); // 使用新的 API 创建 root
+root.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

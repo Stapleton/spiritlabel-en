@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import Button from './button.js';
 import Icon from './icon.js';
 import GForm from './form.js';
@@ -72,8 +72,8 @@ class DivWin {
 				{...others}
 				>
 				<div className={css.alert}>
-					<div className={css.['alert-icon']}><Icon {...getTypeIcon(type)}/></div>
-					<div className={css.['alert-ctx']}>{msg}</div>
+					<div className={css['alert-icon']}><Icon {...getTypeIcon(type)}/></div>
+					<div className={css['alert-ctx']}>{msg}</div>
 				</div>
 			</Form>;
 		
@@ -103,8 +103,8 @@ class DivWin {
 					{...others}
 				>
 				<div className={css.alert}>
-					<div className={css.['alert-icon']}><Icon {...getTypeIcon(type)}/></div>
-					<div className={css.['alert-ctx']}>{msg}</div>
+					<div className={css['alert-icon']}><Icon {...getTypeIcon(type)}/></div>
+					<div className={css['alert-ctx']}>{msg}</div>
 				</div>
 			</Form>;
 		
@@ -127,8 +127,8 @@ class DivWin {
 					{...others}
 				>
 				<div className={css.alert}>
-					<div className={css.['alert-icon']}><Icon {...getTypeIcon(type)}/></div>
-					<div className={css.['alert-ctx']}>{msg}</div>
+					<div className={css['alert-icon']}><Icon {...getTypeIcon(type)}/></div>
+					<div className={css['alert-ctx']}>{msg}</div>
 				</div>
 			</Form>;
 		
