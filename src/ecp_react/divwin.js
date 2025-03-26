@@ -142,7 +142,8 @@ class DivWin {
 	}
 	
 	onClose=()=>{
-		this.reactRoot.map((r)=>ReactDOM.unmountComponentAtNode(r));
+		//this.reactRoot.map((r)=>ReactDOM.unmountComponentAtNode(r));
+		this.reactRoot.map((r)=>r.unmount());
 		return true;
 	}
 	
@@ -176,8 +177,9 @@ class DivWin {
 		const props = dlg.props;
 		
 		if (dlg.type===Dialog) {
-			this.reactRoot.push(w.body);
-			ReactDOM.render(<div className={css.dialog}>{React.cloneElement(dlg, {dialog:this})}</div>,  w.body);
+			const root = ReactDOM.createRoot(w.body); // 使用新的 API 创建 root
+			this.reactRoot.push(root);
+			root.render(<div className={css.dialog}>{React.cloneElement(dlg, {dialog:this})}</div>)
 		}else if (dlg.type===Form) {
 			let h=w.body.offsetHeight- 40 - w.skin_padding_footer;
 			let cls=dlg.props.className;
@@ -225,17 +227,21 @@ class DivWin {
 					btnTmp.onclick=btns[bt].onClick.bind(this);
 				w.$(w.myobj+'-fbtns').appendChild(btnTmp);
 			}*/		
-			this.reactRoot.push(w.$(w.myobj+'-formbody'));
-			ReactDOM.render(React.cloneElement(dlg, {dialog:this}), w.$(w.myobj+'-formbody'));
+			//this.reactRoot.push(w.$(w.myobj+'-formbody'));
+			//ReactDOM.render( w.$(w.myobj+'-formbody'));
+			const root = ReactDOM.createRoot(w.$(w.myobj+'-formbody')); // 使用新的 API 创建 root
+			root.render(React.cloneElement(dlg, {dialog:this}))
+			this.reactRoot.push(root);
 			
 			if (btns){
 				var btns_container=w.topWin.document.createElement("span");
 				w.$(w.myobj+'-fbtns').appendChild(btns_container);
-				this.reactRoot.push(btns_container);
-				ReactDOM.render(<span>{btns.map((btn,i)=>{ 
+				const root1 = ReactDOM.createRoot(btns_container);
+				this.reactRoot.push(root1);
+				root1.render(<span>{btns.map((btn,i)=>{ 
 					if (btn.type===Button) return React.cloneElement(btn, {key: i});
 					return null;
-				})}</span>, btns_container);
+				})}</span>)
 			}
 			
 		}else{
