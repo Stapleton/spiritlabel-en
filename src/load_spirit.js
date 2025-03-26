@@ -49,9 +49,10 @@ export const load_spirit_js=async(trycnt)=>{
     try {
 	    await loadjs(js)
     }catch(e) {
-        console.log(e);
         if (trycnt===0) await load_spirit_js(1);
-        else throw e
+        if (trycnt===1 && window.location.host!=="www.printspirit.cn") {
+	        await loadjs("/js/spirit.js");
+        }
     }
 }
 
