@@ -2,6 +2,7 @@ import React from 'react';
 import {Table, Button, ConfirmButton, DivWin as W, Toolbar, Form} from 'ecp';
 import {saveAs} from 'file-saver';
 import {classNames} from 'ecp';
+import "./iconfont.css"
 import {_} from "./locale.js";
 
 /* list of supported file types */
@@ -519,13 +520,13 @@ class DataInput extends React.Component {
 			 	<Toolbar style={{borderBottom:'1px solid #ccc'}}>
 					{ sql ? 
 					<Toolbar.Group>
-					    <Button icon='database' icon_group='ecp' color='blue' type="blue" onClick={this.db_conn} >{_("重连")}</Button>
+					    <Button icon='database' icon_group='app' color='blue' type="blue" onClick={this.db_conn} >{_("重连")}</Button>
 					    <span>{_("共有")+total+_("条记录")}</span>
 					</Toolbar.Group>
 					:  
 					<Toolbar.Group>
-					    <FileBtn icon='Excel' icon_group='ecp' type="blue" handlefile={this.handleFile}>{_("导入数据文件")}</FileBtn>
-					    <Button icon='database' icon_group='ecp' color='blue' type="blue" onClick={this.db_conn} >{_("连接数据库")}</Button>
+					    <FileBtn icon='Excel' icon_group='app' type="blue" handlefile={this.handleFile}>{_("导入数据文件")}</FileBtn>
+					    <Button icon='database' icon_group='app' color='blue' type="blue" onClick={this.db_conn} >{_("连接数据库")}</Button>
 					</Toolbar.Group>}
 				
 					<Toolbar.Group>

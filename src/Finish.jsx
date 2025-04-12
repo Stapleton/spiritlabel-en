@@ -17,10 +17,14 @@ class Finish extends React.Component {
     }
     
     render() { 
+        const { printer, dir } = this.props.location.state;
+    
     	return (
     	   <div className="center">
 	      	<H1>打印结束</H1>
 	      	<br/>
+	      	{ ["Spirit Image", "Microsoft Print to PDF", "Microsoft XPS Document Writer"].indexOf(printer)>=0 && 
+	      	  <div className="print-result">请到<span>{dir}</span>查看打印结果</div>}
 	      	<Button type="green" onClick={this.printAnother}>继续打印</Button>
     	   </div>
     	);

@@ -4,7 +4,7 @@ import Util from './util.js';
 import css from './button.module.scss';
 
 export default function Button(props) {
-	const {disable, type, className, large, small, onClick, icon, children, ...others}=props;
+	const {disable, type, className, large, small, onClick, icon, icon_group, children, ...others}=props;
 	const cls=Util.classNames(
 		{ 
 			[css.button] : type!=='inline',
@@ -25,7 +25,7 @@ export default function Button(props) {
 	
 	return  (
 		<a className={cls} onClick={onBtnClick} {...others}>
-			{icon && <Icon name={icon}/> }
+			{icon && <Icon name={icon} group={icon_group}/> }
 			{children}
 		</a>
 	);

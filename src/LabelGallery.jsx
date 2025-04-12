@@ -51,6 +51,11 @@ class ImageGallery extends Component {
     if (this.state.loading || this.state.allLoaded) return;
     this.setState({ loading: true });
     const data = await this.fetchImages(this.state.page);
+    if (data.rc==="NOLOGIN") {
+        this.props.login(this.loadImages)
+        this.setState({ loading: false});
+        return;
+    }
     if (!data.data || data.data.length === 0) {
       this.setState({ allLoaded: true, loading:false });
     } else {

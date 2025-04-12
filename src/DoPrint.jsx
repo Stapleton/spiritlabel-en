@@ -36,7 +36,13 @@ class DoPrint extends React.Component {
 	}
 
 	nextStep=()=>{
-		this.props.history.push("/print-tools/finish");
+	    let {info}=this.state; 
+		let {print_opts}=this.props;		
+		let {name}=print_opts;
+		this.props.history.push({ 
+	        pathname: "/print-tools/finish",
+	        state: { printer: name, dir: info.output_dir }
+	    });
 	}
 	
 	prevStep=()=>{
@@ -292,7 +298,7 @@ class DoPrint extends React.Component {
 	
 	getPrinterByType=(type, prnlst)=>{
 	    if (!prnlst) prnlst=this.state.prnlst
-		if (type=='auto') {
+		if (type==='auto') {
 			return prnlst.filter(o=>o.act===true).map(o=>o.name)
 		}else{
 			return prnlst.filter(o=>o.type===type).map(o=>o.name)
@@ -301,7 +307,7 @@ class DoPrint extends React.Component {
 
 	onDataChange=(values, id, val)=>{
 	
-		let {prnlst, info}=this.state;
+		let {info}=this.state;
 	
 		if (id==='type') {
 			if (val==='ZPL') {
@@ -363,8 +369,7 @@ class DoPrint extends React.Component {
 	 	let {type, name}=print_opts;
 	 	
 		try {
-			//await loadjs("http://127.0.0.1:9011/js/spirit.js", true);
-					
+			
 			let rc = await window.SPIRIT.getPrinterList();
 			let prnlst=rc.data
 			let cur_prnlst=this.getPrinterByType(type, prnlst)
@@ -385,7 +390,7 @@ class DoPrint extends React.Component {
 		
 		const {tpdata, rowcnt} = this.props
 		let var_cnt = tp_utils.get_var_cnt(tpdata.tp_vars)
-		let copys = var_cnt==0?1:rowcnt
+		let copys = var_cnt===0?1:rowcnt
 		
 		const fields=[
 			{name:_('打印机类型'),    id:'type',  type:'select', options:{
@@ -411,7 +416,6 @@ class DoPrint extends React.Component {
 			
 		];
 	
-		const {data} = this.props
 		const {spirit_ok, cur_prnlst, info}=this.state;
 		const {print_opts}=this.props;
 		

@@ -108,9 +108,6 @@ var divWin=function(myobj, param) {
     <div style="clear:both"></div>
 </div>
 <div id="${myobj}-body" class="${css.cont}" style="height:${h}px;width:${width}">
-  <div style="line-height:${h}px;text-align:center">
-    <img src="${this.iconLoadingLarge}">
-  </div>
   <div style="clear:both"></div>
 </div>`;
 

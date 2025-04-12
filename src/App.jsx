@@ -1,14 +1,16 @@
 import React from 'react';
 import {BrowserRouter as Router, Route  } from 'react-router-dom'; 
-import {Page, Stepper} from 'ecp';
+import {Page, Stepper, DivWin as W} from 'ecp';
 import './App.css'
 import DataInput from './DataInput.jsx'
 import Seltp from './Seltp.jsx'
 import DoPrint from './DoPrint.jsx'
 import Finish from './Finish.jsx'
+import Login from './login.jsx'
 import spirit_power from './spirit.svg';
 import {setLanguage, _} from "./locale.js";
-import {load_spirit_js, download} from "./load_spirit.js";
+import {load_spirit_js} from "./load_spirit.js";
+import nologin_avt from './nologin_avt.svg';
 
 export default class App extends React.Component {
 
@@ -22,9 +24,26 @@ export default class App extends React.Component {
 	}
 	
 	componentDidMount=async ()=>{
-    	await load_spirit_js(0);
-		this.forceUpdate()
+    	if (!window.SPIRIT) {
+    	    try {
+        	    await load_spirit_js(0);
+		        this.forceUpdate()
+		    }catch(e){
+		    }
+		}
+		
+		this.loadEditorState()
+		
     }
+    
+    loadEditorState=async ()=>{
+	    const url = '/api/editor-state';
+		let response = await fetch(url)
+		let rc = await response.json();
+		if (rc.rc !== 'OK') return;
+		let { NeedLogin, HasShares, Userinfo} = rc
+		this.setState({NeedLogin, HasShares, Userinfo});
+	}
 
 	setStep=(step)=>{
 		this.setState({step});
@@ -47,27 +66,81 @@ export default class App extends React.Component {
 	onChangePrintOpts=(print_opts)=>{
 		this.setState({print_opts})
 	}
+	
+	logout=()=>{
+    	fetch('/api/logout')
+		.then((response)=>{
+			return response.json();
+		}).then((rc)=>{
+			if (rc.rc!=='OK') return;
+			this.setState({Userinfo:null});
+	    });
+	}
+	
+	onLogin=(st, userinfo)=>{
+	    const {login_fun}=this.state;
+		if (st===true) {
+		    if (login_fun ) {
+			    login_fun();
+    		}
+    		if (userinfo.token && window.SPIRIT && window.SPIRIT.License) {
+    		    window.SPIRIT.License("InstToken", userinfo.token)
+    		}
+    		this.setState({login_fun:null, Userinfo:userinfo});	
+		}
+	}
+	
+	login=(loginFunc)=>{
+        W.show(
+		    <W.Dialog title={_("登陆")} height="400">
+		        <Login onLogin={this.onLogin} postlogin={loginFunc}/>
+		    </W.Dialog>
+	    );
+	}
+	
+	tagLogin=async()=>{
+    	let {Userinfo}=this.state;
+	    if (Userinfo) {
+	        let yn = await W.confirm(_("退出登陆吗?"))
+			if (yn===true) {
+		        this.logout()
+		    }
+	    }else{
+    	    this.login()
+    	}
+	}
 		
 	render() {
-		const {tpdata, step, data, rowcnt, sql, print_opts}=this.state;
+		const {tpdata, step, data, rowcnt, sql, print_opts, NeedLogin, Userinfo}=this.state;
+		const isDesktop=window.SPIRIT?(window.SPIRIT.type==="desktop"?true:false):false
 		let lang=""
 		if (window.location.pathname.startsWith("/en/")) {
 		    setLanguage("en");
 		    lang="en"
 		}
-		const steps= [{seltp:_("选择标签")}, {loaddata:_("录入数据")}, {doprint:_("执行打印")}, {finish:_("完成")}];
+		const steps= [{seltp:_("选择标签")}, {loaddata:_("录入数据")}, {doprint:_("打印设置")}, {finish:_("完成打印")}];
 		return (
 			<Router basename={lang}>
 				<div className="App-header">
 					<span className="App-Logo">
-						<a href={"/"+lang} target="_main">
+						<a href={"/"+lang} {...(isDesktop?{}:{target:"_main"})}>
 							<img src={spirit_power} alt="logo" />
 						</a>
 					</span>
 					<h1 className="App-Title">SpiritLabel {_("标签打印")}</h1>
+					<span className="App-Login-st">
+	              	{ NeedLogin && <div className="Login-st" title ={Userinfo?Userinfo.Name:_("未登录")} onClick={this.tagLogin}>
+	                  	    <img src={Userinfo && Userinfo.HeaderImg ? Userinfo.HeaderImg : nologin_avt} 
+	                  	         className="rounded-circle img-fluid userlogo" 
+	                  	         alt={Userinfo?Userinfo.Name:_("未登录")}
+	                  	         />
+	                  	     <span className="ml-1 mt-1 username" >{Userinfo?Userinfo.Name:_("未登录")}</span>
+			            </div>}
+    	            </span>
+    	            
 				</div>
 				<Page>
-					<Stepper steps={steps} current={step}  width="80%"/>
+					<Stepper className="App-steps" steps={steps} current={step}  width="80%"/>
 					
 					<div style={{height:50}} />
 					{!window.SPIRIT &&
@@ -79,13 +152,16 @@ export default class App extends React.Component {
 							setStep={this.setStep} 
 							onChangeTp={this.onChangeTp}
 							tpdata={tpdata}
-							
+							Userinfo={Userinfo}
+							login={this.login}
 						/>}  />
 						
 					<Route path="/print-tools/seltp"  exact render={props =><Seltp {...props} 
 							setStep={this.setStep} 
 							onChangeTp={this.onChangeTp}
 							tpdata={tpdata}
+							Userinfo={Userinfo}
+							login={this.login}
 						/>} />	
 						
 					<Route path="/print-tools/seltp/:id"  render={props =><Seltp {...props} 

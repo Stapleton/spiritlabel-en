@@ -1,25 +1,60 @@
 .App-header {
   background-color: #1c2a48;
-  min-height: 60px;
+  height: 50px;
   color: white;
   margin-bottom: 20px;
-  box-shadow: 0 2px 20px 0px rgb(0 0 0 / 40%)
+  box-shadow: 0 2px 20px 0px rgb(0 0 0 / 40%);
+  display:flex;
+  align-items: center;
 }
 
 .App-header>.App-Title {
 	text-align :center;
-	font-size: 30px;
-	line-height: 60px;
+	font-size: 28px;
+	line-height: 50px;
+	flex-grow: 2;
 }
 
 .App-Logo {
-    position: fixed;
-    top: 15px;
 }
 
 .App-header img {
-	width :36px;
+	height :25px;
 	margin-left:10px;
+}
+
+.App-Login-st {
+    width:100px;
+    white-space: nowrap;
+}
+
+.Login-st {
+}
+
+.Login-st img  {
+    width:25px;
+    border-radius: 50%; 
+}
+
+.username {
+    width: 50px;
+    font-size: 14px;
+    line-height: 25px;
+    color: #b4abab;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: baseline;
+    margin-left:5px;
+}
+
+.App-steps {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+.form-group {
+    margin-bottom: 5px;
 }
 
 .mt2 {
@@ -41,14 +76,6 @@
 .center {
 	margin: 0 auto;
 	text-align: center;
-}
-
-.login {
-	width:320px;
-	margin:80px auto;
-	padding:20px 10px;
-	border: 1px solid #ccc;
-	border-radius: 5px 3px;
 }
 
 .data-input {
@@ -255,4 +282,12 @@
     background-color: red;
 }
 
+.print-result {
+    font-size:14px;
+    margin: 0px 0px 20px 0px
+}
 
+.print-result>span {
+    margin:2px;
+    font-weight: bold;
+}

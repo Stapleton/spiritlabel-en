@@ -1,60 +1,21 @@
 import React from 'react';
-import {Form, Button, DivWin as W, Grid as G, InputButton, Toolbar, net } from 'ecp';
+import {Button, DivWin as W, Grid as G, InputButton, Toolbar} from 'ecp';
 import LabelGallery from './LabelGallery.jsx'
 import tp_utils from './tp_utils.js'
 import {_} from "./locale.js";
 
-class Login extends React.Component{
-
-	state={
-		formvalue : {}
-	}
-		
-	onChange=(formvalue)=>{
-		this.setState({formvalue});
-	}
-	
-	doLogin=(e)=>{
-		const {formvalue}=this.state
-		net.post('/api/login', formvalue)
-			.then((rc)=>{
-				this.props.onLogin(rc.userinfo);
-			}).catch((e)=>W.alert(e));
-	}
-	
-	doReg=(e)=>{
-		window.location.href='/views/usercenter/register.html';
-	}
-	
-	render() {
-		const login_fields=[
-			{name:_('用户名'), id:'userid'},
-			{name:_('密码'),   id:'passwd',  type:'password'},
-		];
-	
-		let {formvalue}=this.state;
-		
-		return <div className="center">
-			<div className="login">
-				<Form fields={login_fields} nCol={1} border={false} 
-					values={formvalue} onChange={this.onChange}/>
-				<Button type="submit" onClick={this.doLogin}>{_("登录")}</Button>
-				<Button type="blue" onClick={this.doReg}>{_("注册")}</Button>
-			</div>
-		</div>
-	}
-}
+const LOAD_XORKEY=48
 
 function Tpinfo(props) {
-  const {tpinfo, onNext, onResel}=props
+  const {tpid, tpinfo, onNext, onResel}=props
   const onEdit=()=>{
-    window.location.href=`/designer/${tpinfo.id}`
+    window.location.href=`/designer/${tpid}`
   }
   
   return (
 	<G.Row>
 		<G.Col width="40%" className="tp-img-div">
-			<img  className="tp-img-big" alt="tp-img-big" src={`/utils/thumb?id=${tpinfo.id}`}/>
+			<img  className="tp-img-big" alt="tp-img-big" src={`/utils/thumb?id=${tpid}`}/>
 		</G.Col>
 		<G.Col width="50%" className="tp-info">
 		    <Toolbar>
@@ -88,7 +49,6 @@ class Seltp extends React.Component {
     
     componentDidMount=()=>{
     	this.props.setStep("seltp")
-		this.loadUserinfo();
 		let {id}=this.props.match.params;
 		
 		if (id) {
@@ -99,22 +59,27 @@ class Seltp extends React.Component {
 		}
     }
     
-    loadUserinfo=()=>{
-    	net.get('/api/userinfo')
-		.then((rc)=>{
-			this.setState({logged:true, owner:'mine', userinfo:rc.userinfo});
-		})
-		.catch((e)=>{})
-    };
-    
     onLogin=(userinfo)=>{
     	this.setState({logged:true, owner:'mine', userinfo});
     }
     
     loadtp=async(tpid)=>{
-    	let rc=await net.get(`/api/load-template?id=${tpid}`);
-    	let tp_vars=tp_utils.get_vars(rc.data);
-		this.props.onChangeTp({tpid, tpinfo:rc.tpinfo, tp_vars});
+        try {
+            let rc = await fetch(`/api/load-template-enc?id=${tpid}`)
+			    .then((response)=>{
+        			return response.arrayBuffer()
+			    }).then((buf)=>{
+			        let byteArray = new Uint8Array(buf);
+			        for (let i = 0; i < byteArray.length; i++) {
+                        byteArray[i] ^= LOAD_XORKEY;
+                    }
+			        return JSON.parse(new TextDecoder().decode(byteArray))
+			    })
+            let tp_vars=tp_utils.get_vars(rc.data);
+		    this.props.onChangeTp({tpid, tpinfo:rc.tpinfo, tp_vars});
+		}catch(e){
+		    console.log(e)
+		}
     }
     
     nextStep=()=>{
@@ -135,7 +100,7 @@ class Seltp extends React.Component {
     		W.confirm(_("模版没有需要绑定的变量!"), 
     			()=>this.props.history.push("/print-tools/doprint")
     		)
-    	}else if (tp_utils.get_var_cnt(tp_vars)==0) {
+    	}else if (tp_utils.get_var_cnt(tp_vars)===0) {
 			this.props.history.push("/print-tools/doprint")
 		}else{
 	    	this.props.history.push("/print-tools/loaddata");
@@ -164,7 +129,15 @@ class Seltp extends React.Component {
     }
     
     useMine = ()=>{
-        this.setState({sel_win:true, sel_type:'mine'});
+        console.log("use mine")
+        let {Userinfo, login}=this.props
+        if (Userinfo) {
+            this.setState({sel_win:true, sel_type:'mine'});
+        }else{
+            login(()=>{
+                this.setState({sel_win:true, sel_type:'mine'});
+            })
+        }
     }
     
     useLocal = () =>{
@@ -184,15 +157,15 @@ class Seltp extends React.Component {
 	}
     
     render() { 
-    	const {search_key, logged, selected, sel_win, sel_type}=this.state;
+    	const {search_key, selected, sel_win, sel_type, tpid}=this.state;
     	const {tpdata}=this.props;
     	const {tpinfo, tp_vars}=tpdata;
-		const {id}=this.props.match.params;
+		const is_local = window.SPIRIT?(window.SPIRIT.type==="desktop" || window.SPIRIT.type==="center"):false
     	return (
 		<>
-		{ selected ? (tpinfo && <Tpinfo tpinfo={tpinfo} tp_vars={tp_vars} onNext={this.nextStep} onResel={this.reSel}/>):
+		{ selected ? (tpinfo && <Tpinfo tpid={tpid} tpinfo={tpinfo} tp_vars={tp_vars} onNext={this.nextStep} onResel={this.reSel}/>):
 		    (
-		        sel_win?
+		        sel_win || is_local?
 		        <div className="sel-tp-win">
     		        <G.Row>
 	        			<G.Col style={{margin:"0 auto", padding:10, paddingBottom:20}}>
@@ -201,12 +174,8 @@ class Seltp extends React.Component {
 	        			</G.Col>
 	        		</G.Row> 
 	        		<div>
-		                {sel_type==='shares' && <LabelGallery type="shares" search={search_key} onSelTp={this.do_seltp}/> }
-				        {sel_type==='mine' && (
-				            logged ? 
-				                <LabelGallery type="mine" search={search_key} onSelTp={this.do_seltp}/>
-				                :
-            					<Login onLogin={this.onLogin} />)}
+		                {(sel_type==='shares' || is_local) && <LabelGallery key={'label-shares'} type="shares" search={search_key} onSelTp={this.do_seltp}/> }
+				        {sel_type==='mine' && <LabelGallery key={'label-mine'} type="mine" search={search_key} onSelTp={this.do_seltp} login={this.props.login} /> }
             		</div>
                 </div>
                 :
