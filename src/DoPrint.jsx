@@ -412,7 +412,7 @@ class DoPrint extends React.Component {
 			{name:_('列间隙'),       id:'gapX',   type:'number', def:2.1},
 			{name:_('每页标签行数'), id:'row',   type:'select', options:{'auto':_('自动'), '1':1, 2:2, 3:3, 4:4, 5:5, 6:6,7:7,8:8,9:9,10:10}, def:'auto'},
 			{name:_('行间隙'),       id:'gapY',   type:'number', def:2.1},
-			{name:_('标签份数'),     id:'copys',  type:'int', def:copys},
+			{name:_('标签份数'),     id:'copys',  type:'int', def:1},
 			
 		];
 	
@@ -442,6 +442,8 @@ class DoPrint extends React.Component {
 			/* 有变量模板，不能打印多张 */
 			var disable=['copys'];
 		}
+		
+		this.props.print_opts['copys']=rowcnt;
 
 		return (
 			<>

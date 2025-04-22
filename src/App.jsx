@@ -1,10 +1,10 @@
-import React from 'react';
+import React,  { Suspense } from 'react';
 import {BrowserRouter as Router, Route  } from 'react-router-dom'; 
 import {Page, Stepper, DivWin as W} from 'ecp';
 import './App.css'
-import DataInput from './DataInput.jsx'
+//import DataInputJss from './DataInputJss.jsx'
 import Seltp from './Seltp.jsx'
-import DoPrint from './DoPrint.jsx'
+//import DoPrint from './DoPrint.jsx'
 import Finish from './Finish.jsx'
 import Login from './login.jsx'
 import spirit_power from './spirit.svg';
@@ -12,12 +12,25 @@ import {setLanguage, _} from "./locale.js";
 import {load_spirit_js} from "./load_spirit.js";
 import nologin_avt from './nologin_avt.svg';
 
+const DataInputJss = React.lazy(() => import('./DataInputJss.jsx'));
+const DoPrint = React.lazy(() => import( './DoPrint.jsx'));
+
+const Loading=(props)=>{
+	return (
+		<div className="app-loading-overlay">
+			<div style={{textAlign:"center"}}>
+			    
+    		</div>	
+		</div>
+	)
+}
+
 export default class App extends React.Component {
 
 	state ={
 		step:"seltp", 
 		tpdata : {},
-		data:[],
+		data:[[]],
 		rowcnt:0,
 		columns:[],
 		print_opts:{type:'auto'}
@@ -49,7 +62,8 @@ export default class App extends React.Component {
 		this.setState({step});
 	}
 
-	onSetData=(data)=>{
+	onSetData=(data, columns)=>{
+	    if (columns) this.setState({columns})
 		this.setState({data, rowcnt:data.length})
 	}
 	
@@ -58,9 +72,15 @@ export default class App extends React.Component {
 	}
 
 	onChangeTp=(tpdata)=>{
-		let data=[]
+    	let  columns = tpdata.tp_vars?tpdata
+                    .tp_vars
+                    .filter(o=>!o.startsWith("spirit."))
+                    .map(o=>{ return {title:o, name:o}})
+                    :
+                    []
+	    let data=[]
 		for(let i=0; i<10; i++) data.push({});
-		this.setState({tpdata, data, sql:null});
+		this.setState({tpdata, data, columns, sql:null});
 	}
 	
 	onChangePrintOpts=(print_opts)=>{
@@ -111,7 +131,7 @@ export default class App extends React.Component {
 	}
 		
 	render() {
-		const {tpdata, step, data, rowcnt, sql, print_opts, NeedLogin, Userinfo}=this.state;
+		const {tpdata, step, columns, data, rowcnt, sql, print_opts, NeedLogin, Userinfo}=this.state;
 		const isDesktop=window.SPIRIT?(window.SPIRIT.type==="desktop"?true:false):false
 		let lang=""
 		if (window.location.pathname.startsWith("/en/")) {
@@ -148,6 +168,7 @@ export default class App extends React.Component {
     	                {_("SpiritWeb打印插件尚未安装!")} <a href="/download/spirit-web-setup.exe">{_("立刻安装")}</a> <a href="/doc/install.md">{_("查看说明")}</a>
 	                    </div>}
 					
+					<Suspense fallback={<Loading/>}>
 					<Route path="/print-tools" exact  render={props =><Seltp {...props} 
 							setStep={this.setStep} 
 							onChangeTp={this.onChangeTp}
@@ -169,7 +190,8 @@ export default class App extends React.Component {
 							onChangeTp={this.onChangeTp}
 							tpdata={tpdata}
 						/>} />
-					<Route path="/print-tools/loaddata" render={props =><DataInput {...props} 
+					<Route path="/print-tools/loaddata" render={props =><DataInputJss {...props} 
+        					columns={columns}
 							data={data} 
 							tpdata={tpdata}
 							sql={sql}
@@ -180,6 +202,7 @@ export default class App extends React.Component {
 					<Route path="/print-tools/doprint" render={props =><DoPrint {...props} 
 							setStep={this.setStep} 
 							tpdata={tpdata}
+							columns={columns}
 							data={data}
 							sql={sql}
 							rowcnt={rowcnt}
@@ -190,6 +213,7 @@ export default class App extends React.Component {
 							setStep={this.setStep} 
 							onDataChange={this.onSetData}
 						/>} />
+					</Suspense>
 				</Page>
 			</Router>
 	  )

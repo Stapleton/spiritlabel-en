@@ -50,17 +50,15 @@ class Seltp extends React.Component {
     componentDidMount=()=>{
     	this.props.setStep("seltp")
 		let {id}=this.props.match.params;
+		let {tpid}=this.props.tpdata;
 		
-		if (id) {
+		if (id && tpid!=id) {
 			this.do_seltp(id);
 		}else{
-		    let {tpid}=this.props.tpdata;
-			if (tpid) this.do_seltp(tpid);
+    		if (tpid) {
+    		    this.setState({tpid, selected:true});
+    		}    
 		}
-    }
-    
-    onLogin=(userinfo)=>{
-    	this.setState({logged:true, owner:'mine', userinfo});
     }
     
     loadtp=async(tpid)=>{

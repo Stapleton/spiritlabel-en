@@ -81,8 +81,7 @@ class Login extends React.Component {
 				}
 		});
 	}
-	
-	
+		
 	show_login_win=async ()=>{
 	    let data = await this.Post("/api/wxlogin-get-param", {})
 	    var wx_auth_url = "https://open.weixin.qq.com/connect/qrconnect?appid=" + data.appid + "&scope=snsapi_login&redirect_uri="

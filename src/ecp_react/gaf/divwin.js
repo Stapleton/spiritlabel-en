@@ -108,7 +108,6 @@ var divWin=function(myobj, param) {
     <div style="clear:both"></div>
 </div>
 <div id="${myobj}-body" class="${css.cont}" style="height:${h}px;width:${width}">
-  <div style="clear:both"></div>
 </div>`;
 
 	dw.innerHTML=st;
