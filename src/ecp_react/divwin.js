@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import ReactDOM from 'react-dom/client';
 import Button from './button.js';
 import Icon from './icon.js';
@@ -6,7 +6,7 @@ import GForm from './form.js';
 import divWin from './gaf/divwin.js';
 import {classNames} from './util.js';
 
-import css from './divwin.module.css';
+import css from './divwin.module.scss';
 import btncss from './button.module.scss'
 
 function getProps(msg, def) {
@@ -91,7 +91,7 @@ class DivWin {
 		
 		const w=new DivWin();
 		const {type, ...others}=getProps(msg, {type:'confirm'});
-		if (typeof msg=='string') msg=msg.split('\n').map(s=><p>{s}</p>);
+		if (typeof msg=='string') msg=msg.split('\n').map((s,i)=><p key={i}>{s}</p>);
 		const dlg=
 			<Form 
 					onSubmit={()=>{
@@ -114,13 +114,25 @@ class DivWin {
 	}
 	
 	static prompt=(msg, init, cb, cancel)=> {
-		const w=new DivWin();
+	
+	    if (!cb) {
+			return new Promise((resolve, reject) => {
+				DivWin.prompt(msg, init, (val)=>resolve(val), ()=>reject());
+			})
+		}
+	
+	    const w=new DivWin();
 		const {type, ...others}=getProps('', {title:msg});
-		if (typeof msg=='string') msg=msg.split('\n').map(s=><p>{s}</p>);
+		if (typeof msg=='string') msg=msg.split('\n').map((s,i)=><p key={i}>{s}</p>);
+		let val=init
+		const chgData=(e)=>{
+		    val=e.target.value
+		}
 		const dlg=
 			<Form 
 					onSubmit={()=>{
-						w.close();
+					    cb(val)
+    					w.close();
 					}} 
 					btn_OK='是'
 					btns={[<Button key={1} onClick={()=>{ w.close(); if (cancel) cancel()}}>否</Button>]}
@@ -128,14 +140,16 @@ class DivWin {
 				>
 				<div className={css.alert}>
 					<div className={css['alert-icon']}><Icon {...getTypeIcon(type)}/></div>
-					<div className={css['alert-ctx']}>{msg}</div>
+					<div className={css['alert-ctx']}>
+					    {msg}
+					    <input className={css['promp-input']} defaultValue={init} onChange={chgData} type="text" spellCheck="false"/>
+					</div>
 				</div>
 			</Form>;
 		
 		w.doShow(dlg)
 		return w;
 	}
-	
 	
 	close=()=>{
 		this.w.close();
