@@ -46,12 +46,18 @@ class DoPrint extends React.Component {
 	}
 	
 	prevStep=()=>{
-		this.props.history.push("/print-tools/loaddata")
+		let {tpid, tp_vars}=this.props.tpdata;
+		if (!tpid || tp_utils.get_var_cnt(tp_vars)===0 ) this.props.history.push("/print-tools/seltp")
+		else this.props.history.push("/print-tools/loaddata")
 	}
 		
 	print=()=>{
-		let {tpdata, data}=this.props;
-		if (data.length===0) return;
+		let {tpdata, data, print_opts}=this.props;
+		let {copys}=print_opts;
+		if (data.length===0 && copys==0) {
+		    W.alert(_("请设置打印数量"));
+		    return;
+		}
 		
 		if (!window.SPIRIT) {
 			W.alert(_("打印机未准备就绪!"));
@@ -78,9 +84,13 @@ class DoPrint extends React.Component {
 	}
 		
 	printAll=()=>{
-		let {tpdata, data, sql}=this.props;
-		if (data.length===0) return;
-		
+		let {tpdata, data, sql, print_opts}=this.props;
+		let {copys}=print_opts;
+		if (data.length===0 && copys==0) {
+		    W.alert(_("请设置打印数量"));
+		    return;
+		}
+				
 		if (!window.SPIRIT) {
 			W.alert(_("打印机未准备就绪!\n请检查是否未安装\"打印精灵\""));
 			return;
@@ -89,9 +99,7 @@ class DoPrint extends React.Component {
 		if (sql) {
 			return this.printBySql(sql, tpdata.tpid, this.nextStep)
 		}
-		
-		let {copys}=this.props.print_opts;
-		
+				
 		var getVars=(idx)=>{
 			if (tp_utils.get_var_cnt(tpdata.tp_vars)===0) {
 				/* 非变量模式，按打印份数打印*/
@@ -211,7 +219,7 @@ class DoPrint extends React.Component {
 			if (col==='auto') col=1
 			if (row==='auto') row=1
 			
-			size = [width*col + 10*gapX*(col-1), height*row + 10*gapY*(row-1)]
+			size = [width*col + 10*gapX*col, height*row + 10*gapY*row]
 			opt.size=size;
 		}else if (typeof info.paper[size] === "object" ) {
 		    let {w, h, cols, marginLeft, marginTop}=info.paper[size]
@@ -223,12 +231,19 @@ class DoPrint extends React.Component {
 			}
 		}
 		
-		this.setTemplateUrl()		
+		this.setTemplateUrl()
+		
 		try {
-		    let p=await window.SPIRIT.open(opt)
-    		let {data}=await p.PrintLabelSql(tpid, sql);
-    		jobid=data.id;
-    		p.close()
+		    var prnInst = await window.SPIRIT.open(opt)
+    		try {
+    		    let {data}=await prnInst.PrintLabelSql(tpid, sql);
+        		jobid=data.id;
+        		if (window.SPIRIT.type!=="desktop") prnInst.close();
+        	}catch(e){
+        	    prnInst.close()
+	            W.alert(e);
+	            return;
+	        }
 	    }catch(e){
 	        W.alert(e);
 	        return;
@@ -237,10 +252,12 @@ class DoPrint extends React.Component {
 	    var w;
 	    const stop_print=async(e)=>{
 	        let rc= await window.SPIRIT.Stop(jobid)
-	        if (rc.msg!=="") {
+	        if (window.SPIRIT.type==="desktop") prnInst.close();
+			w.close()
+			
+			if (rc.msg!=="") {
 			   W.alert(rc.msg);
 			}
-			w.close()
     		if (finish) finish()
 	    }
 	    	
@@ -260,12 +277,13 @@ class DoPrint extends React.Component {
 		);
 		
 		window.SPIRIT.JobEvent(jobid
-		    , async(rc)=>{
+		    , (rc)=>{
 		        let {data} = rc;
 		        let {total, cur}=data;
 		        
 		        if (total!==0 && total===cur) {
 			        w.close();
+			        if (window.SPIRIT.type==="desktop") prnInst.close()
 			        if (finish) finish()
 			    }
 		        
@@ -273,7 +291,8 @@ class DoPrint extends React.Component {
 			    if (progress) progress.style=`width:${cur*100/total}%`;
 		    }
 		    , (rc)=>{
-                w.close();	
+                w.close();
+                if (window.SPIRIT.type==="desktop") prnInst.close();
                 W.alert(_("错误:"+rc));
 		    }
         )	
@@ -281,7 +300,7 @@ class DoPrint extends React.Component {
 	
 	getPaperList=(info)=>{
 	    return Object
-	    .keys(info.paper)
+	    .keys(info.paper||{})
 	    .reduce(
 			(a,p)=>{a[p]=info.paper[p].name; return a}, 
 			{"auto":_('标签大小'), 0:_('打印机缺省')}
@@ -441,10 +460,9 @@ class DoPrint extends React.Component {
 		if (tpdata.tp_vars && var_cnt>0) {
 			/* 有变量模板，不能打印多张 */
 			var disable=['copys'];
+			this.props.print_opts['copys']=rowcnt;
 		}
 		
-		this.props.print_opts['copys']=rowcnt;
-
 		return (
 			<>
 				<G.Row>

@@ -1,10 +1,96 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {Button, DivWin as W, Grid as G, InputButton, Toolbar} from 'ecp';
 import LabelGallery from './LabelGallery.jsx'
 import tp_utils from './tp_utils.js'
 import {_} from "./locale.js";
 
 const LOAD_XORKEY=48
+
+function TpVar(props) {
+    const {tpid, def_val, name}=props;
+    let [val, setVal]=useState("")
+    let type=1
+    let show_name=name
+    let type_name=""
+    if (name.startsWith("spirit.serial.")) {
+        type=3
+        type_name="自增序列"
+        show_name = name.substring(14)
+    }else if (name.startsWith("spirit.")) {
+        type=2
+        let now = new Date();
+        switch (name.substring(7)) {
+        case 'date': 
+            type_name = _("预定义变量")
+            show_name = _("日期")
+            break;
+        case 'time': 
+            type_name = _("预定义变量")
+            show_name = _("时间hh:mm:ss")
+            break;
+        case 'time_hhmm': 
+            type_name = _("预定义变量")
+            show_name = _("时间hh:mm")
+            break;
+        }
+    }
+
+    useEffect(() => {
+        
+        const getVar=async()=>{
+            let v = await window.SPIRIT.getSerialVal(tpid, name, def_val)
+            setVal(v.data)    
+        }
+        
+        if (type==3) {
+             if (typeof window.SPIRIT.getSerialVal !== "function") {
+                setVal(_("未安装打印插件,无法获取序列当前值"))
+                return
+             }
+             getVar()
+        }else if (type==2) {
+            let now = new Date();
+            switch (name.substring(7)) {
+            case 'date': 
+                let yyyy_mm_dd = now.getFullYear() + '-' + (now.getMonth() + 1).toString().padStart(2, '0') + '-' + now.getDate().toString().padStart(2, '0');
+                setVal(yyyy_mm_dd)
+                break;
+            case 'time': 
+                let hh_mm_ss = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
+                setVal(hh_mm_ss)
+                break;
+            case 'time_hhmm': 
+                let hh_mm = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');  
+                setVal(hh_mm)
+                break;
+            }
+        }
+    }, [])
+    
+    const setValDlg=async ()=>{
+        try {
+            let newval = await W.prompt("设置序列初值", val)
+            let rc = await window.SPIRIT.setSerialVal(tpid, name, def_val, newval)
+            if (rc.data!="OK") {
+                W.alert(rc.data)
+                return;
+            }
+            setVal(newval)
+        }catch(e) {
+            // do noting        
+        }
+    }
+    
+    return (
+        <tr className="tp-variable">
+            <td style={{minWidth:100}}>{show_name}</td>
+            <td style={{minWidth:100}}>{type_name}</td>
+            { type===1 && <td style={{minWidth:100}}></td>}
+            { type===2 && <td style={{minWidth:100}}>{val}</td>}
+            { type===3 && <><td style={{minWidth:100}}>{val}</td><td><Button onClick={setValDlg}>设置起始值</Button></td></>}
+        </tr>    
+    )
+}
 
 function Tpinfo(props) {
   const {tpid, tpinfo, onNext, onResel}=props
@@ -15,7 +101,7 @@ function Tpinfo(props) {
   return (
 	<G.Row>
 		<G.Col width="40%" className="tp-img-div">
-			<img  className="tp-img-big" alt="tp-img-big" src={`/utils/thumb?id=${tpid}`}/>
+			<img  className="tp-img-big" alt="tp-img-big" src={`/utils/thumb?id=${tpid}&t=${new Date().getTime()}`}/>
 		</G.Col>
 		<G.Col width="50%" className="tp-info">
 		    <Toolbar>
@@ -29,7 +115,13 @@ function Tpinfo(props) {
 			<p><span className="tp-head-item">{_("尺寸:")}</span>{tpinfo.width/10}{_("厘米")} X {tpinfo.height/10}{_("厘米")}</p>
 			<br/>
 			<p className="tp-head-variable">{_("模板变量")}</p>
-			<div className="tp-varialbe-container">{props.tp_vars.map((o,i)=><p key={i} className="tp-variable">{o}</p>)}</div>
+			<hr/>
+			<div className="tp-varialbe-container">
+			    <table>
+    			    <thead><tr className="tp-variable"><th>{_("变量名")}</th><th>{_("类型")}</th><th>{_("起始值/当前值")}</th></tr></thead>
+			        <tbody>{props.tp_vars.map((o,i)=><TpVar key={i} def_val={tpinfo.default_vars[o]} tpid={tpid} name={o} />)}</tbody>
+			    </table>
+			</div>
 		</G.Col>
 	</G.Row>)
 }
@@ -73,7 +165,7 @@ class Seltp extends React.Component {
                     }
 			        return JSON.parse(new TextDecoder().decode(byteArray))
 			    })
-            let tp_vars=tp_utils.get_vars(rc.data);
+			let tp_vars=tp_utils.get_vars(rc.data);
 		    this.props.onChangeTp({tpid, tpinfo:rc.tpinfo, tp_vars});
 		}catch(e){
 		    console.log(e)

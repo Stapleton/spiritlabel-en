@@ -37,13 +37,13 @@ export default class App extends React.Component {
 	}
 	
 	componentDidMount=async ()=>{
-    	if (!window.SPIRIT) {
+    	/*if (!window.SPIRIT) {
     	    try {
         	    await load_spirit_js(0);
 		        this.forceUpdate()
 		    }catch(e){
 		    }
-		}
+		}*/
 		
 		this.loadEditorState()
 		
@@ -195,6 +195,7 @@ export default class App extends React.Component {
 							data={data} 
 							tpdata={tpdata}
 							sql={sql}
+							rowcnt={rowcnt}
 							setStep={this.setStep} 
 							onDataChange={this.onSetData}
 							onSetSql={this.onSetSql}

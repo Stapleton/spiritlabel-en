@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Spreadsheet, Worksheet, jspreadsheet } from "@jspreadsheet-ce/react";
-import {Table, Button, ConfirmButton, DivWin as W, Toolbar, Form} from 'ecp';
+import { Button, DivWin as W, Toolbar} from 'ecp';
 import DBConn from './DBConn.jsx'
 import {_} from "./locale.js";
 
@@ -69,6 +69,17 @@ export default function DataInput(props) {
                     return r1
 			    })
     }
+	
+	//
+	// 不能直接使用jspeadsheet.destoryAll, 有BUG
+	//
+	const destroyAllSheet = function() {		
+		let n = jspreadsheet.spreadsheet.length;
+		for (let spreadsheetIndex = 0; spreadsheetIndex < n; spreadsheetIndex++) {
+			const spreadsheet = jspreadsheet.spreadsheet[0];
+			jspreadsheet.destroy(spreadsheet.element);
+		}
+	}
           
     const load_excel=(e)=>{
 		let inp = e.querySelectorAll('.icon-Excel>span>input')
@@ -84,13 +95,14 @@ export default function DataInput(props) {
 	}
 
 	const nextStep=async()=>{
-		let {sql, tpdata}=props;
+		let {sql, tpdata, rowcnt}=props;
 		var data;
 		
 		if (dataTypeRef.current===DB || dataTypeRef.current===XLS) {
-			let vars = Object.keys(bindVarsRef.current)
-			for(let i=0; i<tpdata.tp_vars.filter(o=>!o.startsWith("spirit.")).length; i++) {
-				let v=tpdata.tp_vars[i];
+			let vars = Object.entries(bindVarsRef.current).filter(o=>o[1]!=="").map(o=>o[0])
+			let tp_vars1 = tpdata.tp_vars.filter(o=>!o.startsWith("spirit."))
+			for(let i=0; i<tp_vars1.length; i++) {
+				let v=tp_vars1[i];
 				if (vars.indexOf(v)<0) {
 					W.alert(_("变量") + '"' + v + '"' + _("未绑定"));
 					return;
@@ -111,7 +123,7 @@ export default function DataInput(props) {
 		    for (let k in bindVarsRef.current) {
 		        if (k!==bindVarsRef.current[k]) sql.vars_map[k]=bindVarsRef.current[k]
 		    }
-			props.onSetSql(sql, data, 0)
+			props.onSetSql(sql, data, rowcnt)
 		}else{
 		    props.onDataChange(data);
 		}
@@ -134,12 +146,12 @@ export default function DataInput(props) {
 			    let XLSX = await import('xlsx')
 								
 				/* for execel header */
-				const make_excel_cols = refstr => {
+				/*const make_excel_cols = refstr => {
 					let o = [], range = XLSX.utils.decode_range(refstr);
 					let S=range.s.c , E=range.e.c + 1;
 					for(var i = 0; i < E - S; ++i) o[i] = XLSX.utils.encode_col(i);
 					return o;
-				};
+				};*/
 				
 				/* Parse data */
 				const bstr = e.target.result;
@@ -180,8 +192,8 @@ export default function DataInput(props) {
                         return r1
                     })    
 					
-					if (dataTypeRef.current!=ManInput) {
-					    jspreadsheet.destroyAll(jssRef.current)
+					if (dataTypeRef.current!==ManInput) {
+					    destroyAllSheet()
 					    setDataType(ManInput)
 					    onDataChange(d)
 					}else{
@@ -189,12 +201,12 @@ export default function DataInput(props) {
     				}	
 				}else{
 				    
-    				if (dataTypeRef.current!=XLS) {
+    				if (dataTypeRef.current!==XLS) {
     				    let yn =  await W.confirm(_("导入文件格式和当前标签不符合, 切换到自由模式吗?"))
     				    if (!yn) return
     				}    
     				
-				    jspreadsheet.destroyAll(jssRef.current)
+				    destroyAllSheet()
 				    onDataChange(data)
 				    setDataType(XLS)
 				    setBindVars({})
@@ -221,9 +233,9 @@ export default function DataInput(props) {
 		if (sql_cfg.vars_map && Object.keys(sql_cfg.vars_map).length>0) {
 			bind_vars=sql_cfg.vars_map
 		}else{
-				
-			for (let i=0; i<tp_vars.filter(o=>!o.startsWith("spirit.")).length; i++) {
-				let item=tp_vars[i]
+			const tp_vars1 = tp_vars.filter(o=>!o.startsWith("spirit."))	
+			for (let i=0; i<tp_vars1.length; i++) {
+				let item = tp_vars1[i]
 				if (!db_cols.includes(item)) {
 					let yn = await W.confirm(_("数据字段与标签不吻合"))
 					if (yn===false) return false;
@@ -238,7 +250,7 @@ export default function DataInput(props) {
 			}
 		}
 				
-		jspreadsheet.destroyAll(jssRef.current)
+		destroyAllSheet()
 		
 		props.onSetSql(sql_cfg, data, total)
 		setDataType(DB)
@@ -271,8 +283,9 @@ export default function DataInput(props) {
 	
 	const var_binder=()=>{
 	
-	    if (dataTypeRef.current==ManInput) {
-	        return;
+	    if (dataTypeRef.current===ManInput) {
+	        W.alert(_("当前状态无需设置绑定关系"))
+			return;
 	    }
 	
 	    let bind_vars = [
@@ -305,23 +318,15 @@ export default function DataInput(props) {
 		); 
 	}
 		
-	const toolbars=[
-        {content: 'undo', title:"undo", onclick: function () {sheet[0].undo()}},
-        {content: 'redo', title:"redo", onclick: function () {sheet[0].redo()}},
-        {content: 'save', title:_("保存数据"), onclick: function () {sheet[0].download(true, false)}},
-        {content: 'autorenew', title:_("清除数据"), onclick: function () {
-                jspreadsheet.destroyAll(jssRef.current)
-                setDataType(ManInput); 
-                props.onSetSql(null, [], 0); 
-                onDataChange([])}},
-        {type:'divisor'},
-        {content: fileBtn, title:_("加载EXCEL/CSV等格式的数据文件"), class:'iconfont icon-Excel', onclick:load_excel},
-        {content: "<span>连接数据库</span>", class:'iconfont icon-database', title:"连接数据库", onclick:db_conn },
-        {content: "<span>变量绑定</span>", class:'iconfont icon-icon-customvar', title:"设置字段和标签变量绑定关系", onclick:var_binder },
-        {type:'divisor'},
-        {content: 'fullscreen', title:"全屏编辑", onclick: function () {sheet[0].parent.fullscreen()}},
-    ]
-    
+	const resetData=useCallback(async ()=>{
+		let yn = await W.confirm(_("清除当前数据吗？清除后不可恢复"))
+		if (!yn) return;
+		destroyAllSheet()
+		setDataType(ManInput); 
+		props.onSetSql(null, [], 0); 
+		onDataChange([])
+	}, [props, onDataChange, setDataType])
+	
     /*
     const contextMenu = (o, x, y, e, items, section) => {
          console.log(x,y,e)
@@ -418,10 +423,23 @@ export default function DataInput(props) {
    
    
    useEffect(() => {
-        
+	   
         dataTypeRef.current = dataType;
         bindVarsRef.current = bindVars;
-		
+        
+        const toolbars=[
+            {content: 'undo', title:"undo", onclick: function () {sheet[0].undo()}},
+            {content: 'redo', title:"redo", onclick: function () {sheet[0].redo()}},
+            {content: 'save', title:_("保存数据"), onclick: function () {sheet[0].download(true, false)}},
+            {content: 'autorenew', title:_("清除数据"), onclick: resetData},
+		    {type:'divisor'},
+            {content: fileBtn, title:_("加载EXCEL/CSV等格式的数据文件"), class:'iconfont icon-Excel', onclick:load_excel},
+            {content: "<span>连接数据库</span>", class:'iconfont icon-database', title:"连接数据库", onclick:db_conn },
+            {content: "<span>变量绑定</span>", class:'iconfont icon-icon-customvar', title:"设置字段和标签变量绑定关系", onclick:var_binder },
+            {type:'divisor'},
+            {content: 'fullscreen', title:"全屏编辑", onclick: function () {sheet[0].parent.fullscreen()}},
+        ]
+        
 		if (!jssRef.current.textContent) {
 		
 		    let headers=[]
@@ -467,7 +485,7 @@ export default function DataInput(props) {
 			sheet=ws
         }
 		
-    }, [dataType, columns, data, bindVars]);
+    }, [dataType, columns, data, bindVars, resetData]);
 	
     return (
         <>

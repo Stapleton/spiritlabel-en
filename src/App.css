@@ -166,6 +166,17 @@
 
 .tp-variable {
 	padding-left: 5px;
+    font-size: 14px;
+}
+
+tr.tp-variable {
+    line-height: 20px;
+}
+
+tr.tp-variable th, 
+tr.tp-variable td
+{
+    text-align:left;
 }
 
 .sel-tp-win {
