@@ -79,6 +79,15 @@ class DBConn extends React.Component {
         await window.SPIRIT.DBSaveQuery(sql_list);
     }
     
+    show_help=()=>{
+        let url = "https://www.printspirit.cn/doc/label_print.md#use_db"
+        if (window.SPIRIT.type==="desktop") {
+            window.runtime.BrowserOpenURL(url);
+        }else{
+            window.open(url, "_blank");
+        }    
+    }    
+    
     render() {
     
         let db_cfg=[
@@ -138,7 +147,7 @@ class DBConn extends React.Component {
 	                    <Toolbar.Ext>
                 		    <Button type="green" onClick={this.setSql}>{_("确定")}</Button>
                 		    <Button onClick={this.close}>{_("关闭")}</Button>
-                		    <Button href="/doc/label_print.md#use_db" target="_blank">{_("使用说明")}</Button>
+                		    <Button onClick={this.show_help}>{_("使用说明")}</Button>
             		    </Toolbar.Ext>
             		 </Toolbar>
                 </div>
@@ -146,5 +155,7 @@ class DBConn extends React.Component {
         )
     }
 }
+
+
 
 export default DBConn

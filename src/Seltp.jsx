@@ -65,7 +65,7 @@ function TpVar(props) {
                 break;
             }
         }
-    }, [])
+    }, [tpid, name])
     
     const setValDlg=async ()=>{
         try {
