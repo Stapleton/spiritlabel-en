@@ -1,5 +1,7 @@
 [english](README.md)
 
+环境要去: node >22
+
 SpiritLabel是开源的标签批量打印工具，面向普通用户。底层利用了[打印精灵](https://www.printspirit.cn)提供的标签设计、打印能力。
 
 ## 主要特点
@@ -14,15 +16,10 @@ SpiritLabel是开源的标签批量打印工具，面向普通用户。底层利
 
 ## 开发
 
-### `yarn start`
+### `npm start`
 启动开发服务器
 
-### `yarn test`
-
-启动交互式观察模式下的测试运行程序。
-更多信息请参阅关于运行测试的部分。
-
-### `yarn build`
+### `npm run build`
 
 将应用程序构建为生产版本，输出到 build 文件夹。它会以生产模式正确打包 React 并优化构建以获得最佳性能。
 构建结果会被压缩，并且文件名包含哈希值。
