@@ -1,6 +1,6 @@
 import strings from "./translate.js"
 
-var lang = navigator.language || navigator.userLanguage;
+var lang = "zh"   // default use zh, dont navigator.language or 搜索引擎会处理成中文 navigator.language || navigator.userLanguage;
 
 if (lang==="zh" || lang.substring(0,3)==="zh-") lang="zh";
 else lang="en";

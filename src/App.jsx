@@ -143,9 +143,14 @@ export default class App extends React.Component {
 			<Router basename={lang}>
 				<div className="App-header">
 					<span className="App-Logo">
-						<a href={"/"+lang} {...(isDesktop?{}:{target:"_main"})}>
-							<img src={spirit_power} alt="logo" />
-						</a>
+    					{ isDesktop ?
+	        	            <a href="/home.html">
+							    <img src={spirit_power} alt="logo" />
+						    </a>
+	    	                :
+	    	                <a href={"/"+lang} target="_main">
+							    <img src={spirit_power} alt="logo" />
+    						</a>}
 					</span>
 					<h1 className="App-Title">SpiritLabel {_("标签打印")}</h1>
 					<span className="App-Login-st">
