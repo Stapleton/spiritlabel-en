@@ -120,23 +120,29 @@ class DoPrint extends React.Component {
 		
 		let {info}=this.state; 
 		let {print_opts}=this.props;		
-		let {type, name, size, fill, col, row, gapX, gapY, quality}=print_opts;
+		let {type, name, size, print_dir, fill, col, row, gapX, gapY, quality}=print_opts;
 		if (!name) {
 			W.alert(_("没有该类型的打印机！"));
 			return;
 		}
-		let opt={type, name, size, fill, col, row, gapX:Math.floor(gapX*10), gapY:Math.floor(gapY*10), quality}
+		let opt={type, name, size, print_dir, fill, col, row, gapX:Math.floor(gapX*10), gapY:Math.floor(gapY*10), quality}
 		
 		if (size==='auto') {
 			const {width, height} = this.props.tpdata.tpinfo
+			
 			if (fill==='2') {
 				W.alert(_("使用标签尺寸不能自动拼版！"));
 				return
 			}
 			if (col==='auto') col=1
 			if (row==='auto') row=1
+						
+			if (print_dir==1) {
+    			size = [height*row + 10*gapY*row, width*col + 10*gapX*col]
+			}else{
+    			size = [width*col + 10*gapX*col, height*row + 10*gapY*row]
+			}
 			
-			size = [width*col + 10*gapX*col, height*row + 10*gapY*row]
 			opt.size=size;
 		}else if (typeof info.paper[size] === "object" ) {
 		    let {w, h, cols, marginLeft, marginTop}=info.paper[size]
@@ -424,7 +430,7 @@ class DoPrint extends React.Component {
 			},
 			{name:_('打印机'),       id:'name',   type:'select', options:[] },
 			{name:_('纸张'),         id:'size',   type:'select', options:{} , def:"auto" },
-			{name:_('纸张方向'),     id:'dir',    type:'select', options:{'1':_('纵向'), '2':_('横向')}, def:'auto'},
+			{name:_('标签方向'),     id:'print_dir',    type:'select', options:{'0':_('正常'), '1':_('旋转90度')}, def:'0'},
 			{name:_('缩放'),         id:'fill',   type:'select', options:{}, def:'0'},
 			{name:_('打印质量'),     id:'quality',type:'select', options:{'0':_('高速'), '1':_('平衡'), '2':_('高质量')}, def:'1'},
 			{name:_('每行标签列数'), id:'col',    type:'select', options:{'auto':_('自动'), '1':1, 2:2, 3:3, 4:4, 5:5, 6:6,7:7,8:8,9:9,10:10}, def:'auto'},
