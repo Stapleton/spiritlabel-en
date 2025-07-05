@@ -145,12 +145,17 @@ class DoPrint extends React.Component {
 			
 			opt.size=size;
 		}else if (typeof info.paper[size] === "object" ) {
-		    let {w, h, cols, marginLeft, marginTop}=info.paper[size]
+		    let {w, h, cols, marginLeft, marginTop, marginRight, marginBottom}=info.paper[size]
+		    marginBottom = marginBottom || marginTop
+		    marginRight = marginRight || marginLeft
+			    
 		    if (cols) {
 				size = [w, h]
 				opt.size=size;
 				opt.marginLeft=marginLeft
 				opt.marginTop=marginTop
+				opt.marginRight=marginRight
+				opt.marginBottom=marginBottom
 			}
 		}    
 		
@@ -228,12 +233,18 @@ class DoPrint extends React.Component {
 			size = [width*col + 10*gapX*col, height*row + 10*gapY*row]
 			opt.size=size;
 		}else if (typeof info.paper[size] === "object" ) {
-		    let {w, h, cols, marginLeft, marginTop}=info.paper[size]
+		
+		    let {w, h, cols, marginLeft, marginTop, marginRight, marginBottom}=info.paper[size]
+		    marginBottom = marginBottom || marginTop
+		    marginRight = marginRight || marginLeft
+		
 		    if (cols) {
 				size = [w, h]
 				opt.size=size;
 				opt.marginLeft=marginLeft
 				opt.marginTop=marginTop
+				opt.marginRight=marginRight
+				opt.marginBottom=marginBottom
 			}
 		}
 		
@@ -432,7 +443,7 @@ class DoPrint extends React.Component {
 			{name:_('纸张'),         id:'size',   type:'select', options:{} , def:"auto" },
 			{name:_('标签方向'),     id:'print_dir',    type:'select', options:{'0':_('正常'), '1':_('旋转90度')}, def:'0'},
 			{name:_('缩放'),         id:'fill',   type:'select', options:{}, def:'0'},
-			{name:_('打印质量'),     id:'quality',type:'select', options:{'0':_('高速'), '1':_('平衡'), '2':_('高质量')}, def:'1'},
+			{name:_('打印质量'),     id:'quality',type:'select', options:{'0':_('高速'), '1':_('平衡'), '2':_('高质量')}, def:'2'},
 			{name:_('每行标签列数'), id:'col',    type:'select', options:{'auto':_('自动'), '1':1, 2:2, 3:3, 4:4, 5:5, 6:6,7:7,8:8,9:9,10:10}, def:'auto'},
 			{name:_('列间隙'),       id:'gapX',   type:'number', def:2.1},
 			{name:_('每页标签行数'), id:'row',   type:'select', options:{'auto':_('自动'), '1':1, 2:2, 3:3, 4:4, 5:5, 6:6,7:7,8:8,9:9,10:10}, def:'auto'},
