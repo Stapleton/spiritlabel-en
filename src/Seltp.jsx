@@ -119,7 +119,7 @@ function Tpinfo(props) {
 			<div className="tp-varialbe-container">
 			    <table>
     			    <thead><tr className="tp-variable"><th>{_("变量名")}</th><th>{_("类型")}</th><th>{_("起始值/当前值")}</th></tr></thead>
-			        <tbody>{props.tp_vars.map((o,i)=><TpVar key={i} def_val={tpinfo.default_vars[o]} tpid={tpid} name={o} />)}</tbody>
+			        <tbody>{props.tp_vars.map((o,i)=><TpVar key={i} def_val={tpinfo.default_vars[o]} tpid={tpinfo.id || tpid} name={o} />)}</tbody>
 			    </table>
 			</div>
 		</G.Col>
